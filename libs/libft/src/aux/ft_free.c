@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 20:25:24 by marcnava          #+#    #+#             */
-/*   Updated: 2025/03/20 17:30:18 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:51:08 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,3 @@ void	ft_free(void **ptr)
 		*ptr = NULL;
 	}
 }
-

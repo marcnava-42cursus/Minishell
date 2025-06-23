@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/19 16:30:05 by marcos            #+#    #+#             */
-/*   Updated: 2025/03/20 17:24:49 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:51:19 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,3 @@ size_t	ft_count_digits(int n, int base_len)
 	}
 	return (digits);
 }
-

@@ -1,5 +1,9 @@
 *.out
 *.o
 *.a
+*.config
+minishell
 
 build/
+.vscode/
+tests/

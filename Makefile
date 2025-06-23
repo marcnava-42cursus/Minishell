@@ -3,65 +3,66 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
+#    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/06/14 18:01:06 by marcnava         ###   ########.fr        #
+#    Updated: 2025/06/16 20:00:00 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # **************************************************************************** #
 # ********************************* VARIABLES ******************************** #
 
-NAME				:= minishell
+NAME		:=	minishell
 
-CC					:=	cc
-CFLAGS				:=	-Wall -Wextra -Werror
-DFLAGS				:=	-g3
+CC			:=	cc
+CFLAGS		:=	-Wall -Wextra -Werror -g3
+LDFLAGS		:=	-lreadline -lncurses
 
-COMPILER			:=	$(CC) $(CFLAGS) $(DFLAGS)
+SRCPATH		:=	src
+BUILDPATH	:=	build
+CONFIGPATH	:=	$(SRCPATH)/config
 
-RM					:=	rm -rf
+LIBFT		:=	libs/libft
+LIBFT_A		:=	$(LIBFT)/libft.a
 
-# **************************************************************************** #
-# *********************************** FILES ********************************** #
+INCLUDES	:=	-Iincludes -I$(LIBFT)/includes
 
-SRCPATH				:=	src
-BUILDPATH			:=	build
+SRCS		:=	$(SRCPATH)/minishell.c
 
-INCLUDES			:=	-Iincludes
+SRCS		+=	$(CONFIGPATH)/build_prompt.c \
+				$(CONFIGPATH)/colors.c \
+				$(CONFIGPATH)/create_config.c \
+				$(CONFIGPATH)/keywords.c \
+				$(CONFIGPATH)/load_config.c
 
-SRCS				:=	$(SRCPATH)/minishell.c
+OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
 
-OBJS				:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
+RM			:=	rm -rf
 
 # **************************************************************************** #
 # *********************************** RULES ********************************** #
 
-all:				$(NAME)
+all: $(LIBFT_A) $(NAME)
 
-$(NAME):			$(OBJS)
-	$(COMPILER) $(INCLUDES) $(OBJS) -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
-$(BUILDPATH)/%.o:	$(SRCPATH)/%.c
+$(BUILDPATH)/%.o: $(SRCPATH)/%.c
 	mkdir -p $(@D)
-	$(COMPILER) $(INCLUDES) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) $(BUILDPATH)
+	$(MAKE) -C $(LIBFT) clean
 
-fclean:				clean
+fclean: clean
 	$(RM) $(NAME)
+	$(MAKE) -C $(LIBFT) fclean
 
-re:					fclean all
+re: fclean all
 
-$(LIBFT)/libft.a:
-	@$(MAKE) --no-print-directory -s -C $(LIBFT)
+$(LIBFT_A):
+	$(MAKE) -C $(LIBFT)
 
-# **************************************************************************** #
-# *********************************** PHONY ********************************** #
-
-.PHONY: all
-.PHONY: clean
-.PHONY: fclean
-.PHONY: re
+.PHONY: all clean fclean re
