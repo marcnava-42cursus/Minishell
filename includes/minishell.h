@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:47:20 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/16 19:03:16 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/06/25 17:17:51 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@
 
 # include "libft.h"
 # include "config.h"
+# include "parser.h"
 
 #endif

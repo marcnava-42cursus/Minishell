@@ -3,23 +3,17 @@
 
 # include <stdlib.h>
 # include "libft.h"
+# include "structs.h"
 
 # define CONFIG_FILE "minishell.config"
 # define MAX_LINE_LEN 1024
 
-typedef struct s_config
-{
-    char    *prompt_raw;
-    char    *prompt;
-    int     exit_code;
-}   t_config;
-
-// Configuración general
+// General configuration
 int		load_config(t_config *config, char **envp);
 void	free_config(t_config *config);
 int		create_default_config(void);
 
-// Build prompt desde config
+// Build prompt
 char	*build_prompt(char *raw, int exit_code);
 char	*replace_keyword(char *key, int exit_code);
 
@@ -34,7 +28,7 @@ char	*get_gitbranch(void);
 char	*get_jobs(void);
 char	*get_battery(void);
 
-// Colores
+// Colors
 char	*get_color_code(char *color);
 char	*reset_color(void);
 

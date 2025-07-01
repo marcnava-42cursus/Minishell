@@ -6,11 +6,11 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 18:48:08 by marcnava          #+#    #+#             */
-/*   Updated: 2025/01/24 16:01:29 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/06/30 20:59:05 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/get_next_line.h"
+#include "get_next_line.h"
 
 void	ft_check_free(void **ptr)
 {
@@ -40,11 +40,11 @@ static char	*ft_get_line_buffer(int fd, char *pending_line, char *buffer)
 			break ;
 		buffer[bytes_read] = 0;
 		if (!pending_line)
-			pending_line = ft_strdup("");
+			pending_line = gnl_strdup("");
 		tmp = pending_line;
-		pending_line = ft_strjoin(tmp, buffer);
+		pending_line = gnl_strjoin(tmp, buffer);
 		ft_check_free((void **)&tmp);
-		if (ft_strchr(buffer, '\n'))
+		if (gnl_strchr(buffer, '\n'))
 			break ;
 	}
 	return (pending_line);
@@ -60,7 +60,7 @@ static char	*ft_get_eol(char *buffer)
 		i++;
 	if (buffer[i] == 0 || buffer[i + 1] == 0)
 		return (NULL);
-	pending_line = ft_substr(buffer, i + 1, ft_strlen(buffer) - 1);
+	pending_line = gnl_substr(buffer, i + 1, gnl_strlen(buffer) - 1);
 	if (!pending_line)
 		ft_check_free((void **)&pending_line);
 	buffer[i + 1] = 0;

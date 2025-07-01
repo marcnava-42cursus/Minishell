@@ -16,12 +16,18 @@
 NAME		:=	minishell
 
 CC			:=	cc
-CFLAGS		:=	-Wall -Wextra -Werror -g3
+CFLAGS		:=	-Wall -Wextra
+DFLAGS		:=	-g3 -fsanitize=address
 LDFLAGS		:=	-lreadline -lncurses
 
 SRCPATH		:=	src
 BUILDPATH	:=	build
-CONFIGPATH	:=	$(SRCPATH)/config
+
+CONFIG		:=	$(SRCPATH)/config
+EXEC		:=	$(SRCPATH)/exec
+BUILTINS	:=	$(EXEC)/builtins
+PARSER		:=	$(SRCPATH)/parser
+STRUCTS		:=	$(SRCPATH)/structs
 
 LIBFT		:=	libs/libft
 LIBFT_A		:=	$(LIBFT)/libft.a
@@ -30,11 +36,25 @@ INCLUDES	:=	-Iincludes -I$(LIBFT)/includes
 
 SRCS		:=	$(SRCPATH)/minishell.c
 
-SRCS		+=	$(CONFIGPATH)/build_prompt.c \
-				$(CONFIGPATH)/colors.c \
-				$(CONFIGPATH)/create_config.c \
-				$(CONFIGPATH)/keywords.c \
-				$(CONFIGPATH)/load_config.c
+SRCS		+=	$(CONFIG)/build_prompt.c \
+				$(CONFIG)/colors.c \
+				$(CONFIG)/create_config.c \
+				$(CONFIG)/keywords.c \
+				$(CONFIG)/load_config.c
+
+SRCS		+=	$(BUILTINS)/cd.c \
+				$(BUILTINS)/echo.c \
+				$(BUILTINS)/env.c \
+				$(BUILTINS)/exit.c \
+				$(BUILTINS)/export.c \
+				$(BUILTINS)/pwd.c \
+				$(BUILTINS)/unset.c
+
+SRCS		+=	$(PARSER)/parser.c \
+				$(PARSER)/save_envp.c
+
+SRCS		+=	$(STRUCTS)/envp_manager.c \
+				$(STRUCTS)/tree_manager.c
 
 OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
 
