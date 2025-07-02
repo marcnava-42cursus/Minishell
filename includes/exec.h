@@ -1,27 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/23 16:23:35 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 20:33:27 by marcnava         ###   ########.fr       */
+/*   Created: 2025/07/01 19:42:35 by marcnava          #+#    #+#             */
+/*   Updated: 2025/07/01 20:23:34 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec_builtins.h"
+#ifndef EXEC_H
+# define EXEC_H
 
-int	msh_exec_bt_env(t_envp *envp)
-{
-	t_envp	*curr;
+# include <unistd.h>
+# include <sys/wait.h>
+# include <stdlib.h>
+# include <string.h>
+# include <stdio.h>
+# include "structs.h"
+# include "exec_builtins.h"
 
-	curr = envp;
-	while (curr)
-	{
-		if (curr->value)
-			printf("%s=%s\n", curr->key, curr->value);
-		curr = curr->next;
-	}
-	return (0);
-}
+int	exec(t_ent *tree, t_envp *envp);
+
+#endif

@@ -50,6 +50,8 @@ SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/pwd.c \
 				$(BUILTINS)/unset.c
 
+SRCS		+=	$(EXEC)/exec.c
+
 SRCS		+=	$(PARSER)/parser.c \
 				$(PARSER)/save_envp.c
 
@@ -62,6 +64,9 @@ RM			:=	rm -rf
 
 # **************************************************************************** #
 # *********************************** RULES ********************************** #
+
+check:
+	@make -q all && echo "✅ Todo OK" || make all
 
 all: $(LIBFT_A) $(NAME)
 
@@ -85,4 +90,4 @@ re: fclean all
 $(LIBFT_A):
 	$(MAKE) -C $(LIBFT)
 
-.PHONY: all clean fclean re
+.PHONY: check all clean fclean re

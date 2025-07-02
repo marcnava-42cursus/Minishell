@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:50:41 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/17 17:51:35 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/07/01 21:23:59 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	load_config(t_config *config, char **envp)
 	{
 		if (ft_strncmp(line, "MINISHELLPROMPT", 15) == 0)
 			prompt_line = extract_value(line);
-		free(line);
+		ft_free((void **)&line);
 	}
 	close(fd);
 	if (!prompt_line)
@@ -90,7 +90,7 @@ int	load_config(t_config *config, char **envp)
 void	free_config(t_config *config)
 {
 	if (config->prompt_raw)
-		free(config->prompt_raw);
+		ft_free((void **)&config->prompt_raw);
 	if (config->prompt)
-		free(config->prompt);
+		ft_free((void **)&config->prompt);
 }

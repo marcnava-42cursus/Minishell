@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/16 21:31:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/07/01 21:21:08 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static char *append(char *dst, const char *src)
 		return (NULL);
 	ft_strlcpy(tmp, dst, len_dst + 1);
 	ft_strlcat(tmp, src, len_dst + len_src + 1);
-	free(dst);
+	ft_free((void **)&dst);
 	return (tmp);
 }
 

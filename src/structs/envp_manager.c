@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 15:58:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/26 19:12:08 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/07/01 21:09:57 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,10 @@ t_envp	*envp_del_key(t_envp *head, char *key)
  */
 t_envp	*envp_edit_key(t_envp *head, char *key)
 {
-	char	*eq, *var, *val; t_envp *current;
+	char	*eq;
+	char	*var;
+	char	*val;
+	t_envp	*current;
 
 	if (!key || !(eq = ft_strchr(key, '=')) || eq == key)
 		return (head);
@@ -130,13 +133,20 @@ t_envp	*envp_edit_key(t_envp *head, char *key)
 		return (head);
 	val = ft_strdup(eq + 1);
 	if (!val)
-	{ ft_free((void **)&var); return (head); }
+	{
+		ft_free((void **)&var);
+		return (head);
+	}
 	current = head;
 	while (current && ft_strcmp(current->key, var))
 		current = current->next;
 	if (current)
-	{ ft_free((void **)&current->value); current->value = val;
-	  ft_free((void **)&var); return (head); }
+	{
+		ft_free((void **)&current->value);
+		current->value = val;
+		ft_free((void **)&var);
+		return (head);
+	}
 	return (envp_append_last(head, envp_new_node(var, val)));
 }
 
