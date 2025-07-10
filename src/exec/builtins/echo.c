@@ -6,13 +6,15 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:29:31 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/26 15:55:07 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/07/03 17:03:18 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
 
-int	msh_exec_bt_echo(void)
+int	msh_exec_bt_echo(t_ent *cmd)
 {
+	if (cmd)
+		cmd = NULL;
 	return (0);
 }
