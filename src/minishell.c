@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:46:11 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 20:24:08 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:44:16 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,13 @@ int	main(int argc, char **argv, char **env)
 	t_ent		*tree;
 
 	if (argc != 1)
-	{
-		printf("Usage: %s\n", argv[0]);
-		return (1);
-	}
+		return (printf("Usage: %s\n", argv[0]), 1);
 	if (!env || !*env)
-	{
-		printf("Error: Can't load env variables\n");
-		return (1);
-	}
+		return (printf("Error: Can't load env variables\n"), 1);
 	load_config(&config, env);
 	envp = save_envp(env);
 	if (!envp)
-	{
-		printf("Error saving envp\n");
-		return (1);
-	}
+		return (printf("Error saving envp\n"), 1);
 	while (1)
 	{
 		line = readline(config.prompt);
@@ -55,8 +46,7 @@ int	main(int argc, char **argv, char **env)
 				ent_free(tree);
 				if (config.prompt)
 					free(config.prompt);
-				config.prompt = build_prompt(config.prompt_raw,
-						config.exit_code);
+				config.prompt=build_prompt(config.prompt_raw,config.exit_code);
 			}
 			else
 				printf("Error parsing command\n");

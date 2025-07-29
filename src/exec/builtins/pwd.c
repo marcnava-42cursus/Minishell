@@ -12,13 +12,32 @@
 
 #include "exec_builtins.h"
 
-int	msh_exec_bt_pwd(void)
+/**
+ * @brief Print the current working directory from envp.
+ * 
+ * @param envp The environment variables list.
+ * @return 0 on success, 1 on failure.
+ */
+int	msh_exec_bt_pwd(t_envp *envp)
 {
 	char	*pwd;
+	char	*cwd;
 
-	pwd = getenv("PWD");
-	if (!pwd)
+	// Try to get PWD from our environment first
+	pwd = envp_get_value(envp, "PWD");
+	if (pwd)
+	{
+		printf("%s\n", pwd);
+		return (0);
+	}
+	// Fallback to getcwd if PWD is not set
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		perror("msh: pwd");
 		return (1);
-	printf("%s\n", pwd);
+	}
+	printf("%s\n", cwd);
+	free(cwd);
 	return (0);
 }

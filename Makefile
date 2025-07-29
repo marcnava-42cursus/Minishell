@@ -45,6 +45,7 @@ SRCS		+=	$(CONFIG)/build_prompt.c \
 SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/echo.c \
 				$(BUILTINS)/env.c \
+				$(BUILTINS)/envp_helpers.c \
 				$(BUILTINS)/exit.c \
 				$(BUILTINS)/export.c \
 				$(BUILTINS)/pwd.c \
