@@ -37,6 +37,7 @@ int	main(int argc, char **argv, char **env)
 		}
 		if (*line)
 		{
+			add_history(line);
 			tree = parse_simple_command(line);
 			if (tree)
 			{
