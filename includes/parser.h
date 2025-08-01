@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:16:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/30 20:43:55 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/01 13:08:37 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,5 @@
 # include "structs.h"
 
 t_envp	*save_envp(char **env);
-t_ent	*parse_simple_command(char *input);
 
 #endif
