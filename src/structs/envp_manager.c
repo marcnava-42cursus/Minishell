@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 15:58:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 21:09:57 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/01 18:48:30 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,4 +172,17 @@ void	envp_clear(t_envp *head)
 		ft_free((void **)&current);
 		current = next;
 	}
+}
+
+char	*get_env_value(t_envp *envp, const char *key)
+{
+	while (envp)
+	{
+		/* Compare current node key to requested key */
+		if (!ft_strcmp(envp->key, (char *)key))
+			return (envp->value);
+		envp = envp->next;
+	}
+	/* Return empty string if variable not defined */
+	return ("");
 }

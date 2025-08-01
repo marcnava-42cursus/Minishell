@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:46:11 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/01 13:10:37 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/01 13:44:09 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	main(int argc, char **argv, char **env)
 	envp = save_envp(env);
 	if (!envp)
 		return (printf("Error saving envp\n"), 1);
+	tree = NULL;
 	while (1)
 	{
 		line = readline(config.prompt);
@@ -38,7 +39,8 @@ int	main(int argc, char **argv, char **env)
 		if (*line)
 		{
 			add_history(line);
-			printf("%s\n", line);
+			if (parse_command(envp, &tree, line) != 0)
+				return (printf("Error parsing command\n"), free(line), 1);
 		}
 		free(line);
 	}

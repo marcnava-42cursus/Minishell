@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 19:01:01 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/31 00:27:43 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/01 18:43:53 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,8 @@
 typedef enum e_node_type
 {
 	NODE_COMMAND,
-	NODE_PIPE,
 	NODE_AND,
 	NODE_OR,
-	NODE_HEREDOC,
-	NODE_INPUT,
-	NODE_OUTPUT,
 	NODE_SUBSHELL
 }	t_node_type;
 
@@ -57,6 +53,7 @@ t_envp	*envp_append_last(t_envp *head, t_envp *node);
 t_envp	*envp_del_key(t_envp *head, char *key);
 t_envp	*envp_edit_key(t_envp *head, char *key);
 void	envp_clear(t_envp *head);
+char	*get_env_value(t_envp *envp, const char *key);
 
 t_ent	*ent_new_node(t_node_type type, char **argv);
 int		ent_new_sibling(t_ent *node, t_ent *sibling);

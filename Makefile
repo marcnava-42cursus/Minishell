@@ -53,7 +53,8 @@ SRCS		+=	$(BUILTINS)/cd.c \
 
 SRCS		+=	$(EXEC)/exec.c
 
-SRCS		+=	$(PARSER)/parser.c \
+SRCS		+=	$(PARSER)/expansion.c \
+				$(PARSER)/parser.c \
 				$(PARSER)/save_envp.c
 
 SRCS		+=	$(STRUCTS)/envp_manager.c \
