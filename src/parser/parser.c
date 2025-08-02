@@ -28,9 +28,7 @@ int	parse_command(t_envp *envp, t_ent **tree, char *cmd)
 		ft_free((void **)&exp);
 		return (write(2, "Parse error\n", 12), 1);
 	}
-	print_tree(root, 0);
-	ent_free(root);
+	*tree = root;
 	ft_free((void **)&exp);
-	*tree = NULL;
 	return (0);
 }

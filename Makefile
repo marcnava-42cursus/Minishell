@@ -90,6 +90,7 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
+	$(RM) minishell.config
 	$(MAKE) -C $(LIBFT) fclean
 
 re: fclean all

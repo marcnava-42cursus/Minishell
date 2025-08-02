@@ -41,6 +41,12 @@ int	main(int argc, char **argv, char **env)
 			add_history(line);
 			if (parse_command(envp, &tree, line) != 0)
 				return (printf("Error parsing command\n"), free(line), 1);
+			if (tree)
+			{
+				print_tree(tree, 0);
+				ent_free(tree);
+				tree = NULL;
+			}
 		}
 		free(line);
 	}
