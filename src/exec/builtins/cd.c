@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:49:05 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/23 17:43:15 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:43:49 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
  * @brief Change directory and update PWD and OLDPWD environment variables.
  * 
  * @param envp Pointer to the environment variables list.
- * @param path The path to change to. If NULL, changes to HOME. If "-", changes to OLDPWD.
+ * @param path The path to change to. If NULL, changes to HOME. If "-",
+ *             changes to OLDPWD.
  * @return 0 on success, 1 on failure.
  */
 int	msh_exec_bt_cd(t_envp **envp, const char *path)

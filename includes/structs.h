@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 19:01:01 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/01 18:43:53 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:06:01 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 typedef enum e_node_type
 {
 	NODE_COMMAND,
+	NODE_PIPE,
 	NODE_AND,
 	NODE_OR,
 	NODE_SUBSHELL

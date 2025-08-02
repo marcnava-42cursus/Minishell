@@ -26,8 +26,10 @@ BUILDPATH	:=	build
 CONFIG		:=	$(SRCPATH)/config
 EXEC		:=	$(SRCPATH)/exec
 BUILTINS	:=	$(EXEC)/builtins
+FORKERMAN	:=	$(SRCPATH)/forkerman
 PARSER		:=	$(SRCPATH)/parser
 STRUCTS		:=	$(SRCPATH)/structs
+UTILS		:=	$(SRCPATH)/utils
 
 LIBFT		:=	libs/libft
 LIBFT_A		:=	$(LIBFT)/libft.a
@@ -54,11 +56,14 @@ SRCS		+=	$(BUILTINS)/cd.c \
 SRCS		+=	$(EXEC)/exec.c
 
 SRCS		+=	$(PARSER)/expansion.c \
+				$(PARSER)/parser_utils.c \
 				$(PARSER)/parser.c \
 				$(PARSER)/save_envp.c
 
 SRCS		+=	$(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/tree_manager.c
+
+SRCS		+=	$(UTILS)/print_tree.c
 
 OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
 

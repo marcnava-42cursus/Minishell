@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 17:44:36 by marcnava          #+#    #+#             */
-/*   Updated: 2025/06/26 19:56:11 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/02 13:44:47 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,13 @@ int	msh_exec_bt_export(t_envp **envp, char *key, char *value)
 		return (1);
 	if (!ft_isalpha(key[0]) && key[0] != '_')
 		return (print_id_error_export(key));
-	for (p = key + 1; *p; p++)
+	p = key + 1;
+	while (*p)
+	{
 		if (!ft_isalnum(*p) && *p != '_')
 			return (print_id_error_export(key));
+		p++;
+	}
 	if (!value)
 		value = "";
 	current = *envp;

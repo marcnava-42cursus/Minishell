@@ -1,26 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.h                                           :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/25 17:16:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 13:32:54 by marcnava         ###   ########.fr       */
+/*   Created: 2025/08/02 12:07:39 by marcnava          #+#    #+#             */
+/*   Updated: 2025/08/02 12:08:50 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_H
-# define PARSER_H
+#ifndef UTILS_H
+# define UTILS_H
 
-# include "structs.h"
-# include "utils.h"
+#include "structs.h"
 
-t_envp	*save_envp(char **env);
-
-int		parse_command(t_envp *envp, t_ent **tree, char *command);
-t_ent	*parse_command_tree(const char *cmd);
-
-char	*expand_variables(const char *in, t_envp *envp);
+void	print_tree(t_ent *node, int indent);
 
 #endif
