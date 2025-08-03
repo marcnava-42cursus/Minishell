@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:56:23 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/29 17:56:32 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:11:48 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 # define CONFIG_H
 
 # include <stdlib.h>
+# include <unistd.h>
+# include <pwd.h>
+# include <time.h>
+# include <fcntl.h>
+# include <sys/types.h>
+# include <sys/stat.h>
 # include "libft.h"
 # include "structs.h"
 

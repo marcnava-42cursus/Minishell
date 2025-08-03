@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:06 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 20:02:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:14:48 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 
 int	create_default_config(void)
 {
-	int		fd;
-	char	*lines[] = {
+	int			fd;
+	int			i;
+	const char	*lines[] = {
 		"# Minishell configuration file\n",
 		"# Available keywords:\n",
 		"# HOSTNAME    - Hostname of the machine\n",
@@ -27,7 +28,6 @@ int	create_default_config(void)
 		"MINISHELLPROMPT: ~ {PWD GREEN} $ \n",
 		NULL
 	};
-	int	i;
 
 	fd = open(CONFIG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)

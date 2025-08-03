@@ -6,12 +6,12 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:33:33 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/03 16:59:22 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/03 13:31:31 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#ifndef EXEC_BUILTINS_H
+# define EXEC_BUILTINS_H
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -23,12 +23,12 @@ char	*envp_get_value(t_envp *envp, const char *key);
 int		envp_set_value(t_envp **envp, const char *key, const char *value);
 
 // Minishell execution builtins functions
-int	msh_exec_bt_cd(t_envp **envp, const char *path);
-int	msh_exec_bt_echo(t_ent *cmd);
-int	msh_exec_bt_env(t_envp *envp);
-int	msh_exec_bt_exit(void);
-int	msh_exec_bt_export(t_envp **envp, char *key, char *value);
-int	msh_exec_bt_pwd(t_envp *envp);
-int	msh_exec_bt_unset(t_envp **envp, char *key);
+int		msh_exec_bt_cd(t_envp **envp, const char *path);
+int		msh_exec_bt_echo(t_ent *cmd);
+int		msh_exec_bt_env(t_envp *envp);
+int		msh_exec_bt_exit(void);
+int		msh_exec_bt_export(t_envp **envp, char *key, char *value);
+int		msh_exec_bt_pwd(t_envp *envp);
+int		msh_exec_bt_unset(t_envp **envp, char *key);
 
 #endif

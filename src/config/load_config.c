@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:50:41 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 21:23:59 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:13:37 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ static char	*read_line(int fd)
 	{
 		bytes = read(fd, &c, 1);
 		if (bytes <= 0)
-			break;
+			break ;
 		if (c == '\n')
-			break;
+			break ;
 		buffer[i++] = c;
 	}
 	if (bytes <= 0 && i == 0)
@@ -63,8 +63,8 @@ int	load_config(t_config *config, char **envp)
 	int		fd;
 	char	*line;
 	char	*prompt_line;
-	(void)envp;
 
+	(void)envp;
 	fd = open(CONFIG_FILE, O_RDONLY);
 	if (fd < 0)
 	{
@@ -73,11 +73,13 @@ int	load_config(t_config *config, char **envp)
 		fd = open(CONFIG_FILE, O_RDONLY);
 	}
 	prompt_line = NULL;
-	while ((line = read_line(fd)) != NULL)
+	line = read_line(fd);
+	while (line != NULL)
 	{
 		if (ft_strncmp(line, "MINISHELLPROMPT", 15) == 0)
 			prompt_line = extract_value(line);
 		ft_free((void **)&line);
+		line = read_line(fd);
 	}
 	close(fd);
 	if (!prompt_line)

@@ -6,19 +6,21 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 21:21:08 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/03 13:58:52 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "config.h"
 
-static char *append(char *dst, const char *src)
+static char	*append(char *dst, const char *src)
 {
-	char *tmp;
-	size_t len_dst = ft_strlen(dst);
-	size_t len_src = ft_strlen(src);
+	char	*tmp;
+	size_t	len_dst;
+	size_t	len_src;
 
-	tmp = malloc(len_dst + len_src + 1);
+	len_dst = ft_strlen(dst);
+	len_src = ft_strlen(src);
+	tmp = ft_calloc(len_dst + len_src + 1, sizeof(char));
 	if (!tmp)
 		return (NULL);
 	ft_strlcpy(tmp, dst, len_dst + 1);
@@ -27,7 +29,7 @@ static char *append(char *dst, const char *src)
 	return (tmp);
 }
 
-char *replace_keyword(char *key, int exit_code)
+char	*replace_keyword(char *key, int exit_code)
 {
 	if (exit_code)
 		exit_code = 0;
@@ -52,27 +54,31 @@ char *replace_keyword(char *key, int exit_code)
 	return ("");
 }
 
-char *build_prompt(char *raw, int exit_code)
+char	*build_prompt(char *raw, int exit_code)
 {
-	char *result = ft_strdup("");
-	int i = 0;
+	char	*result;
+	char	keyword[64];
+	char	color[64];
+	char	tmp[2];
+	int		i;
+	int		k;
+	int		c;
 
+	result = ft_strdup("");
+	i = 0;
 	while (raw[i])
 	{
 		if (raw[i] == '{')
 		{
 			i++;
-			char keyword[64];
-			char color[64];
-			int k = 0;
+			k = 0;
 			while (raw[i] && raw[i] != ' ' && raw[i] != '}')
 				keyword[k++] = raw[i++];
 			keyword[k] = '\0';
-
 			if (raw[i] == ' ')
 			{
 				i++;
-				int c = 0;
+				c = 0;
 				while (raw[i] && raw[i] != '}')
 					color[c++] = raw[i++];
 				color[c] = '\0';
@@ -81,14 +87,14 @@ char *build_prompt(char *raw, int exit_code)
 				color[0] = '\0';
 			if (raw[i] == '}')
 				i++;
-
 			result = append(result, get_color_code(color));
 			result = append(result, replace_keyword(keyword, exit_code));
 			result = append(result, reset_color());
 		}
 		else
 		{
-			char tmp[2] = {raw[i], '\0'};
+			tmp[0] = raw[i];
+			tmp[1] = '\0';
 			result = append(result, tmp);
 			i++;
 		}

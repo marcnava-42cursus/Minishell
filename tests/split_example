@@ -1,0 +1,24 @@
+( (echo "primero" && echo "segundo") || (echo "fallo1" && false) ) | (grep "segundo" && echo "encontrado") || (echo "no encontrado" && (ls noexiste || echo "ls falló"))
+
+[SUBSHELL] (echo "primero" && echo "segundo") || (echo "fallo1" && false)
+    [SUBSHELL] echo "primero" && echo "segundo"
+        [COMMAND] echo "primero"
+        [AND]
+        [COMMAND] echo "segundo"
+    [OR]
+    [SUBSHELL] echo "fallo1" && false
+        [COMMAND] echo "fallo1"
+        [AND]
+        [COMMAND] false
+[SUBSHELL] grep "segundo" && echo "encontrado"
+    [COMMAND] grep "segundo"
+    [AND]
+    [COMMAND] echo "encontrado"
+[OR]
+[SUBSHELL] echo "no encontrado" && (ls noexiste || echo "ls falló")
+    [COMMAND] echo "no encontrado"
+    [AND]
+    [SUBSHELL] ls noexiste || echo "ls falló"
+        [COMMAND] ls noexiste
+        [OR]
+        [COMMAND] echo "ls falló"

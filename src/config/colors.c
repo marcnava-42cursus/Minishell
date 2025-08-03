@@ -6,13 +6,13 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:56:45 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/29 17:56:47 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/03 14:12:55 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "config.h"
 
-char *get_color_code(char *color)
+char	*get_color_code(char *color)
 {
 	if (!ft_strcmp(color, "WHITE"))
 		return ("\033[0;37m");
@@ -33,7 +33,7 @@ char *get_color_code(char *color)
 	return ("");
 }
 
-char *reset_color(void)
+char	*reset_color(void)
 {
 	return ("\033[0m");
 }
