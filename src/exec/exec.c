@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 19:42:19 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/29 18:25:41 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/05 18:17:51 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ static char	*find_command_path(char *command, t_envp *envp)
 			ft_free((void **)&dir);
 			return (full_path);
 		}
-		printf("%s\n", full_path);
+		// printf("%s\n", full_path);
 		ft_free((void **)&full_path);
 		ft_free((void **)&dir);
 		dir = get_next_path_dir(path_env, &start);

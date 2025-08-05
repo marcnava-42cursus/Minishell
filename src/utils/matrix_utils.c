@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
+/*   matrix_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/02 12:07:39 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/05 19:10:12 by marcnava         ###   ########.fr       */
+/*   Created: 2025/08/05 18:40:00 by marcnava          #+#    #+#             */
+/*   Updated: 2025/08/05 19:09:54 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_H
-# define UTILS_H
+#include "utils.h"
 
-# include <termios.h>
-# include <unistd.h>
-# include "structs.h"
+char **ft_realloc_matrix(char **old, int oldc, char *new_str)
+{
+	char	**new;
+	int		i;
 
-void	print_tree(t_ent *node, int indent);
-
-void	enable_raw(void);
-void	disable_raw(void);
-void	clear_scr(void);
-
-char	**ft_realloc_matrix(char **old, int oldc, char *new_str);
-
-#endif
+	new = ft_calloc(oldc + 2, sizeof(char *));
+	if (!new)
+		return (NULL);
+	i = 0;
+	while (i < oldc)
+	{
+		new[i] = old[i];
+		i++;
+	}
+	new[i++] = new_str;
+	new[i] = NULL;
+	free(old);
+	return (new);
+}

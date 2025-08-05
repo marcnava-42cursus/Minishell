@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/14 17:46:11 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/01 13:44:09 by marcnava         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 int	main(int argc, char **argv, char **env)
@@ -23,11 +11,12 @@ int	main(int argc, char **argv, char **env)
 		return (printf("Usage: %s\n", argv[0]), 1);
 	if (!env || !*env)
 		return (printf("Error: Can't load env variables\n"), 1);
+
 	load_config(&config, env);
 	envp = save_envp(env);
 	if (!envp)
 		return (printf("Error saving envp\n"), 1);
-	tree = NULL;
+
 	while (1)
 	{
 		line = readline(config.prompt);
@@ -39,14 +28,22 @@ int	main(int argc, char **argv, char **env)
 		if (*line)
 		{
 			add_history(line);
-			if (parse_command(envp, &tree, line) != 0)
-				return (printf("Error parsing command\n"), free(line), 1);
-			if (tree)
+			tree = NULL;
+			if (parse_command(envp, &config, &tree, line) != 0)
+				printf("Error parsing command\n");
+			else if (tree)
 			{
+				printf("===================================================\n");
 				print_tree(tree, 0);
+				printf("===================================================\n");
+				config.exit_code = exec(tree, envp);
+				if (config.exit_code != 0)
+					printf("Command exited with code: %d\n", config.exit_code);
 				ent_free(tree);
-				tree = NULL;
 			}
+			if (config.prompt)
+				free(config.prompt);
+			config.prompt = build_prompt(config.prompt_raw, config.exit_code);
 		}
 		free(line);
 	}

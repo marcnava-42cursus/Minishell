@@ -5,116 +5,91 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/02 11:23:51 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 11:45:14 by marcnava         ###   ########.fr       */
+/*   Created: 2025/08/05 18:57:47 by marcnava          #+#    #+#             */
+/*   Updated: 2025/08/05 18:57:48 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-/* parse_var.c
- * Extracts a variable name starting after '$'.
- * Advances the input pointer beyond the variable name.
- * Returns a newly allocated string with the variable name.
- */
-static char	*parse_var(char **s)
+static char *parse_var(const char **s)
 {
-	char	*start;
-	size_t	len;
-	char	*var;
+	const char *start;
+	size_t len;
 
 	start = *s + 1;
 	len = 0;
 	while (start[len] && (ft_isalnum(start[len]) || start[len] == '_'))
 		len++;
-	var = ft_substr(start, 0, len);
 	*s = start + len;
-	return (var);
+	return (ft_substr(start, 0, len));
 }
 
-/* append_char.c
- * Append a single character to a dynamically built string.
- * Frees the old string and returns the new one.
- */
-static char	*append_char(char *res, char c)
+char *expand_variables(const char *in, t_envp *envp, int exit_code)
 {
-	char	tmp[2];
-	char	*old;
+	char *out = ft_strdup("");
+	char *var, *val, *tmp, *seg, *num;
+	const char *start;
 
-	tmp[0] = c;
-	tmp[1] = '\0';
-	old = res;
-	res = ft_strjoin(res, tmp);
-	ft_free((void **)&old);
-	return (res);
-}
-
-/* expand_variables.c
- * Iterates input string and builds an output with all shell
- * variables expanded according to single/double quote rules,
- * preserving the quotes in the output:
- *  - In single quotes: copy quotes and content literally.
- *  - In double quotes: copy quotes and content; expand $var.
- *  - Outside quotes: expand $var; copy other chars literally.
- * Returns a newly allocated expanded string.
- */
-char	*expand_variables(const char *in, t_envp *envp)
-{
-	char	*out;
-	char	*old;
-	char	*var;
-
-	out = ft_strdup(""); /* Start with empty result */
 	while (*in)
 	{
-		if (*in == '\'')
+		if (ft_strncmp(in, "$?", 2) == 0)
 		{
-			/* Preserve opening single quote */
-			out = append_char(out, *in);
-			in++;
-			/* Copy until closing single quote */
-			while (*in && *in != '\'')
-				out = append_char(out, *in++);
-			/* Preserve closing single quote */
-			if (*in == '\'')
-				out = append_char(out, *in++);
+			num = ft_itoa(exit_code);
+			tmp = ft_strjoin(out, num);
+			ft_free((void **)&out);
+			ft_free((void **)&num);
+			out = tmp;
+			in += 2;
 		}
-		else if (*in == '"')
+		else if (*in == '$' && (ft_isalpha(*(in + 1)) || *(in + 1) == '_'))
 		{
-			/* Preserve opening double quote */
-			out = append_char(out, *in);
-			in++;
-			/* Process until closing double quote */
-			while (*in && *in != '"')
+			var = parse_var(&in);
+			if (var && *var)
 			{
-				if (*in == '$')
-				{
-					var = parse_var((char **)&in);
-					old = out;
-					/* Append variable value */
-					out = ft_strjoin(out, get_env_value(envp, var));
-					ft_free((void **)&old);
-					ft_free((void **)&var);
-				}
-				else
-					out = append_char(out, *in++);
+				val = get_env_value(envp, var);
+				if (!val)
+					val = "";
+				tmp = ft_strjoin(out, val);
+				ft_free((void **)&out);
+				out = tmp;
 			}
-			/* Preserve closing double quote */
-			if (*in == '"')
-				out = append_char(out, *in++);
+			else
+			{
+				/* Handle invalid variable name - treat as literal $ */
+				tmp = ft_strjoin(out, "$");
+				ft_free((void **)&out);
+				out = tmp;
+				in++;
+			}
+			if (var)
+				ft_free((void **)&var);
 		}
-		else if (*in == '$')
+		else if (*in == '\'' || *in == '\"')
 		{
-			var = parse_var((char **)&in);
-			old = out;
-			/* Append variable value */
-			out = ft_strjoin(out, get_env_value(envp, var));
-			ft_free((void **)&old);
-			ft_free((void **)&var);
+			char quote = *in++;
+			start = in;
+			while (*in && *in != quote)
+				in++;
+			seg = ft_substr(start - 1, 0, in - start + 2);
+			tmp = ft_strjoin(out, seg);
+			ft_free((void **)&out);
+			ft_free((void **)&seg);
+			out = tmp;
+			if (*in == quote)
+				in++;
 		}
 		else
-			/* Regular character: append literally */
-			out = append_char(out, *in++);
+		{
+			start = in;
+			while (*in && *in != '$' && *in != '\"' && *in != '\'')
+				in++;
+			seg = ft_substr(start, 0, in - start);
+			tmp = ft_strjoin(out, seg);
+			ft_free((void **)&out);
+			ft_free((void **)&seg);
+			out = tmp;
 		}
+	}
 	return (out);
 }

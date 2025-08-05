@@ -58,12 +58,15 @@ SRCS		+=	$(EXEC)/exec.c
 SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_utils.c \
 				$(PARSER)/parser.c \
+				$(PARSER)/parser_tree.c \
 				$(PARSER)/save_envp.c
 
-SRCS		+=	$(STRUCTS)/envp_manager.c \
+
+SRCS        +=  $(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/tree_manager.c
 
-SRCS		+=	$(UTILS)/print_tree.c
+SRCS		+=	$(UTILS)/print_tree.c \
+				$(UTILS)/matrix_utils.c
 
 OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
 
