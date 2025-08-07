@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        #
+#    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/06/16 20:00:00 by marcnava         ###   ########.fr        #
+#    Updated: 2025/08/06 20:15:42 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,7 +53,8 @@ SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/pwd.c \
 				$(BUILTINS)/unset.c
 
-SRCS		+=	$(EXEC)/exec.c
+SRCS		+=	$(EXEC)/exec.c \
+				$(EXEC)/exec_utils.c
 
 SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_utils.c \

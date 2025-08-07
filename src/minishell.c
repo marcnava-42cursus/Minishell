@@ -36,7 +36,7 @@ int	main(int argc, char **argv, char **env)
 				printf("===================================================\n");
 				print_tree(tree, 0);
 				printf("===================================================\n");
-				config.exit_code = exec(tree, envp);
+				config.exit_code = exec_tree(tree, envp, &config);
 				if (config.exit_code != 0)
 					printf("Command exited with code: %d\n", config.exit_code);
 				ent_free(tree);
