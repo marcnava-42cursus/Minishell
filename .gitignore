@@ -5,4 +5,5 @@
 minishell
 
 build/
+tmp/
 .vscode/

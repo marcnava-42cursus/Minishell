@@ -1,0 +1,7 @@
+ls
+ls -la
+ls -ls | grep -v .
+echo "Hola que tal estas" | awk '{print $1}'
+echo $HOME
+echo $HOMES
+echo $HOME$HOME

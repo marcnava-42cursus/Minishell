@@ -86,6 +86,7 @@ $(NAME): $(OBJS)
 
 $(BUILDPATH)/%.o: $(SRCPATH)/%.c
 	mkdir -p $(@D)
+	mkdir -p tmp
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
@@ -95,6 +96,7 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 	$(RM) minishell.config
+	$(RM) tmp
 	$(MAKE) -C $(LIBFT) fclean
 
 re: fclean all

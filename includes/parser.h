@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:16:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/05 18:52:09 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/07 21:36:14 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,14 @@
 
 # include "structs.h"
 # include "utils.h"
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <readline/readline.h>
 
-int		parse_command(t_envp *envp, t_config *config, t_ent **tree, char *command);
+int		parse_command(t_envp *envp, t_config *config, t_ent **tree,
+			char *command);
 t_ent	*parse_command_tree(const char *cmd);
-t_ent	*parse_simple_command(char *line);
 char	*expand_variables(const char *in, t_envp *envp, int exit_code);
 
 /* Parser tree functions */
@@ -30,6 +34,7 @@ t_ent	*parse_primary(const char **s);
 /* Parser utils functions */
 t_ent	*parse_cmd(const char **s);
 t_ent	*parse_subshell(const char **s);
+int		handle_heredoc(const char *delimiter);
 
 /* Environment functions */
 t_envp	*save_envp(char **env);
