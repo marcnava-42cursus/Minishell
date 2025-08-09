@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:16:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/07 21:36:14 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:20:28 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "structs.h"
 # include "utils.h"
+
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdio.h>

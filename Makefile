@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/08/06 20:15:42 by marcnava         ###   ########.fr        #
+#    Updated: 2025/08/08 17:47:00 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -86,8 +86,7 @@ $(NAME): $(OBJS)
 
 $(BUILDPATH)/%.o: $(SRCPATH)/%.c
 	mkdir -p $(@D)
-	mkdir -p tmp
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) $(BUILDPATH)
@@ -96,7 +95,6 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 	$(RM) minishell.config
-	$(RM) tmp
 	$(MAKE) -C $(LIBFT) fclean
 
 re: fclean all
