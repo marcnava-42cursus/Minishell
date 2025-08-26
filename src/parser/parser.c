@@ -36,6 +36,10 @@ int	parse_command(t_envp *envp, t_config *config, t_ent **tree, char *cmd)
 	if (!exp)
 		return (write(2, "Error allocating\n", 17), 1);
 	
+	/* DEBUG: Print original and expanded */
+	// printf("DEBUG: Original: [%s]\n", cmd);
+	// printf("DEBUG: Expanded: [%s]\n", exp);
+	
 	/* Handle empty command after expansion */
 	if (is_empty_or_whitespace(exp))
 	{

@@ -38,5 +38,7 @@ void	close_fds(t_ent *node);
 char	*find_command_path(char *cmd, t_envp *envp);
 char	**envp_to_array(t_envp *envp);
 void	free_env_array(char **env_array);
+char	**process_argv_quotes(char **argv);
+void	free_processed_argv(char **argv);
 
 #endif

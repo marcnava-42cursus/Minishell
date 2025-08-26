@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jmarcell <jmarcell@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:24 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/07 21:24:51 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/25 16:41:05 by jmarcell         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,19 +42,25 @@ static char *get_next_token(const char **s)
 		return ((*s)++, ft_strdup(">"));
 	if (**s == '|')
 		return ((*s)++, ft_strdup("|"));
-	if (**s == '"') {
-		start = *s;
-		(*s)++;
-		while (**s && **s != '"')
-			(*s)++;
-		if (**s == '"')
-			(*s)++;
-		return (ft_substr(start, 0, (size_t)(*s - start)));
-	}
+
 	start = *s;
 	len = 0;
 	while ((*s)[len] && !ft_strchr(" \t()&|<>", (*s)[len]))
-		len++;
+	{
+		/* Handle quoted sections within a token */
+		if ((*s)[len] == '"' || (*s)[len] == '\'')
+		{
+			char quote = (*s)[len];
+			len++; /* Include opening quote */
+			/* Skip to closing quote */
+			while ((*s)[len] && (*s)[len] != quote)
+				len++;
+			if ((*s)[len] == quote)
+				len++; /* Include closing quote */
+		}
+		else
+			len++;
+	}
 	*s += len;
 	return (ft_substr(start, 0, len));
 }

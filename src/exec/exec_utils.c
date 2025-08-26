@@ -50,47 +50,68 @@ int	is_builtin(char *cmd)
 int	execute_builtin(t_ent *node, t_envp **envp, t_config *config)
 {
 	char	*cmd;
+	char	**processed_argv;
+	int		result;
 
 	if (!node || !node->argv || !node->argv[0])
 		return (1);
-	cmd = node->argv[0];
+	
+	/* Process argv to remove quotes for builtins too */
+	processed_argv = process_argv_quotes(node->argv);
+	if (!processed_argv)
+		return (1);
+	
+	cmd = processed_argv[0];
+	result = 1; /* Default error result */
+	
 	if (ft_strcmp(cmd, "cd") == 0)
 	{
-		if (node->argv[1])
-			return (msh_exec_bt_cd(envp, node->argv[1]));
+		if (processed_argv[1])
+			result = msh_exec_bt_cd(envp, processed_argv[1]);
 		else
-			return (msh_exec_bt_cd(envp, envp_get_value(*envp, "HOME")));
+			result = msh_exec_bt_cd(envp, envp_get_value(*envp, "HOME"));
 	}
-	if (ft_strcmp(cmd, "echo") == 0)
-		return (msh_exec_bt_echo(node));
-	if (ft_strcmp(cmd, "env") == 0)
-		return (msh_exec_bt_env(*envp));
-	if (ft_strcmp(cmd, "exit") == 0)
-		return (msh_exec_bt_exit());
-	if (ft_strcmp(cmd, "export") == 0)
+	else if (ft_strcmp(cmd, "echo") == 0)
 	{
-		if (node->argv[1])
+		/* For echo, we need to create a temporary node with processed argv */
+		t_ent temp_node = *node;
+		temp_node.argv = processed_argv;
+		result = msh_exec_bt_echo(&temp_node);
+	}
+	else if (ft_strcmp(cmd, "env") == 0)
+		result = msh_exec_bt_env(*envp);
+	else if (ft_strcmp(cmd, "exit") == 0)
+		result = msh_exec_bt_exit();
+	else if (ft_strcmp(cmd, "export") == 0)
+	{
+		if (processed_argv[1])
 		{
-			char *eq = ft_strchr(node->argv[1], '=');
+			char *eq = ft_strchr(processed_argv[1], '=');
 			if (eq)
 			{
 				*eq = '\0';
-				return (msh_exec_bt_export(envp, node->argv[1], eq + 1));
+				result = msh_exec_bt_export(envp, processed_argv[1], eq + 1);
 			}
-			return (msh_exec_bt_export(envp, node->argv[1], ""));
+			else
+				result = msh_exec_bt_export(envp, processed_argv[1], "");
 		}
-		return (msh_exec_bt_env(*envp)); // export without args shows env
+		else
+			result = msh_exec_bt_env(*envp); // export without args shows env
 	}
-	if (ft_strcmp(cmd, "pwd") == 0)
-		return (msh_exec_bt_pwd(*envp));
-	if (ft_strcmp(cmd, "unset") == 0)
+	else if (ft_strcmp(cmd, "pwd") == 0)
+		result = msh_exec_bt_pwd(*envp);
+	else if (ft_strcmp(cmd, "unset") == 0)
 	{
-		if (node->argv[1])
-			return (msh_exec_bt_unset(envp, node->argv[1]));
-		return (0);
+		if (processed_argv[1])
+			result = msh_exec_bt_unset(envp, processed_argv[1]);
+		else
+			result = 0;
 	}
+	
+	/* Clean up processed argv */
+	free_processed_argv(processed_argv);
 	(void)config; // Suppress unused parameter warning
-	return (1);
+	return (result);
 }
 
 /**
@@ -229,4 +250,100 @@ void	free_env_array(char **env_array)
 		i++;
 	}
 	free(env_array);
+}
+
+/**
+ * @brief Remove outer quotes from a string if they are paired
+ * 
+ * @param str The string to process
+ * @return A new string without outer quotes, or copy of original if no quotes
+ */
+static char *remove_quotes(const char *str)
+{
+	size_t len;
+	char first, last;
+
+	if (!str)
+		return (NULL);
+	
+	len = ft_strlen(str);
+	if (len < 2)
+		return (ft_strdup(str));
+	
+	first = str[0];
+	last = str[len - 1];
+	
+	/* Check if we have matching quotes */
+	if ((first == '"' && last == '"') || (first == '\'' && last == '\''))
+	{
+		/* Return substring without quotes */
+		return (ft_substr(str, 1, len - 2));
+	}
+	
+	/* No matching quotes, return copy of original */
+	return (ft_strdup(str));
+}
+
+/**
+ * @brief Process argv array to remove quotes from arguments
+ * 
+ * @param argv Array of arguments to process
+ * @return New array with quotes removed, or NULL on error
+ */
+char	**process_argv_quotes(char **argv)
+{
+	char	**new_argv;
+	int		count;
+	int		i;
+
+	if (!argv)
+		return (NULL);
+	
+	/* Count arguments */
+	count = 0;
+	while (argv[count])
+		count++;
+	
+	/* Allocate new array */
+	new_argv = malloc(sizeof(char *) * (count + 1));
+	if (!new_argv)
+		return (NULL);
+	
+	/* Process each argument */
+	for (i = 0; i < count; i++)
+	{
+		new_argv[i] = remove_quotes(argv[i]);
+		if (!new_argv[i])
+		{
+			/* Cleanup on error */
+			while (--i >= 0)
+				free(new_argv[i]);
+			free(new_argv);
+			return (NULL);
+		}
+	}
+	new_argv[count] = NULL;
+	
+	return (new_argv);
+}
+
+/**
+ * @brief Free argv array created by process_argv_quotes
+ * 
+ * @param argv Array to free
+ */
+void	free_processed_argv(char **argv)
+{
+	int	i;
+
+	if (!argv)
+		return;
+	
+	i = 0;
+	while (argv[i])
+	{
+		free(argv[i]);
+		i++;
+	}
+	free(argv);
 }

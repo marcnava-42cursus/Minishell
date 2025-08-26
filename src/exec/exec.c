@@ -95,6 +95,8 @@ int	exec_command(t_ent *node, t_envp **envp, t_config *config)
 		return (perror("fork"), free_env_array(env_arr), 1);
 	if (pid == 0)
 	{
+		char	**processed_argv;
+		
 		if (apply_redirections(node))
 			exit(1);
 		if (is_builtin(node->argv[0]))
@@ -105,8 +107,17 @@ int	exec_command(t_ent *node, t_envp **envp, t_config *config)
 			printf("minishell: %s: command not found\n", node->argv[0]);
 			exit(127);
 		}
-		execve(path, node->argv, env_arr);
+		/* Process argv to remove quotes */
+		processed_argv = process_argv_quotes(node->argv);
+		if (!processed_argv)
+		{
+			free(path);
+			exit(1);
+		}
+		execve(path, processed_argv, env_arr);
 		perror("execve");
+		free(path);
+		free_processed_argv(processed_argv);
 		exit(126);
 	}
 	waitpid(pid, &status, 0);
@@ -236,8 +247,44 @@ int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
 				close(pipes[j][1]);
 			}
 
-			// Execute the command
-			exit(exec_command(commands[i], envp, config));
+			// Execute the command directly with quote processing
+			if (is_builtin(commands[i]->argv[0]))
+				exit(execute_builtin(commands[i], envp, config));
+			else
+			{
+				char	*path;
+				char	**processed_argv;
+				char	**env_arr;
+				
+				path = find_command_path(commands[i]->argv[0], *envp);
+				if (!path)
+				{
+					printf("minishell: %s: command not found\n", commands[i]->argv[0]);
+					exit(127);
+				}
+				
+				processed_argv = process_argv_quotes(commands[i]->argv);
+				if (!processed_argv)
+				{
+					free(path);
+					exit(1);
+				}
+				
+				env_arr = envp_to_array(*envp);
+				if (!env_arr)
+				{
+					free(path);
+					free_processed_argv(processed_argv);
+					exit(1);
+				}
+				
+				execve(path, processed_argv, env_arr);
+				perror("execve");
+				free(path);
+				free_processed_argv(processed_argv);
+				free_env_array(env_arr);
+				exit(126);
+			}
 		}
 	}
 

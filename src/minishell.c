@@ -33,9 +33,9 @@ int	main(int argc, char **argv, char **env)
 				printf("Error parsing command\n");
 			else if (tree)
 			{
-				//printf("===================================================\n");
-				//print_tree(tree, 0);
-				//printf("===================================================\n");
+				printf("===================================================\n");
+				print_tree(tree, 0);
+				printf("===================================================\n");
 				config.exit_code = exec_tree(tree, envp, &config);
 				if (config.exit_code != 0)
 					printf("Command exited with code: %d\n", config.exit_code);
