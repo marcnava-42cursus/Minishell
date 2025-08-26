@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 20:23:12 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/07 18:41:42 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/27 01:38:41 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ int	exec_tree(t_ent *node, t_envp *envp, t_config *config)
 
 	if (!node)
 		return (0);
-
-	// Check if this sequence contains any pipes
 	has_pipe = 0;
 	current = node;
 	while (current)
@@ -32,15 +30,11 @@ int	exec_tree(t_ent *node, t_envp *envp, t_config *config)
 		}
 		current = current->next;
 	}
-
-	// If there are pipes in this sequence, handle the whole pipeline
 	if (has_pipe)
 	{
 		config->exit_code = exec_pipeline(node, &envp, config);
 		return (config->exit_code);
 	}
-
-	// Handle single nodes
 	if (node->type == NODE_COMMAND)
 		config->exit_code = exec_command(node, &envp, config);
 	else if (node->type == NODE_AND || node->type == NODE_OR)
@@ -54,10 +48,6 @@ int	exec_tree(t_ent *node, t_envp *envp, t_config *config)
 	}
 	return (config->exit_code);
 }
-
-/* ************************************************************************** */
-/*   exec_command.c                                                          */
-/* ************************************************************************** */
 
 int	apply_redirections(t_ent *node)
 {
@@ -127,9 +117,6 @@ int	exec_command(t_ent *node, t_envp **envp, t_config *config)
 	return (1);
 }
 
-/* ************************************************************************** */
-/*   exec_pipeline.c                                                         */
-/* ************************************************************************** */
 
 int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
 {
@@ -312,9 +299,6 @@ int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
 	return (1);
 }
 
-/* ************************************************************************** */
-/*   exec_logic.c                                                            */
-/* ************************************************************************** */
 
 int	exec_logic(t_ent *node, t_envp **envp, t_config *config)
 {
@@ -336,9 +320,6 @@ int	exec_logic(t_ent *node, t_envp **envp, t_config *config)
 	return (1);
 }
 
-/* ************************************************************************** */
-/*   exec_subshell.c                                                         */
-/* ************************************************************************** */
 
 int	exec_subshell(t_ent *node, t_envp **envp, t_config *config)
 {

@@ -6,11 +6,72 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:49:05 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 13:43:49 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/27 01:26:20 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
+
+static char	*get_oldpwd(t_envp *env)
+{
+	char	*pwd;
+
+	pwd = envp_get_value(env, "PWD");
+	if (!pwd)
+		return (getcwd(NULL, 0));
+	return (ft_strdup(pwd));
+}
+
+static int	resolve_target_path(t_envp *env, const char *path,
+	char **out_target)
+{
+	char	*val;
+
+	if (!path || *path == '\0')
+	{
+		val = envp_get_value(env, "HOME");
+		if (!val)
+			return (ft_putstr_fd("msh: cd: HOME not set\n", 2), 1);
+		*out_target = val;
+		return (0);
+	}
+	if (ft_strcmp((char *)path, "-") == 0)
+	{
+		val = envp_get_value(env, "OLDPWD");
+		if (!val)
+			return (ft_putstr_fd("msh: cd: OLDPWD not set\n", 2), 1);
+		ft_putstr_fd(val, 1);
+		ft_putstr_fd("\n", 1);
+		*out_target = val;
+		return (0);
+	}
+	*out_target = (char *)path;
+	return (0);
+}
+
+static int	chdir_and_update_env(t_envp **envp, const char *target_path,
+	char *old_pwd)
+{
+	char	*new_pwd;
+
+	if (chdir(target_path) != 0)
+	{
+		perror("msh: cd");
+		ft_free((void **)&old_pwd);
+		return (1);
+	}
+	new_pwd = getcwd(NULL, 0);
+	if (!new_pwd)
+	{
+		ft_free((void **)&old_pwd);
+		return (1);
+	}
+	envp_set_value(envp, "OLDPWD", old_pwd);
+	envp_set_value(envp, "PWD", new_pwd);
+	ft_free((void **)&old_pwd);
+	free(new_pwd);
+	return (0);
+}
 
 /**
  * @brief Change directory and update PWD and OLDPWD environment variables.
@@ -23,67 +84,17 @@
 int	msh_exec_bt_cd(t_envp **envp, const char *path)
 {
 	char	*old_pwd;
-	char	*new_pwd;
 	char	*target_path;
 
 	if (!envp)
 		return (1);
-	// Get current PWD before changing
-	old_pwd = envp_get_value(*envp, "PWD");
+	old_pwd = get_oldpwd(*envp);
 	if (!old_pwd)
-	{
-		old_pwd = getcwd(NULL, 0);
-		if (!old_pwd)
-			return (1);
-	}
-	else
-		old_pwd = ft_strdup(old_pwd);
-	// Determine target path
-	if (!path || *path == '\0')
-	{
-		target_path = envp_get_value(*envp, "HOME");
-		if (!target_path)
-		{
-			ft_putstr_fd("msh: cd: HOME not set\n", 2);
-			ft_free((void **)&old_pwd);
-			return (1);
-		}
-	}
-	else if (ft_strcmp((char *)path, "-") == 0)
-	{
-		target_path = envp_get_value(*envp, "OLDPWD");
-		if (!target_path)
-		{
-			ft_putstr_fd("msh: cd: OLDPWD not set\n", 2);
-			ft_free((void **)&old_pwd);
-			return (1);
-		}
-		// Print the directory we're changing to (bash behavior)
-		ft_putstr_fd(target_path, 1);
-		ft_putstr_fd("\n", 1);
-	}
-	else
-		target_path = (char *)path;
-	// Try to change directory
-	if (chdir(target_path) != 0)
-	{
-		perror("msh: cd");
-		ft_free((void **)&old_pwd);
 		return (1);
-	}
-	// Get new PWD
-	new_pwd = getcwd(NULL, 0);
-	if (!new_pwd)
+	if (resolve_target_path(*envp, path, &target_path))
 	{
 		ft_free((void **)&old_pwd);
 		return (1);
 	}
-	// Update OLDPWD
-	envp_set_value(envp, "OLDPWD", old_pwd);
-	// Update PWD
-	envp_set_value(envp, "PWD", new_pwd);
-	// Clean up
-	ft_free((void **)&old_pwd);
-	free(new_pwd);
-	return (0);
+	return (chdir_and_update_env(envp, target_path, old_pwd));
 }

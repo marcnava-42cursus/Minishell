@@ -19,7 +19,6 @@ void	move_player(t_game *g, int dx, int dy)
 
 	nx = g->player_x + dx;
 	ny = g->player_y + dy;
-
 	if (nx > 0 && nx < WIDTH && ny > 0 && ny < HEIGHT
 		&& g->map[ny][nx] != '#' && g->map[ny][nx] != '+')
 	{
@@ -33,7 +32,7 @@ void	move_player(t_game *g, int dx, int dy)
 	}
 }
 
-int     reached_goal(t_game *g)
+int	reached_goal(t_game *g)
 {
 	return (g->map[g->player_y][g->player_x] == 'S');
 }
