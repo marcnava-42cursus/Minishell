@@ -12,22 +12,21 @@
 
 #include "forkerman.h"
 
-void    draw_game(t_game *g)
+static void	draw_map(t_game *g)
 {
-	int y;
+	int	y;
+	int	x;
+	int	b;
+	char	c;
 
-	printf("\033[HVIDAS: %d  BOMBAS: %d\n",
-		   g->lives, g->bombs_available);
 	y = 0;
 	while (y < HEIGHT)
 	{
-		int x = 0;
-
+		x = 0;
 		while (x < WIDTH)
 		{
-			char c = g->map[y][x];
-			int  b = 0;
-
+			c = g->map[y][x];
+			b = 0;
 			if (y == g->player_y && x == g->player_x)
 				c = 'P';
 			else
@@ -37,7 +36,7 @@ void    draw_game(t_game *g)
 					if (g->bombs[b].x == x && g->bombs[b].y == y)
 					{
 						c = '*';
-						break;
+						break ;
 					}
 					b++;
 				}
@@ -48,4 +47,11 @@ void    draw_game(t_game *g)
 		write(1, "\n", 1);
 		y++;
 	}
+}
+
+void	draw_game(t_game *g)
+{
+	printf("\033[HVIDAS: %d  BOMBAS: %d\n",
+		g->lives, g->bombs_available);
+	draw_map(g);
 }

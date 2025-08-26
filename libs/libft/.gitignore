@@ -1,6 +1,0 @@
-.vscode/
-build/
-
-*.a
-*.out
-*.o

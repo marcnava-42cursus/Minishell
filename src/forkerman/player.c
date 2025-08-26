@@ -12,10 +12,13 @@
 
 #include "forkerman.h"
 
-void    move_player(t_game *g, int dx, int dy)
+void	move_player(t_game *g, int dx, int dy)
 {
-	int nx = g->player_x + dx;
-	int ny = g->player_y + dy;
+	int	nx;
+	int	ny;
+
+	nx = g->player_x + dx;
+	ny = g->player_y + dy;
 
 	if (nx > 0 && nx < WIDTH && ny > 0 && ny < HEIGHT
 		&& g->map[ny][nx] != '#' && g->map[ny][nx] != '+')

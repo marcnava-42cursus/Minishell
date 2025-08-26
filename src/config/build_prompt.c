@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/03 13:58:52 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/27 00:53:23 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,6 @@ char	*replace_keyword(char *key, int exit_code)
 		return (get_pwd());
 	if (!ft_strcmp(key, "GITBRANCH"))
 		return (get_gitbranch());
-	// if (!ft_strcmp(key, "TIME"))
-	// 	return (get_time());
-	// if (!ft_strcmp(key, "DATETIME"))
-	// 	return (get_datetime());
-	// if (!ft_strcmp(key, "EXITCODE"))
-	// 	return (get_exitcode(exit_code));
 	if (!ft_strcmp(key, "JOBS"))
 		return (get_jobs());
 	if (!ft_strcmp(key, "BATTERY"))
