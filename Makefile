@@ -54,7 +54,12 @@ SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/unset.c
 
 SRCS		+=	$(EXEC)/exec.c \
-				$(EXEC)/exec_utils.c
+				$(EXEC)/exec_commands.c \
+				$(EXEC)/exec_utils.c \
+				$(EXEC)/exec_helpers.c \
+				$(EXEC)/exec_command_utils.c \
+				$(EXEC)/exec_pipeline_utils.c \
+				$(EXEC)/exec_builtin_utils.c
 
 SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_utils.c \

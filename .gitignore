@@ -7,4 +7,5 @@ minishell
 build/
 libs/
 tmp/
+tests/
 .vscode/
