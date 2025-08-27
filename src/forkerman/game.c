@@ -50,8 +50,8 @@ void	forkerman(void)
 	char	c;
 
 	restart_game(&g);
-	enable_raw();
-	render_frame(&g);
+	enable_raw(&g.terminal_attrs);
+    render_frame(&g);
 	while (g.lives > 0)
 	{
 		if (read(0, &c, 1) != 1)
@@ -66,5 +66,5 @@ void	forkerman(void)
 	}
 	if (g.lives <= 0)
 		printf("\n\nGame Over\n");
-	disable_raw();
+	disable_raw(&g.terminal_attrs);
 }

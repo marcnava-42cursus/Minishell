@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:47:20 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 20:21:46 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:35:25 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,6 @@
 # include "config.h"
 # include "parser.h"
 # include "exec.h"
+# include "forkerman.h"
 
 #endif

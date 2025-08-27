@@ -19,8 +19,8 @@
 
 void	print_tree(t_ent *node, int indent);
 
-void	enable_raw(void);
-void	disable_raw(void);
+void	enable_raw(struct termios *terminal_attrs);
+void	disable_raw(struct termios *terminal_attrs);
 void	clear_scr(void);
 
 char	**ft_realloc_matrix(char **old, int oldc, char *new_str);

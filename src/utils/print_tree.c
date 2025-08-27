@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   print_tree.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marcnava <marcnava@student.42madrid.com>    +#+  +:+       +#+        */
+/*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/02 12:00:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 13:15:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:42:56 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
-/* Print indent (4 spaces per level) */
-static void print_indent(int indent)
+static void	print_indent(int indent)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i++ < indent)
@@ -23,39 +22,48 @@ static void print_indent(int indent)
 }
 
 /*
- * Recursively print tree:
+ * Print node type and arguments:
  * - SUBSHELL: print [SUBSHELL] and its argv[0]
  * - COMMAND:  print [COMMAND] and all argv[]
  * - PIPE/AND/OR: print marker only
  */
-void print_tree(t_ent *node, int indent)
+static void	print_node_info(t_ent *node)
 {
-	t_ent *cur;
-	int   i;
+	int	i;
+
+	if (node->type == NODE_SUBSHELL)
+	{
+		printf("[SUBSHELL]");
+		if (node->argv && node->argv[0])
+			printf(" %s", node->argv[0]);
+	}
+	else if (node->type == NODE_COMMAND)
+	{
+		printf("[COMMAND]");
+		i = 0;
+		while (node->argv && node->argv[i])
+			printf(" %s", node->argv[i++]);
+	}
+	else if (node->type == NODE_PIPE)
+		printf("[PIPE]");
+	else if (node->type == NODE_AND)
+		printf("[AND]");
+	else if (node->type == NODE_OR)
+		printf("[OR]");
+}
+
+/*
+ * Recursively print tree structure
+ */
+void	print_tree(t_ent *node, int indent)
+{
+	t_ent	*cur;
 
 	cur = node;
 	while (cur)
 	{
 		print_indent(indent);
-		if (cur->type == NODE_SUBSHELL)
-		{
-			printf("[SUBSHELL]");
-			if (cur->argv && cur->argv[0])
-				printf(" %s", cur->argv[0]);
-		}
-		else if (cur->type == NODE_COMMAND)
-		{
-			printf("[COMMAND]");
-			i = 0;
-			while (cur->argv && cur->argv[i])
-				printf(" %s", cur->argv[i++]);
-		}
-		else if (cur->type == NODE_PIPE)
-			printf("[PIPE]");
-		else if (cur->type == NODE_AND)
-			printf("[AND]");
-		else if (cur->type == NODE_OR)
-			printf("[OR]");
+		print_node_info(cur);
 		printf("\n");
 		if (cur->type == NODE_SUBSHELL && cur->child)
 			print_tree(cur->child, indent + 1);

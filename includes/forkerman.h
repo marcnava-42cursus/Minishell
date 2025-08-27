@@ -29,14 +29,15 @@ typedef struct s_bomb
 
 typedef struct s_game
 {
-	int		player_x;
-	int		player_y;
-	int		lives;
-	int		bombs_available;
-	int		bomb_count;
-	t_bomb	bombs[MAX_BOMBS];
-	char	map[HEIGHT][WIDTH + 1];
-}			t_game;
+	int			player_x;
+	int			player_y;
+	int			lives;
+	int			bombs_available;
+	int			bomb_count;
+	t_bomb			bombs[MAX_BOMBS];
+	char			map[HEIGHT][WIDTH + 1];
+	struct termios		terminal_attrs;
+}				t_game;
 
 void	init_map(t_game *g);
 void	restart_game(t_game *g);

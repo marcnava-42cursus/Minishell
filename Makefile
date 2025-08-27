@@ -72,7 +72,14 @@ SRCS        +=  $(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/tree_manager.c
 
 SRCS		+=	$(UTILS)/print_tree.c \
-				$(UTILS)/matrix_utils.c
+				$(UTILS)/matrix_utils.c \
+				$(UTILS)/termios_utils.c
+
+SRCS		+=	$(FORKERMAN)/bombs.c \
+				$(FORKERMAN)/game.c \
+				$(FORKERMAN)/map.c \
+				$(FORKERMAN)/player.c \
+				$(FORKERMAN)/render.c
 
 OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
 

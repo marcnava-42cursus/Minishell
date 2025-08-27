@@ -11,12 +11,13 @@ int	main(int argc, char **argv, char **env)
 		return (printf("Usage: %s\n", argv[0]), 1);
 	if (!env || !*env)
 		return (printf("Error: Can't load env variables\n"), 1);
-
 	load_config(&config, env);
 	envp = save_envp(env);
 	if (!envp)
 		return (printf("Error saving envp\n"), 1);
 
+	forkerman();
+	
 	while (1)
 	{
 		line = readline(config.prompt);

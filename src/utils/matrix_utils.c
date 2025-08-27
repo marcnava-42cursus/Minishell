@@ -6,13 +6,13 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:40:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/05 19:09:54 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/27 13:43:09 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
-char **ft_realloc_matrix(char **old, int oldc, char *new_str)
+char	**ft_realloc_matrix(char **old, int oldc, char *new_str)
 {
 	char	**new;
 	int		i;
