@@ -28,7 +28,7 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 	if (pid == -1)
 		return (perror("fork"), free_env_array(env_arr), 1);
 	if (pid == 0)
-		handle_child_process(node, &(mshell->envp), env_arr);
+		handle_child_process(node, mshell, env_arr);
 	return (wait_for_child_and_cleanup(pid, env_arr));
 }
 
@@ -41,7 +41,7 @@ static int	execute_pipeline_child(t_ent **commands, int **pipes,
 	if (is_builtin(commands[i]->argv[0]))
 		exit(exec_builtin(commands[i], mshell));
 	else
-		handle_child_process(commands[i], &(mshell->envp), envp_to_array(mshell->envp));
+		handle_child_process(commands[i], mshell, envp_to_array(mshell->envp));
 	return (0);
 }
 
@@ -82,6 +82,8 @@ int	exec_pipeline(t_ent *node, t_mshell *mshell)
 		if (pids[i] == 0)
 			execute_pipeline_child(commands, pipes, mshell, i, cmd_count);
 	}
+	/* Close all pipe descriptors in parent process */
+	close_all_pipes(pipes, cmd_count);
 	i = -1;
 	while (++i < cmd_count)
 		waitpid(pids[i], &status, 0);

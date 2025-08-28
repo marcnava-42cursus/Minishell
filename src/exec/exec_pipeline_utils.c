@@ -104,8 +104,7 @@ void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids,
 	i = 0;
 	while (i < cmd_count - 1)
 	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
+		/* Pipes are already closed in parent, just free memory */
 		free(pipes[i]);
 		i++;
 	}

@@ -38,13 +38,13 @@ static void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr)
 	exit(126);
 }
 
-void	handle_child_process(t_ent *node, t_envp **envp, char **env_arr)
+void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr)
 {
 	if (apply_redirections(node))
 		exit(1);
 	if (is_builtin(node->argv[0]))
-		exit(exec_builtin(node, envp, NULL));
-	execute_external_command(node, envp, env_arr);
+		exit(exec_builtin(node, mshell));
+	execute_external_command(node, &(mshell->envp), env_arr);
 }
 
 int	wait_for_child_and_cleanup(pid_t pid, char **env_arr)
