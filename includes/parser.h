@@ -23,7 +23,7 @@
 
 int		parse_command(t_mshell *mshell, char *command);
 t_ent	*parse_command_tree(const char *cmd, t_mshell *mshell);
-char	*expand_variables(const char *in, t_mshell *mshell);
+char	*expand_variables(const char *in, t_envp *envp, int exit_code);
 
 /* Parser tree functions */
 t_ent	*parse_list(const char **s, t_mshell *mshell);

@@ -37,7 +37,7 @@ int	parse_command(t_mshell *mshell, char *cmd)
 	mshell->raw_command = ft_strdup(cmd);
 	if (!mshell->raw_command)
 		return (write(2, "Error allocating\n", 17), 1);
-	exp = expand_variables(cmd, mshell);
+	exp = expand_variables(cmd, mshell->envp, mshell->exit_code);
 	if (!exp)
 		return (write(2, "Error allocating\n", 17), 1);
 	if (is_empty_or_whitespace(exp))
