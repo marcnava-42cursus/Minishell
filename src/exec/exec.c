@@ -12,11 +12,13 @@
 
 #include "exec.h"
 
-int	exec_tree(t_ent *node, t_envp *envp, t_config *config)
+int	exec_tree(t_mshell *mshell)
 {
 	t_ent	*current;
+	t_ent	*node;
 	int		has_pipe;
 
+	node = mshell->tree;
 	if (!node)
 		return (0);
 	has_pipe = 0;
@@ -32,19 +34,19 @@ int	exec_tree(t_ent *node, t_envp *envp, t_config *config)
 	}
 	if (has_pipe)
 	{
-		config->exit_code = exec_pipeline(node, &envp, config);
-		return (config->exit_code);
+		mshell->exit_code = exec_pipeline(node, mshell);
+		return (mshell->exit_code);
 	}
 	if (node->type == NODE_COMMAND)
-		config->exit_code = exec_command(node, &envp, config);
+		mshell->exit_code = exec_command(node, mshell);
 	else if (node->type == NODE_AND || node->type == NODE_OR)
-		config->exit_code = exec_logic(node, &envp, config);
+		mshell->exit_code = exec_logic(node, mshell);
 	else if (node->type == NODE_SUBSHELL)
-		config->exit_code = exec_subshell(node, &envp, config);
+		mshell->exit_code = exec_subshell(node, mshell);
 	else
 	{
 		printf("minishell: unsupported operation\n");
-		config->exit_code = 1;
+		mshell->exit_code = 1;
 	}
-	return (config->exit_code);
+	return (mshell->exit_code);
 }

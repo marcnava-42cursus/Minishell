@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmarcell <jmarcell@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:47 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/25 16:43:11 by jmarcell         ###   ########.fr       */
+/*   Updated: 2025/08/27 20:42:15 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static char *parse_var(const char **s)
+static char	*parse_var(const char **s)
 {
-	const char *start;
-	size_t len;
+	const char	*start;
+	size_t		len;
 
 	start = *s + 1;
 	len = 0;
@@ -28,9 +28,9 @@ static char *parse_var(const char **s)
 /**
  * @brief Check if a string contains only spaces/tabs
  */
-static int has_only_whitespace(const char *str, size_t len)
+static int	has_only_whitespace(const char *str, size_t len)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (i < len)
@@ -45,9 +45,9 @@ static int has_only_whitespace(const char *str, size_t len)
 /**
  * @brief Check if content contains whitespace characters
  */
-static int contains_whitespace(const char *str, size_t len)
+static int	contains_whitespace(const char *str, size_t len)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	while (i < len)
@@ -63,31 +63,20 @@ static int contains_whitespace(const char *str, size_t len)
  * @brief Process quoted content with intelligent concatenation
  */
 
-static char *process_quoted_content(const char *content, size_t len, char quote_type)
+static char	*process_quoted_content(const char *content, size_t len, char quote_type)
 {
-	char *result;
+	char	*result;
 
-	// printf("DEBUG process_quoted_content: content=[%.*s], len=%zu, quote=%c\n", (int)len, content, len, quote_type);
-
-	/* Empty quotes - return empty string to be concatenated */
 	if (len == 0)
 	{
-		// printf("DEBUG: Empty quotes - returning empty string\n");
 		return (ft_strdup(""));
 	}
-	
-	/* Content with only spaces/tabs but no other chars - remove quotes */
 	if (has_only_whitespace(content, len) && len <= 2)
 	{
-		// printf("DEBUG: Only whitespace - keeping content\n");
 		return (ft_substr(content, 0, len));
 	}
-	
-	/* Content with spaces - preserve quotes for proper tokenization */
 	if (contains_whitespace(content, len))
 	{
-		// printf("DEBUG: Content with spaces - preserving quotes\n");
-		/* Preserve quotes */
 		result = ft_calloc(len + 3, sizeof(char));
 		if (!result)
 			return (NULL);
@@ -96,20 +85,23 @@ static char *process_quoted_content(const char *content, size_t len, char quote_
 		result[len + 1] = quote_type;
 		return (result);
 	}
-	
-	// printf("DEBUG: Content without spaces - removing quotes\n");
-	/* Content without spaces - remove quotes to allow concatenation */
 	return (ft_substr(content, 0, len));
 }
 
-char *expand_variables(const char *in, t_envp *envp, int exit_code)
+char	*expand_variables(const char *in, t_envp *envp, int exit_code)
 {
-	char *out = ft_strdup("");
-	char *var, *val, *tmp, *seg, *num;
-	const char *start;
-	char *quote_content;
-	size_t content_len;
+	char		*out;
+	char		*var;
+	char		*val;
+	char		*tmp;
+	char		*seg;
+	char		*num;
+	const char	*start;
+	char		*quote_content;
+	size_t		content_len;
+	char		quote;
 
+	out = ft_strdup("");
 	while (*in)
 	{
 		if (ft_strncmp(in, "$?", 2) == 0)
@@ -135,7 +127,6 @@ char *expand_variables(const char *in, t_envp *envp, int exit_code)
 			}
 			else
 			{
-				/* Handle invalid variable name - treat as literal $ */
 				tmp = ft_strjoin(out, "$");
 				ft_free((void **)&out);
 				out = tmp;
@@ -146,15 +137,12 @@ char *expand_variables(const char *in, t_envp *envp, int exit_code)
 		}
 		else if (*in == '\'' || *in == '\"')
 		{
-			char quote = *in++;
+			quote = *in++;
 			start = in;
-			/* Find the closing quote */
 			while (*in && *in != quote)
 				in++;
-			
 			content_len = in - start;
 			quote_content = process_quoted_content(start, content_len, quote);
-			
 			if (quote_content)
 			{
 				tmp = ft_strjoin(out, quote_content);
@@ -162,7 +150,6 @@ char *expand_variables(const char *in, t_envp *envp, int exit_code)
 				ft_free((void **)&quote_content);
 				out = tmp;
 			}
-			
 			if (*in == quote)
 				in++;
 		}

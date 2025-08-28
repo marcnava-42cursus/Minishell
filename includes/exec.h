@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 19:42:35 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 02:26:10 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 00:49:15 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@
 # include "exec_builtins.h"
 
 // Punto de entrada principal (exec.c)
-int		exec_tree(t_ent *tree, t_envp *envp, t_config *config);
+int		exec_tree(t_mshell *mshell);
 
 // Funciones de ejecución de comandos (exec_commands.c)
-int		exec_command(t_ent *node, t_envp **envp, t_config *config);
-int		exec_pipeline(t_ent *node, t_envp **envp, t_config *config);
-int		exec_logic(t_ent *node, t_envp **envp, t_config *config);
-int		exec_subshell(t_ent *node, t_envp **envp, t_config *config);
-int		exec_builtin(t_ent *node, t_envp **envp, t_config *config);
+int		exec_command(t_ent *node, t_mshell *mshell);
+int		exec_pipeline(t_ent *node, t_mshell *mshell);
+int		exec_logic(t_ent *node, t_mshell *mshell);
+int		exec_subshell(t_ent *node, t_mshell *mshell);
+int		exec_builtin(t_ent *node, t_mshell *mshell);
 
 // Utilidades básicas (exec_utils.c)
 int		is_builtin(char *cmd);
@@ -53,9 +53,10 @@ int		count_pipeline_commands(t_ent *node);
 void	collect_pipeline_commands(t_ent *node, t_ent **commands, int cmd_count);
 int		setup_pipeline_pipes(int **pipes, int cmd_count);
 void	setup_input_redirection(int **pipes, t_ent *command, int i);
-void	setup_output_redirection(int **pipes, t_ent *command, int i, int cmd_count);
+void	setup_output_redirection(int **pipes, t_ent *command, int i,
+	int cmd_count);
 void	close_all_pipes(int **pipes, int cmd_count);
-void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids, 
+void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids,
 		int cmd_count);
 
 // Utilidades específicas de builtins (exec_builtin_utils.c)

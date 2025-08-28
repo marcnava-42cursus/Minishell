@@ -6,13 +6,13 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:05:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 02:05:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 00:51:30 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-int	exec_command(t_ent *node, t_envp **envp, t_config *config)
+int	exec_command(t_ent *node, t_mshell *mshell)
 {
 	pid_t	pid;
 	char	**env_arr;
@@ -20,33 +20,32 @@ int	exec_command(t_ent *node, t_envp **envp, t_config *config)
 	if (!node->argv || !node->argv[0])
 		return (0);
 	if (is_builtin(node->argv[0]) && node->fd_in == -1 && node->fd_out == -1)
-		return (exec_builtin(node, envp, config));
-	env_arr = envp_to_array(*envp);
+		return (exec_builtin(node, mshell));
+	env_arr = envp_to_array(mshell->envp);
 	if (!env_arr)
 		return (1);
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), free_env_array(env_arr), 1);
 	if (pid == 0)
-		handle_child_process(node, envp, env_arr);
+		handle_child_process(node, &(mshell->envp), env_arr);
 	return (wait_for_child_and_cleanup(pid, env_arr));
-	(void)config;
 }
 
-static int	execute_pipeline_child(t_ent **commands, int **pipes, 
-	t_envp **envp, t_config *config, int i, int cmd_count)
+static int	execute_pipeline_child(t_ent **commands, int **pipes,
+	t_mshell *mshell, int i, int cmd_count)
 {
 	setup_input_redirection(pipes, commands[i], i);
 	setup_output_redirection(pipes, commands[i], i, cmd_count);
 	close_all_pipes(pipes, cmd_count);
 	if (is_builtin(commands[i]->argv[0]))
-		exit(exec_builtin(commands[i], envp, config));
+		exit(exec_builtin(commands[i], mshell));
 	else
-		handle_child_process(commands[i], envp, envp_to_array(*envp));
+		handle_child_process(commands[i], &(mshell->envp), envp_to_array(mshell->envp));
 	return (0);
 }
 
-int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
+int	exec_pipeline(t_ent *node, t_mshell *mshell)
 {
 	t_ent	**commands;
 	int		cmd_count;
@@ -64,7 +63,7 @@ int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
 		current = node;
 		while (current && current->type != NODE_COMMAND)
 			current = current->next;
-		return (exec_command(current, envp, config));
+		return (exec_command(current, mshell));
 	}
 	commands = malloc(sizeof(t_ent *) * cmd_count);
 	pipes = malloc(sizeof(int *) * (cmd_count - 1));
@@ -81,7 +80,7 @@ int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
 		if (pids[i] == -1)
 			return (perror("fork"), 1);
 		if (pids[i] == 0)
-			execute_pipeline_child(commands, pipes, envp, config, i, cmd_count);
+			execute_pipeline_child(commands, pipes, mshell, i, cmd_count);
 	}
 	i = -1;
 	while (++i < cmd_count)
@@ -92,30 +91,48 @@ int	exec_pipeline(t_ent *node, t_envp **envp, t_config *config)
 	return (1);
 }
 
-int	exec_logic(t_ent *node, t_envp **envp, t_config *config)
+int	exec_logic(t_ent *node, t_mshell *mshell)
 {
-	int left = exec_tree(node->child, *envp, config);
+	int	left;
+	t_mshell left_shell, right_shell;
+
+	/* Execute left child */
+	left_shell = *mshell;
+	left_shell.tree = node->child;
+	left = exec_tree(&left_shell);
+	
 	if (node->type == NODE_AND)
 	{
-		if (left == 0)
-			return (exec_tree(node->child->next, *envp, config));
+		if (left == 0 && node->child->next)
+		{
+			/* Execute right child only if left succeeded */
+			right_shell = *mshell;
+			right_shell.tree = node->child->next;
+			return (exec_tree(&right_shell));
+		}
 		else
 			return (left);
 	}
 	else if (node->type == NODE_OR)
 	{
-		if (left != 0)
-			return (exec_tree(node->child->next, *envp, config));
+		if (left != 0 && node->child->next)
+		{
+			/* Execute right child only if left failed */
+			right_shell = *mshell;
+			right_shell.tree = node->child->next;
+			return (exec_tree(&right_shell));
+		}
 		else
 			return (left);
 	}
 	return (1);
 }
 
-int	exec_subshell(t_ent *node, t_envp **envp, t_config *config)
+int	exec_subshell(t_ent *node, t_mshell *mshell)
 {
-	pid_t pid;
-	int status;
+	pid_t	pid;
+	int		status;
+	t_mshell child_shell;
 
 	pid = fork();
 	if (pid == -1)
@@ -124,7 +141,10 @@ int	exec_subshell(t_ent *node, t_envp **envp, t_config *config)
 	{
 		if (apply_redirections(node))
 			exit(1);
-		exit(exec_tree(node->child, *envp, config));
+		/* Create a child shell with the subshell's tree */
+		child_shell = *mshell;
+		child_shell.tree = node->child;
+		exit(exec_tree(&child_shell));
 	}
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
@@ -132,7 +152,7 @@ int	exec_subshell(t_ent *node, t_envp **envp, t_config *config)
 	return (1);
 }
 
-int	exec_builtin(t_ent *node, t_envp **envp, t_config *config)
+int	exec_builtin(t_ent *node, t_mshell *mshell)
 {
 	char	*cmd;
 	char	**processed_argv;
@@ -146,20 +166,19 @@ int	exec_builtin(t_ent *node, t_envp **envp, t_config *config)
 	cmd = processed_argv[0];
 	result = 1;
 	if (ft_strcmp(cmd, "cd") == 0)
-		result = handle_cd_builtin(processed_argv, envp);
+		result = handle_cd_builtin(processed_argv, &(mshell->envp));
 	else if (ft_strcmp(cmd, "echo") == 0)
 		result = handle_echo_builtin(node, processed_argv);
 	else if (ft_strcmp(cmd, "env") == 0)
-		result = msh_exec_bt_env(*envp);
+		result = msh_exec_bt_env(mshell->envp);
 	else if (ft_strcmp(cmd, "exit") == 0)
 		result = msh_exec_bt_exit();
 	else if (ft_strcmp(cmd, "export") == 0)
-		result = handle_export_builtin(processed_argv, envp);
+		result = handle_export_builtin(processed_argv, &(mshell->envp));
 	else if (ft_strcmp(cmd, "pwd") == 0)
-		result = msh_exec_bt_pwd(*envp);
+		result = msh_exec_bt_pwd(mshell->envp);
 	else if (ft_strcmp(cmd, "unset") == 0)
-		result = handle_unset_builtin(processed_argv, envp);
+		result = handle_unset_builtin(processed_argv, &(mshell->envp));
 	free_processed_argv(processed_argv);
-	(void)config;
 	return (result);
 }

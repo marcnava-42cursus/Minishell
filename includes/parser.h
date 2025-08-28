@@ -21,21 +21,22 @@
 # include <stdio.h>
 # include <readline/readline.h>
 
-int		parse_command(t_envp *envp, t_config *config, t_ent **tree,
-			char *command);
-t_ent	*parse_command_tree(const char *cmd);
-char	*expand_variables(const char *in, t_envp *envp, int exit_code);
+int		parse_command(t_mshell *mshell, char *command);
+t_ent	*parse_command_tree(const char *cmd, t_mshell *mshell);
+char	*expand_variables(const char *in, t_mshell *mshell);
 
 /* Parser tree functions */
-t_ent	*parse_list(const char **s);
-t_ent	*parse_and(const char **s);
-t_ent	*parse_pipeline(const char **s);
-t_ent	*parse_primary(const char **s);
+t_ent	*parse_list(const char **s, t_mshell *mshell);
+t_ent	*parse_and(const char **s, t_mshell *mshell);
+t_ent	*parse_pipeline(const char **s, t_mshell *mshell);
+t_ent	*parse_primary(const char **s, t_mshell *mshell);
 
 /* Parser utils functions */
-t_ent	*parse_cmd(const char **s);
-t_ent	*parse_subshell(const char **s);
-int		handle_heredoc(const char *delimiter);
+t_ent	*parse_cmd(const char **s, t_mshell *mshell);
+t_ent	*parse_subshell(const char **s, t_mshell *mshell);
+int     handle_heredoc(const char *delimiter, t_mshell *mshell);
+int		check_heredoc_quotes(const char *cmd, const char *delimiter_pos);
+char	*preprocess_heredocs(const char *cmd, t_mshell *mshell);
 
 /* Environment functions */
 t_envp	*save_envp(char **env);

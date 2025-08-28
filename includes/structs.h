@@ -47,8 +47,24 @@ typedef struct s_config
 {
 	char	*prompt_raw;
 	char	*prompt;
-	int		exit_code;
 }			t_config;
+
+/**
+ * @brief Main shell structure that encapsulates all program data
+ * 
+ * This structure simplifies function signatures by containing all the
+ * essential data needed throughout the shell execution.
+ */
+typedef struct s_mshell
+{
+	char		*raw_command;		/* Original command before expansion */
+	char		*expanded_command;	/* Command after variable expansion */
+	t_envp		*envp;				/* Environment variables */
+	t_ent		*tree;				/* Abstract syntax tree */
+	t_config	*config;			/* Shell configuration */
+	int			exit_code;			/* Last command exit code */
+	int			should_exit;		/* Flag to indicate shell should exit */
+}				t_mshell;
 
 t_envp	*envp_new_node(char *key, char *value);
 t_envp	*envp_append_last(t_envp *head, t_envp *node);

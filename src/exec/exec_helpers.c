@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 01:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 04:25:06 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 00:37:18 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,10 @@ char	**envp_to_array(t_envp *envp)
 			free_env_array(env_array);
 			return (NULL);
 		}
-		env_array[i] = ft_strjoin(temp, current->value ? current->value : "");
+		if (current->value)
+			env_array[i] = ft_strjoin(temp, current->value);
+		else
+			env_array[i] = ft_strjoin(temp, "");
 		free(temp);
 		if (!env_array[i])
 		{
@@ -183,7 +186,8 @@ char	**process_argv_quotes(char **argv)
 	new_argv = malloc(sizeof(char *) * (count + 1));
 	if (!new_argv)
 		return (NULL);
-	for (i = 0; i < count; i++)
+	i = 0;
+	while (i < count)
 	{
 		new_argv[i] = remove_quotes(argv[i]);
 		if (!new_argv[i])
@@ -193,6 +197,7 @@ char	**process_argv_quotes(char **argv)
 			free(new_argv);
 			return (NULL);
 		}
+		i++;
 	}
 	new_argv[count] = NULL;
 	return (new_argv);
@@ -208,7 +213,7 @@ void	free_processed_argv(char **argv)
 	int	i;
 
 	if (!argv)
-		return;
+		return ;
 	i = 0;
 	while (argv[i])
 	{

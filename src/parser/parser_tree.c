@@ -6,26 +6,26 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 14:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/05 18:59:49 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 00:55:08 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static void skip_whitespace(const char **s)
+static void	skip_whitespace(const char **s)
 {
 	while (**s == ' ' || **s == '\t')
 		(*s)++;
 }
 
-t_ent *parse_pipeline(const char **s)
+t_ent	*parse_pipeline(const char **s, t_mshell *mshell)
 {
-	t_ent *head;
-	t_ent *last;
-	t_ent *op;
-	t_ent *right;
+	t_ent	*head;
+	t_ent	*last;
+	t_ent	*op;
+	t_ent	*right;
 
-	head = parse_primary(s);
+	head = parse_primary(s, mshell);
 	if (!head)
 		return (NULL);
 	last = head;
@@ -39,7 +39,7 @@ t_ent *parse_pipeline(const char **s)
 		last->next = op;
 		last = op;
 		skip_whitespace(s);
-		right = parse_primary(s);
+		right = parse_primary(s, mshell);
 		last->next = right;
 		while (last->next)
 			last = last->next;
@@ -48,14 +48,14 @@ t_ent *parse_pipeline(const char **s)
 	return (head);
 }
 
-t_ent *parse_and(const char **s)
+t_ent	*parse_and(const char **s, t_mshell *mshell)
 {
-	t_ent *head;
-	t_ent *last;
-	t_ent *op;
-	t_ent *sub;
+	t_ent	*head;
+	t_ent	*last;
+	t_ent	*op;
+	t_ent	*sub;
 
-	head = parse_pipeline(s);
+	head = parse_pipeline(s, mshell);
 	if (!head)
 		return (NULL);
 	last = head;
@@ -68,7 +68,7 @@ t_ent *parse_and(const char **s)
 		op = ent_new_node(NODE_AND, NULL);
 		last->next = op;
 		last = op;
-		sub = parse_pipeline(s);
+		sub = parse_pipeline(s, mshell);
 		last->next = sub;
 		while (last->next)
 			last = last->next;
@@ -77,14 +77,14 @@ t_ent *parse_and(const char **s)
 	return (head);
 }
 
-t_ent *parse_list(const char **s)
+t_ent	*parse_list(const char **s, t_mshell *mshell)
 {
-	t_ent *head;
-	t_ent *last;
-	t_ent *op;
-	t_ent *sub;
+	t_ent	*head;
+	t_ent	*last;
+	t_ent	*op;
+	t_ent	*sub;
 
-	head = parse_and(s);
+	head = parse_and(s, mshell);
 	if (!head)
 		return (NULL);
 	last = head;
@@ -97,7 +97,7 @@ t_ent *parse_list(const char **s)
 		op = ent_new_node(NODE_OR, NULL);
 		last->next = op;
 		last = op;
-		sub = parse_and(s);
+		sub = parse_and(s, mshell);
 		last->next = sub;
 		while (last->next)
 			last = last->next;
@@ -106,16 +106,18 @@ t_ent *parse_list(const char **s)
 	return (head);
 }
 
-t_ent *parse_primary(const char **s)
+t_ent	*parse_primary(const char **s, t_mshell *mshell)
 {
 	skip_whitespace(s);
 	if (**s == '(')
-		return (parse_subshell(s));
-	return (parse_cmd(s));
+		return (parse_subshell(s, mshell));
+	return (parse_cmd(s, mshell));
 }
 
-t_ent *parse_command_tree(const char *cmd)
+t_ent	*parse_command_tree(const char *cmd, t_mshell *mshell)
 {
-	const char *p = cmd;
-	return (parse_list(&p));
+	const char	*p;
+
+	p = cmd;
+	return (parse_list(&p, mshell));
 }

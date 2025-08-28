@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 15:49:19 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/31 01:02:08 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 00:11:53 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static t_envp	*update_env_node(t_envp *node, char *env_var)
 	node->value = ft_strdup(equal + 1);
 	if (!node->value)
 		return (ft_free((void **)&node->key),
-		        ft_free((void **)&node), NULL);
+			ft_free((void **)&node), NULL);
 	node->next = NULL;
 	return (node);
 }
