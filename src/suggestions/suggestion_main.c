@@ -20,43 +20,85 @@ t_suggestion_ctx	*suggestion_init(const char *prompt)
 	ctx = malloc(sizeof(t_suggestion_ctx));
 	if (!ctx)
 		return (NULL);
+	
+	/* Initialize all pointers to NULL for safe cleanup */
+	ctx->commands = NULL;
+	ctx->terminal = NULL;
+	ctx->prompt = NULL;
+	
+	/* Allocate commands list */
 	ctx->commands = malloc(sizeof(t_cmd_list));
-	ctx->terminal = malloc(sizeof(t_terminal));
-	if (!ctx->commands || !ctx->terminal)
+	if (!ctx->commands)
 	{
-		free(ctx->commands);
-		free(ctx->terminal);
 		free(ctx);
 		return (NULL);
 	}
+	
+	/* Allocate terminal */
+	ctx->terminal = malloc(sizeof(t_terminal));
+	if (!ctx->terminal)
+	{
+		free(ctx->commands);
+		free(ctx);
+		return (NULL);
+	}
+	
+	/* Initialize command list */
 	cmdlist_init(ctx->commands);
+	
+	/* Initialize terminal capabilities */
 	if (!terminal_init_caps(ctx->terminal))
 	{
-		free(ctx->commands);
-		free(ctx->terminal);
-		free(ctx);
-		return (NULL);
+		/* Continue without terminal capabilities - fallback mode */
+		ctx->terminal->capabilities_loaded = 0;
 	}
-	ctx->prompt = sug_strdup(prompt);
-	ctx->prompt_len = sug_strlen(prompt);
+	
+	/* Set up prompt */
+	if (prompt && sug_strlen(prompt) > 0)
+	{
+		ctx->prompt = sug_strdup(prompt);
+		if (!ctx->prompt)
+		{
+			ctx->prompt = sug_strdup("> ");
+			ctx->prompt_len = 2;
+		}
+		else
+			ctx->prompt_len = sug_strlen(ctx->prompt);
+	}
+	else
+	{
+		ctx->prompt = sug_strdup("> ");
+		ctx->prompt_len = 2;
+	}
+	
+	/* Load commands from PATH */
 	path_env = getenv("PATH");
-	cmdlist_load_from_path(ctx->commands, path_env);
+	if (path_env)
+		cmdlist_load_from_path(ctx->commands, path_env);
+	
 	return (ctx);
 }
+
 
 static void	redraw_line(t_suggestion_ctx *ctx, const char *buffer, 
 						size_t buffer_len)
 {
 	const char	*suggestion;
 
-	if (ctx->terminal->cursor_move)
-		tputs(tgoto(ctx->terminal->cursor_move, 0, 0), 1, terminal_putchar);
-	else
-		write(STDOUT_FILENO, "\r", 1);
-	write(STDOUT_FILENO, ctx->prompt, ctx->prompt_len);
-	write(STDOUT_FILENO, buffer, buffer_len);
+	/* Move to beginning of current line */
+	write(STDOUT_FILENO, "\r", 1);
+	
+	/* Clear entire line */
 	if (ctx->terminal->clear_to_eol)
 		tputs(ctx->terminal->clear_to_eol, 1, terminal_putchar);
+	
+	/* Write prompt */
+	write(STDOUT_FILENO, ctx->prompt, ctx->prompt_len);
+	
+	/* Write user input */
+	write(STDOUT_FILENO, buffer, buffer_len);
+	
+	/* Add suggestion in gray if there is one */
 	suggestion = cmdlist_find_suggestion(ctx->commands, buffer);
 	if (suggestion && buffer_len > 0)
 	{
@@ -65,9 +107,21 @@ static void	redraw_line(t_suggestion_ctx *ctx, const char *buffer,
 			sug_strlen(suggestion + buffer_len));
 		write(STDOUT_FILENO, "\033[0m", 4);
 	}
-	if (ctx->terminal->cursor_move)
-		tputs(tgoto(ctx->terminal->cursor_move, ctx->prompt_len + buffer_len, 0), 
-			1, terminal_putchar);
+	
+	/* Position cursor after user input using backspace */
+	
+	/* The cursor is already in the right place after writing the content */
+	/* Just move it back from the suggestion to after the user input */
+	if (suggestion && buffer_len > 0)
+	{
+		/* We need to move cursor back from end of suggestion to end of user input */
+		size_t suggestion_len = sug_strlen(suggestion + buffer_len);
+		size_t i;
+		
+		/* Move cursor backward by suggestion length using backspace */
+		for (i = 0; i < suggestion_len; i++)
+			write(STDOUT_FILENO, "\b", 1);
+	}
 }
 
 char	*suggestion_readline(t_suggestion_ctx *ctx)
@@ -105,8 +159,13 @@ char	*suggestion_readline(t_suggestion_ctx *ctx)
 		else if (c == '\r' || c == '\n')
 		{
 			disable_raw(&original_termios);
+			/* Clear line completely before finishing */
+			write(STDOUT_FILENO, "\r", 1);
 			if (ctx->terminal->clear_to_eol)
 				tputs(ctx->terminal->clear_to_eol, 1, terminal_putchar);
+			/* Rewrite prompt and command without suggestions */
+			write(STDOUT_FILENO, ctx->prompt, ctx->prompt_len);
+			write(STDOUT_FILENO, buffer, buffer_len);
 			write(STDOUT_FILENO, "\n", 1);
 			buffer[buffer_len] = '\0';
 			result = sug_strdup(buffer);
@@ -124,6 +183,30 @@ char	*suggestion_readline(t_suggestion_ctx *ctx)
 	}
 	disable_raw(&original_termios);
 	return (NULL);
+}
+
+void	suggestion_update_prompt(t_suggestion_ctx *ctx, const char *new_prompt)
+{
+	if (!ctx)
+		return ;
+	if (ctx->prompt)
+		free(ctx->prompt);
+	if (new_prompt && sug_strlen(new_prompt) > 0)
+	{
+		ctx->prompt = sug_strdup(new_prompt);
+		if (ctx->prompt)
+			ctx->prompt_len = sug_strlen(ctx->prompt);
+		else
+		{
+			ctx->prompt = sug_strdup("> ");
+			ctx->prompt_len = 2;
+		}
+	}
+	else
+	{
+		ctx->prompt = sug_strdup("> ");
+		ctx->prompt_len = 2;
+	}
 }
 
 void	suggestion_cleanup(t_suggestion_ctx *ctx)

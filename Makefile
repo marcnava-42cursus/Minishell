@@ -101,11 +101,11 @@ check:
 all: $(LIBFT_A) $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
+	$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
 $(BUILDPATH)/%.o: $(SRCPATH)/%.c
 	mkdir -p $(@D)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 	$(RM) $(BUILDPATH)

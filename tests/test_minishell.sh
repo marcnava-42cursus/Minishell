@@ -106,10 +106,10 @@ run_test_syntax_error() {
 # ========== BASIC FUNCTIONALITY TESTS ==========
 echo -e "\n${BLUE}--- Basic Functionality ---${NC}"
 
-run_test "Basic PWD command" "pwd\nexit" "/home/ivmirand/Github/minishell"
+run_test "Basic PWD command" "pwd\nexit" "$PWD"
 run_test "Echo without options" "echo hello world\nexit" "hello world"
 run_test "Echo with -n option" "echo -n test\nexit" "test"
-run_test "Environment variable expansion" "echo \$HOME\nexit" "/home/ivmirand"
+run_test "Environment variable expansion" "echo \$HOME\nexit" "$HOME"
 run_test "Exit status variable" "echo test\necho \$?\nexit" "0"
 
 # ========== BUILT-IN COMMANDS TESTS ==========

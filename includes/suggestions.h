@@ -42,6 +42,7 @@ int				terminal_putchar(int c);
 /* Main suggestion functions */
 t_suggestion_ctx	*suggestion_init(const char *prompt);
 char				*suggestion_readline(t_suggestion_ctx *ctx);
+void				suggestion_update_prompt(t_suggestion_ctx *ctx, const char *new_prompt);
 void				suggestion_cleanup(t_suggestion_ctx *ctx);
 
 #endif

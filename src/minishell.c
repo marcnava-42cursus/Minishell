@@ -70,6 +70,9 @@ int	main(int argc, char **argv, char **env)
 				free(mshell.config->prompt);
 			mshell.config->prompt = build_prompt(mshell.config->prompt_raw,
 					mshell.exit_code);
+			/* Update suggestions prompt if enabled */
+			if (mshell.config->use_suggestions && mshell.suggestions)
+				suggestion_update_prompt(mshell.suggestions, mshell.config->prompt);
 		}
 		free(line);
 	}

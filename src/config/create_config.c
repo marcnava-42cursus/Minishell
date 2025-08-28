@@ -26,7 +26,7 @@ int	create_default_config(void)
 		"# PWD         - Current working directory\n",
 		"#? GITBRANCH  - Current git branch\n\n",
 		"# Suggestions configuration (enabled/disabled)\n",
-		"SUGGESTIONS: enabled\n\n",
+		"SUGGESTIONS: disabled\n\n",
 		"MINISHELLPROMPT: ~ {PWD GREEN} $ \n",
 		NULL
 	};
