@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 12:45:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/03 13:30:40 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:04:47 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,15 @@ typedef struct s_bomb
 
 typedef struct s_game
 {
-	int			player_x;
-	int			player_y;
-	int			lives;
-	int			bombs_available;
-	int			bomb_count;
+	int				player_x;
+	int				player_y;
+	int				lives;
+	int				bombs_available;
+	int				bomb_count;
 	t_bomb			bombs[MAX_BOMBS];
 	char			map[HEIGHT][WIDTH + 1];
-	struct termios		terminal_attrs;
-}				t_game;
+	struct termios	terminal_attrs;
+}					t_game;
 
 void	init_map(t_game *g);
 void	restart_game(t_game *g);

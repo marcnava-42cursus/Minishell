@@ -6,13 +6,13 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:17 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 00:34:08 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:10:02 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-static int is_empty_or_whitespace(const char *str)
+static int	is_empty_or_whitespace(const char *str)
 {
 	if (!str)
 		return (1);
@@ -32,13 +32,11 @@ int	parse_command(t_mshell *mshell, char *cmd)
 
 	if (!mshell || !cmd)
 		return (1);
-	/* Store the raw command */
 	if (mshell->raw_command)
 		ft_free((void **)&mshell->raw_command);
 	mshell->raw_command = ft_strdup(cmd);
 	if (!mshell->raw_command)
 		return (write(2, "Error allocating\n", 17), 1);
-	/* Expand variables */
 	exp = expand_variables(cmd, mshell);
 	if (!exp)
 		return (write(2, "Error allocating\n", 17), 1);
@@ -48,11 +46,9 @@ int	parse_command(t_mshell *mshell, char *cmd)
 		mshell->tree = NULL;
 		return (0);
 	}
-	/* Store the expanded command */
 	if (mshell->expanded_command)
 		ft_free((void **)&mshell->expanded_command);
 	mshell->expanded_command = ft_strdup(exp);
-	/* Parse the command tree */
 	root = parse_command_tree(exp, mshell);
 	if (!root)
 	{

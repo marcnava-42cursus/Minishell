@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:05:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 00:51:30 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:12:34 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ int	exec_pipeline(t_ent *node, t_mshell *mshell)
 		if (pids[i] == 0)
 			execute_pipeline_child(commands, pipes, mshell, i, cmd_count);
 	}
-	/* Close all pipe descriptors in parent process */
 	close_all_pipes(pipes, cmd_count);
 	i = -1;
 	while (++i < cmd_count)
@@ -95,19 +94,17 @@ int	exec_pipeline(t_ent *node, t_mshell *mshell)
 
 int	exec_logic(t_ent *node, t_mshell *mshell)
 {
-	int	left;
-	t_mshell left_shell, right_shell;
+	int			left;
+	t_mshell	left_shell;
+	t_mshell	right_shell;
 
-	/* Execute left child */
 	left_shell = *mshell;
 	left_shell.tree = node->child;
 	left = exec_tree(&left_shell);
-	
 	if (node->type == NODE_AND)
 	{
 		if (left == 0 && node->child->next)
 		{
-			/* Execute right child only if left succeeded */
 			right_shell = *mshell;
 			right_shell.tree = node->child->next;
 			return (exec_tree(&right_shell));
@@ -119,7 +116,6 @@ int	exec_logic(t_ent *node, t_mshell *mshell)
 	{
 		if (left != 0 && node->child->next)
 		{
-			/* Execute right child only if left failed */
 			right_shell = *mshell;
 			right_shell.tree = node->child->next;
 			return (exec_tree(&right_shell));
@@ -132,9 +128,9 @@ int	exec_logic(t_ent *node, t_mshell *mshell)
 
 int	exec_subshell(t_ent *node, t_mshell *mshell)
 {
-	pid_t	pid;
-	int		status;
-	t_mshell child_shell;
+	pid_t		pid;
+	int			status;
+	t_mshell	child_shell;
 
 	pid = fork();
 	if (pid == -1)
@@ -143,7 +139,6 @@ int	exec_subshell(t_ent *node, t_mshell *mshell)
 	{
 		if (apply_redirections(node))
 			exit(1);
-		/* Create a child shell with the subshell's tree */
 		child_shell = *mshell;
 		child_shell.tree = node->child;
 		exit(exec_tree(&child_shell));

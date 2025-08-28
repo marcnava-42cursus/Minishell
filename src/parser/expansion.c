@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:47 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 20:42:15 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:14:17 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ static int	contains_whitespace(const char *str, size_t len)
  * @brief Process quoted content with intelligent concatenation
  */
 
-static char	*process_quoted_content(const char *content, size_t len, char quote_type)
+static char	*process_quoted_content(const char *content, size_t len,
+	char quote_type)
 {
 	char	*result;
 

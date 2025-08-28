@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:24 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 00:50:22 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:22:51 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 	tok = get_next_token(s);
 	if (!tok)
 		return (NULL);
-	if (ft_strcmp(tok, "<<") == 0 || ft_strcmp(tok, "<") == 0 ||
-		ft_strcmp(tok, ">") == 0 || ft_strcmp(tok, ">>") == 0)
+	if (ft_strcmp(tok, "<<") == 0 || ft_strcmp(tok, "<") == 0
+		|| ft_strcmp(tok, ">") == 0 || ft_strcmp(tok, ">>") == 0)
 	{
 		ft_free((void **)&tok);
 		return (NULL);
@@ -240,15 +240,12 @@ int	check_heredoc_quotes(const char *cmd, const char *delimiter_pos)
 
 	if (!cmd)
 		return (-1);
-	/* Find "<<" in the original command */
 	search_pos = ft_strnstr(cmd, "<<", ft_strlen(cmd));
 	if (!search_pos)
 		return (-1);
 	search_pos += 2;
-	/* Skip whitespace after << */
 	while (*search_pos == ' ' || *search_pos == '\t')
 		search_pos++;
-	/* Check if delimiter starts with quotes */
 	if (*search_pos == '\'' || *search_pos == '\"')
 		return (1);
 	return (0);
@@ -265,24 +262,21 @@ static char	*get_original_delimiter_from_cmd(const char *cmd)
 	const char	*search_pos;
 	const char	*delim_start;
 	const char	*delim_end;
+	char		quote;
 	size_t		len;
 
 	if (!cmd)
 		return (NULL);
-	/* Find "<<" in the original command */
 	search_pos = ft_strnstr(cmd, "<<", ft_strlen(cmd));
 	if (!search_pos)
 		return (NULL);
 	search_pos += 2;
-	/* Skip whitespace after << */
 	while (*search_pos == ' ' || *search_pos == '\t')
 		search_pos++;
 	delim_start = search_pos;
-	/* Find end of delimiter */
 	if (*delim_start == '\'' || *delim_start == '\"')
 	{
-		/* Quoted delimiter - include quotes */
-		char quote = *delim_start;
+		quote = *delim_start;
 		delim_end = delim_start + 1;
 		while (*delim_end && *delim_end != quote)
 			delim_end++;
@@ -291,10 +285,9 @@ static char	*get_original_delimiter_from_cmd(const char *cmd)
 	}
 	else
 	{
-		/* Unquoted delimiter */
 		delim_end = delim_start;
-		while (*delim_end && *delim_end != ' ' && *delim_end != '\t' &&
-			*delim_end != '\n' && *delim_end != '|' && *delim_end != '&')
+		while (*delim_end && *delim_end != ' ' && *delim_end != '\t'
+			&& *delim_end != '\n' && *delim_end != '|' && *delim_end != '&')
 			delim_end++;
 	}
 	len = delim_end - delim_start;
@@ -330,9 +323,11 @@ static char	*process_heredoc_delimiter(const char *delimiter, int *is_quoted)
 }
 
 /**
- * @brief Handle heredoc by creating a temporary file and reading input until delimiter
+ * @brief Handle heredoc by creating a temporary file and reading input
+ *        until delimiter
  * 
- * @param delimiter The heredoc delimiter string (already processed by expand_variables) - UNUSED
+ * @param delimiter The heredoc delimiter string (already processed by
+ *                  expand_variables) - UNUSED
  * @param mshell The shell structure containing env and other data
  * @return File descriptor of the temporary file, or -1 on error
  */
@@ -349,20 +344,17 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	int			read_fd;
 	int			is_quoted;
 
-	(void)delimiter; /* We'll use the original delimiter instead */
+	(void)delimiter;
 	if (!mshell || !mshell->raw_command)
 		return (-1);
-	/* Get the original delimiter from the command */
 	original_delimiter = get_original_delimiter_from_cmd(mshell->raw_command);
 	if (!original_delimiter)
 		return (-1);
-	/* Check if delimiter was quoted in original command */
 	is_quoted = check_heredoc_quotes(mshell->raw_command, NULL);
 	if (is_quoted < 0)
-		is_quoted = 0; /* Default to unquoted if detection fails */
+		is_quoted = 0;
 	else if (is_quoted > 0)
 		is_quoted = 1;
-	/* Process the original delimiter to get clean version */
 	clean_delimiter = process_heredoc_delimiter(original_delimiter, &is_quoted);
 	ft_free((void **)&original_delimiter);
 	if (!clean_delimiter)
@@ -391,13 +383,9 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 			break ;
 		}
 		if (is_quoted)
-		{
-			/* Delimiter is quoted - don't expand variables */
 			write(tmp_fd, line, ft_strlen(line));
-		}
 		else
 		{
-			/* Delimiter is not quoted - expand variables */
 			expanded_line = expand_variables(line, mshell);
 			if (expanded_line)
 			{
@@ -405,9 +393,7 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 				ft_free((void **)&expanded_line);
 			}
 			else
-			{
 				write(tmp_fd, line, ft_strlen(line));
-			}
 		}
 		write(tmp_fd, "\n", 1);
 		free(line);

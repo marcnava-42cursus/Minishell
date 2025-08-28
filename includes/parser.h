@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:16:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/08 17:20:28 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:07:35 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_ent	*parse_primary(const char **s, t_mshell *mshell);
 /* Parser utils functions */
 t_ent	*parse_cmd(const char **s, t_mshell *mshell);
 t_ent	*parse_subshell(const char **s, t_mshell *mshell);
-int     handle_heredoc(const char *delimiter, t_mshell *mshell);
+int		handle_heredoc(const char *delimiter, t_mshell *mshell);
 int		check_heredoc_quotes(const char *cmd, const char *delimiter_pos);
 char	*preprocess_heredocs(const char *cmd, t_mshell *mshell);
 

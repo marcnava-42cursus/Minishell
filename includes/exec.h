@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 19:42:35 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 00:49:15 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 04:24:13 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ void	collect_pipeline_commands(t_ent *node, t_ent **commands, int cmd_count);
 int		setup_pipeline_pipes(int **pipes, int cmd_count);
 void	setup_input_redirection(int **pipes, t_ent *command, int i);
 void	setup_output_redirection(int **pipes, t_ent *command, int i,
-	int cmd_count);
+			int cmd_count);
 void	close_all_pipes(int **pipes, int cmd_count);
 void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids,
-		int cmd_count);
+			int cmd_count);
 
 // Utilidades específicas de builtins (exec_builtin_utils.c)
 int		handle_cd_builtin(char **processed_argv, t_envp **envp);
