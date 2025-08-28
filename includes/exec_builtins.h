@@ -26,7 +26,7 @@ int		envp_set_value(t_envp **envp, const char *key, const char *value);
 int		msh_exec_bt_cd(t_envp **envp, const char *path);
 int		msh_exec_bt_echo(t_ent *cmd);
 int		msh_exec_bt_env(t_envp *envp);
-int		msh_exec_bt_exit(void);
+int		msh_exec_bt_exit(char **argv, int last_exit_code);
 int		msh_exec_bt_export(t_envp **envp, char *key, char *value);
 int		msh_exec_bt_pwd(t_envp *envp);
 int		msh_exec_bt_unset(t_envp **envp, char *key);

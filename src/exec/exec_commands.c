@@ -169,7 +169,7 @@ int	exec_builtin(t_ent *node, t_mshell *mshell)
 	else if (ft_strcmp(cmd, "env") == 0)
 		result = msh_exec_bt_env(mshell->envp);
 	else if (ft_strcmp(cmd, "exit") == 0)
-		result = msh_exec_bt_exit();
+		result = handle_exit_builtin(processed_argv, mshell->exit_code);
 	else if (ft_strcmp(cmd, "export") == 0)
 		result = handle_export_builtin(processed_argv, &(mshell->envp));
 	else if (ft_strcmp(cmd, "pwd") == 0)

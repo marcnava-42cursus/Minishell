@@ -64,5 +64,6 @@ int		handle_cd_builtin(char **processed_argv, t_envp **envp);
 int		handle_echo_builtin(t_ent *node, char **processed_argv);
 int		handle_export_builtin(char **processed_argv, t_envp **envp);
 int		handle_unset_builtin(char **processed_argv, t_envp **envp);
+int		handle_exit_builtin(char **processed_argv, int last_exit_code);
 
 #endif

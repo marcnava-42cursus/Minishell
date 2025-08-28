@@ -25,6 +25,8 @@ int	create_default_config(void)
 		"# WHOAMI      - Current username\n",
 		"# PWD         - Current working directory\n",
 		"#? GITBRANCH  - Current git branch\n\n",
+		"# Suggestions configuration (enabled/disabled)\n",
+		"SUGGESTIONS: enabled\n\n",
 		"MINISHELLPROMPT: ~ {PWD GREEN} $ \n",
 		NULL
 	};

@@ -23,5 +23,6 @@
 # include "parser.h"
 # include "exec.h"
 # include "forkerman.h"
+# include "suggestions.h"
 
 #endif

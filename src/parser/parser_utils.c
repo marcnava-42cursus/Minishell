@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:24 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 04:22:51 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 05:24:51 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,7 +386,8 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 			write(tmp_fd, line, ft_strlen(line));
 		else
 		{
-				expanded_line = expand_variables(line, mshell->envp, mshell->exit_code);
+			expanded_line = expand_variables(line, mshell->envp,
+					mshell->exit_code);
 			if (expanded_line)
 			{
 				write(tmp_fd, expanded_line, ft_strlen(expanded_line));

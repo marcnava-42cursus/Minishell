@@ -31,9 +31,20 @@ int	main(int argc, char **argv, char **env)
 		return (printf("Error saving envp\n"), 1);
 	mshell.exit_code = 0;
 	mshell.should_exit = 0;
+	if (mshell.config->use_suggestions)
+	{
+		mshell.suggestions = suggestion_init(mshell.config->prompt);
+		if (!mshell.suggestions)
+			mshell.config->use_suggestions = 0;
+	}
+	else
+		mshell.suggestions = NULL;
 	while (!mshell.should_exit)
 	{
-		line = readline(mshell.config->prompt);
+		if (mshell.config->use_suggestions && mshell.suggestions)
+			line = suggestion_readline(mshell.suggestions);
+		else
+			line = readline(mshell.config->prompt);
 		if (!line)
 		{
 			printf("exit\n");
@@ -78,5 +89,7 @@ int	main(int argc, char **argv, char **env)
 	}
 	if (mshell.envp)
 		envp_clear(mshell.envp);
+	if (mshell.suggestions)
+		suggestion_cleanup(mshell.suggestions);
 	return (0);
 }

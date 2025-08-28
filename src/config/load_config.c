@@ -63,6 +63,7 @@ int	load_config(t_config *config, char **envp)
 	int		fd;
 	char	*line;
 	char	*prompt_line;
+	char	*suggestions_line;
 
 	(void)envp;
 	fd = open(CONFIG_FILE, O_RDONLY);
@@ -73,11 +74,14 @@ int	load_config(t_config *config, char **envp)
 		fd = open(CONFIG_FILE, O_RDONLY);
 	}
 	prompt_line = NULL;
+	suggestions_line = NULL;
 	line = read_line(fd);
 	while (line != NULL)
 	{
 		if (ft_strncmp(line, "MINISHELLPROMPT", 15) == 0)
 			prompt_line = extract_value(line);
+		else if (ft_strncmp(line, "SUGGESTIONS", 11) == 0)
+			suggestions_line = extract_value(line);
 		ft_free((void **)&line);
 		line = read_line(fd);
 	}
@@ -85,7 +89,13 @@ int	load_config(t_config *config, char **envp)
 	if (!prompt_line)
 		return (1);
 	config->prompt_raw = prompt_line;
-	config->prompt = build_prompt(config->prompt_raw, config->exit_code);
+	config->prompt = build_prompt(config->prompt_raw, 0);
+	if (suggestions_line && ft_strncmp(suggestions_line, "enabled", 7) == 0)
+		config->use_suggestions = 1;
+	else
+		config->use_suggestions = 0;
+	if (suggestions_line)
+		ft_free((void **)&suggestions_line);
 	return (0);
 }
 

@@ -52,3 +52,8 @@ int	handle_unset_builtin(char **processed_argv, t_envp **envp)
 	else
 		return (0);
 }
+
+int	handle_exit_builtin(char **processed_argv, int last_exit_code)
+{
+	return (msh_exec_bt_exit(processed_argv, last_exit_code));
+}

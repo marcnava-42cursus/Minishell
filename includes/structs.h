@@ -16,6 +16,9 @@
 # include <stdio.h>
 # include "libft.h"
 
+# define SUG_BUFFER_SIZE 1024
+# define CMD_INITIAL_CAPACITY 256
+
 typedef enum e_node_type
 {
 	NODE_COMMAND,
@@ -47,7 +50,39 @@ typedef struct s_config
 {
 	char	*prompt_raw;
 	char	*prompt;
+	int		use_suggestions;
 }			t_config;
+
+/**
+ * @brief Dynamic list for storing command suggestions
+ */
+typedef struct s_cmd_list
+{
+	char	**items;
+	size_t	count;
+	size_t	capacity;
+}			t_cmd_list;
+
+/**
+ * @brief Terminal capabilities for suggestions
+ */
+typedef struct s_terminal
+{
+	char			*clear_to_eol;
+	char			*cursor_move;
+	int				capabilities_loaded;
+}					t_terminal;
+
+/**
+ * @brief Suggestion context containing all necessary data
+ */
+typedef struct s_suggestion_ctx
+{
+	t_cmd_list	*commands;
+	t_terminal	*terminal;
+	char		*prompt;
+	size_t		prompt_len;
+}				t_suggestion_ctx;
 
 /**
  * @brief Main shell structure that encapsulates all program data
@@ -62,6 +97,7 @@ typedef struct s_mshell
 	t_envp		*envp;				/* Environment variables */
 	t_ent		*tree;				/* Abstract syntax tree */
 	t_config	*config;			/* Shell configuration */
+	t_suggestion_ctx	*suggestions;	/* Suggestion context */
 	int			exit_code;			/* Last command exit code */
 	int			should_exit;		/* Flag to indicate shell should exit */
 }				t_mshell;
