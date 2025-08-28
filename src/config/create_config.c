@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:06 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/03 14:14:48 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:26:54 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ int	create_default_config(void)
 		"# WHOAMI      - Current username\n",
 		"# PWD         - Current working directory\n",
 		"#? GITBRANCH  - Current git branch\n\n",
-		"# Suggestions configuration (enabled/disabled)\n",
-		"SUGGESTIONS: disabled\n\n",
+		"# Suggestions configuration (enabled/disabled)\n\n",
+		"SUGGESTIONS: disabled\n",
 		"MINISHELLPROMPT: ~ {PWD GREEN} $ \n",
 		NULL
 	};

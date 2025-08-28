@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 00:32:12 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 04:24:33 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:30:26 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	main(int argc, char **argv, char **env)
 			if (parse_command(&mshell, line) != 0)
 				printf("Error parsing command\n");
 			else if (mshell.tree)
-			{
+			{ 
 				printf("===================================================\n");
 				print_tree(mshell.tree, 0);
 				printf("===================================================\n");
