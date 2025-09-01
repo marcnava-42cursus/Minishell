@@ -57,9 +57,9 @@ int	main(int argc, char **argv, char **env)
 				printf("Error parsing command\n");
 			else if (mshell.tree)
 			{ 
-				printf("===================================================\n");
-				print_tree(mshell.tree, 0);
-				printf("===================================================\n");
+//				printf("===================================================\n");
+//				print_tree(mshell.tree, 0);
+//				printf("===================================================\n");
 				mshell.exit_code = exec_tree(&mshell);
 				if (mshell.exit_code != 0)
 					printf("Command exited with code: %d\n", mshell.exit_code);

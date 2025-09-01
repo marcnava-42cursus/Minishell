@@ -4,7 +4,10 @@
 *.config
 minishell
 
+tmp*
+
 build/
 libs/
 tmp/
 .vscode/
+*tester*
