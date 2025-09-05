@@ -54,8 +54,4 @@ int	msh_exec_bt_echo(t_ent *cmd)
 	if (newline)
 		printf("\n");
 	return (0);
-	
-	// if (cmd)
-	// 	cmd = NULL;
-	// return (0);
 }
