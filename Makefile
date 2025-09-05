@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/08/08 17:47:00 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/05 15:16:15 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -98,7 +98,7 @@ RM			:=	rm -rf
 check:
 	@make -q all && echo "✅ Todo OK" || make all
 
-all: $(LIBFT_A) $(NAME)
+all: libft $(NAME)
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
@@ -114,11 +114,16 @@ clean:
 fclean: clean
 	$(RM) $(NAME)
 	$(RM) minishell.config
-	$(MAKE) -C $(LIBFT) fclean
+	$(RM) libs
 
 re: fclean all
 
-$(LIBFT_A):
-	$(MAKE) -C $(LIBFT)
-
 .PHONY: check all clean fclean re
+
+libft: $(LIBFT)/Makefile
+	$(MAKE) -C $(LIBFT) all
+
+$(LIBFT)/Makefile:
+	git clone https://github.com/marcnava-42cursus/libft.git libs/libft
+
+.PHONY: libft
