@@ -43,7 +43,7 @@ int	msh_exec_bt_echo(t_ent *cmd)
 			newline = 0;
 		i++;
 	}
-	if (!ft_strcmp(cmd->argv[i - 1], "echo"))
+	if (ft_strcmp(cmd->argv[i - 1], "echo"))
 		i--;
 	while (cmd->argv[i++])
     {
