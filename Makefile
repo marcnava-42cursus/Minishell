@@ -31,6 +31,7 @@ PARSER		:=	$(SRCPATH)/parser
 STRUCTS		:=	$(SRCPATH)/structs
 SUGGESTIONS	:=	$(SRCPATH)/suggestions
 UTILS		:=	$(SRCPATH)/utils
+WILDCARDS	:=	$(SRCPATH)/wildcards
 
 LIBFT		:=	libs/libft
 LIBFT_A		:=	$(LIBFT)/libft.a
@@ -79,8 +80,14 @@ SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
 				$(SUGGESTIONS)/suggestion_main.c
 
 SRCS		+=	$(UTILS)/print_tree.c \
-				$(UTILS)/matrix_utils.c \
-				$(UTILS)/termios_utils.c
+					$(UTILS)/matrix_utils.c \
+					$(UTILS)/termios_utils.c
+
+# Wildcards (globbing '*')
+SRCS		+=	$(WILDCARDS)/pattern.c \
+					$(WILDCARDS)/path.c \
+					$(WILDCARDS)/expand.c \
+					$(WILDCARDS)/utils.c
 
 SRCS		+=	$(FORKERMAN)/bombs.c \
 				$(FORKERMAN)/game.c \
@@ -89,6 +96,7 @@ SRCS		+=	$(FORKERMAN)/bombs.c \
 				$(FORKERMAN)/render.c
 
 OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
+DIRS		:=	$(sort $(dir $(OBJS)))
 
 RM			:=	rm -rf
 
@@ -100,16 +108,17 @@ check:
 
 all: libft $(NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
+$(NAME): dirs $(OBJS)
+		$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
 $(BUILDPATH)/%.o: $(SRCPATH)/%.c
-	mkdir -p $(@D)
-	@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
+		@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	$(RM) $(BUILDPATH)
-	$(MAKE) -C $(LIBFT) clean
+		$(RM) $(BUILDPATH)
+		@if [ -d $(LIBFT) ]; then \
+			$(MAKE) -C $(LIBFT) clean; \
+		fi
 
 fclean: clean
 	$(RM) $(NAME)
@@ -118,10 +127,17 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: check all clean fclean re
+.PHONY: check all clean fclean re dirs
+
+# Create all build directories once
+$(OBJS): | dirs libft
+
+dirs:
+		@echo "Preparing build directories..."
+		@mkdir -p $(DIRS)
 
 libft: $(LIBFT)/Makefile
-	$(MAKE) -C $(LIBFT) all
+		$(MAKE) -C $(LIBFT) all
 
 $(LIBFT)/Makefile:
 	git clone https://github.com/marcnava-42cursus/libft.git libs/libft

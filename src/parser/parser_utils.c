@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "wildcards.h"
 
 static void	skip_whitespace(const char **s)
 {
@@ -181,8 +182,37 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 		}
 		else
 		{
-			argv = ft_realloc_matrix(argv, argc, tok);
-			argc++;
+			if (wc_token_should_expand(tok))
+			{
+				int		mcount;
+				int		i;
+				char	**matches;
+
+				mcount = 0;
+				matches = wc_expand(tok, &mcount);
+				if (matches && mcount > 0)
+				{
+					i = 0;
+					while (i < mcount)
+					{
+						argv = ft_realloc_matrix(argv, argc, matches[i]);
+						argc++;
+						i++;
+					}
+					free(tok);
+					free(matches);
+				}
+				else
+				{
+					argv = ft_realloc_matrix(argv, argc, tok);
+					argc++;
+				}
+			}
+			else
+			{
+				argv = ft_realloc_matrix(argv, argc, tok);
+				argc++;
+			}
 		}
 	}
 	argv[argc] = NULL;
