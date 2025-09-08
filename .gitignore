@@ -11,3 +11,5 @@ libs/
 tmp/
 .vscode/
 *tester*
+
+!tests/
