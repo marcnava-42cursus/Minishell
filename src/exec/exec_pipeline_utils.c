@@ -66,20 +66,28 @@ int	setup_pipeline_pipes(int **pipes, int cmd_count)
 
 void	setup_input_redirection(int **pipes, t_ent *command, int i)
 {
+	/* Command-specific redirection overrides pipeline input */
+	if (command->fd_in != -1)
+	{
+		if (dup2(command->fd_in, STDIN_FILENO) == -1)
+			perror_exit("dup2", 1);
+		return ;
+	}
 	if (i > 0 && dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
-		perror_exit("dup2", 1);
-	if (i == 0 && command->fd_in != -1
-		&& dup2(command->fd_in, STDIN_FILENO) == -1)
 		perror_exit("dup2", 1);
 }
 
 void	setup_output_redirection(int **pipes, t_ent *command,
 	int i, int cmd_count)
 {
+	/* Command-specific redirection overrides pipeline output */
+	if (command->fd_out != -1)
+	{
+		if (dup2(command->fd_out, STDOUT_FILENO) == -1)
+			perror_exit("dup2", 1);
+		return ;
+	}
 	if (i < cmd_count - 1 && dup2(pipes[i][1], STDOUT_FILENO) == -1)
-		perror_exit("dup2", 1);
-	if (i == cmd_count - 1 && command->fd_out != -1
-		&& dup2(command->fd_out, STDOUT_FILENO) == -1)
 		perror_exit("dup2", 1);
 }
 

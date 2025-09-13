@@ -75,32 +75,30 @@ static char	*get_next_token(const char **s)
 			}
 			else if (in_dquote)
 			{
-				/* In double quotes, only escape \", \\ and \$ (and newline) */
-				if (*(p + 1) == '"' || *(p + 1) == '\\' || *(p + 1) == '$')
+				/* In double quotes: do not drop the backslash here; let expansion handle it */
+				if (*(p + 1) == '\n')
 				{
-					if (*(p + 1) != '\0')
-						buf[out++] = *(p + 1);
-					p += 2;
-				}
-				else if (*(p + 1) == '\n')
 					p += 2; /* line continuation */
+				}
 				else
+				{
 					buf[out++] = *p++;
+					if (*p)
+						buf[out++] = *p++;
+				}
 			}
 			else
 			{
-				/* Outside quotes, backslash escapes the next char (if any) */
-				if (*(p + 1) == '\0')
+				/* Outside quotes: do not drop the backslash; include next char if any */
+				if (*(p + 1) == '\n')
 				{
-					p++;
-					break ;
-				}
-				else if (*(p + 1) == '\n')
 					p += 2; /* swallow line continuation */
+				}
 				else
 				{
-					buf[out++] = *(p + 1);
-					p += 2;
+					buf[out++] = *p++;
+					if (*p)
+						buf[out++] = *p++;
 				}
 			}
 		}
@@ -129,25 +127,21 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 	char	*tok;
 	char	**argv;
 	int		argc;
-	t_ent	*node;
+	int		fd_in;
+	int		fd_out;
 	char	*filename;
 	int		fd;
+	int		mcount;
+	char	**matches;
+	int		i;
+	t_ent	*node;
 
-	skip_whitespace(s);
-	tok = get_next_token(s);
-	if (!tok)
-		return (NULL);
-	if (ft_strcmp(tok, "<<") == 0 || ft_strcmp(tok, "<") == 0
-		|| ft_strcmp(tok, ">") == 0 || ft_strcmp(tok, ">>") == 0)
-	{
-		ft_free((void **)&tok);
-		return (NULL);
-	}
-	argv = ft_calloc(2, sizeof(char *));
+	argv = ft_calloc(1, sizeof(char *));
 	if (!argv)
-		return (ft_free((void **)&tok), NULL);
-	argv[0] = tok;
-	argc = 1;
+		return (NULL);
+	argc = 0;
+	fd_in = -1;
+	fd_out = -1;
 	while (1)
 	{
 		skip_whitespace(s);
@@ -162,6 +156,8 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			filename = get_next_token(s);
 			if (!filename)
 			{
+print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
@@ -169,23 +165,24 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			ft_free((void **)&filename);
 			if (fd == -1)
 			{
-				/* heredoc error already reported via perror; set exit 1 */
+				/* Mark failure but continue building the command list */
 				mshell->exit_code = 1;
-				ft_free_matrix((void **)argv);
-				return (NULL);
+				fd_in = -2;
 			}
-			node = ent_new_node(NODE_COMMAND, argv);
-			if (node)
-				node->fd_in = fd;
-			return (node);
+			else
+			{
+				if (fd_in != -1 && fd_in != -2)
+					close(fd_in);
+				fd_in = fd;
+			}
+			continue ;
 		}
-		else if (ft_strcmp(tok, "<") == 0)
+		if (ft_strcmp(tok, "<") == 0)
 		{
 			ft_free((void **)&tok);
 			filename = get_next_token(s);
 			if (!filename)
 			{
-				/* syntax error: missing filename after '<' */
 print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
 				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
@@ -194,21 +191,21 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 			fd = open(filename, O_RDONLY);
 			if (fd == -1)
 			{
-				/* runtime error: file not found or permission -> exit 1 */
 print_err2("minishell: ", filename, ": ");
 				print_err2(strerror(errno), "\n", NULL);
 				mshell->exit_code = 1;
-				ft_free((void **)&filename);
-				ft_free_matrix((void **)argv);
-				return (NULL);
+				fd_in = -2;
+			}
+			else
+			{
+				if (fd_in != -1 && fd_in != -2)
+					close(fd_in);
+				fd_in = fd;
 			}
 			ft_free((void **)&filename);
-			node = ent_new_node(NODE_COMMAND, argv);
-			if (node)
-				node->fd_in = fd;
-			return (node);
+			continue ;
 		}
-		else if (ft_strcmp(tok, ">") == 0)
+		if (ft_strcmp(tok, ">") == 0)
 		{
 			ft_free((void **)&tok);
 			filename = get_next_token(s);
@@ -225,17 +222,18 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 print_err2("minishell: ", filename, ": ");
 				print_err2(strerror(errno), "\n", NULL);
 				mshell->exit_code = 1;
-				ft_free((void **)&filename);
-				ft_free_matrix((void **)argv);
-				return (NULL);
+				fd_out = -2;
+			}
+			else
+			{
+				if (fd_out != -1 && fd_out != -2)
+					close(fd_out);
+				fd_out = fd;
 			}
 			ft_free((void **)&filename);
-			node = ent_new_node(NODE_COMMAND, argv);
-			if (node)
-				node->fd_out = fd;
-			return (node);
+			continue ;
 		}
-		else if (ft_strcmp(tok, ">>") == 0)
+		if (ft_strcmp(tok, ">>") == 0)
 		{
 			ft_free((void **)&tok);
 			filename = get_next_token(s);
@@ -252,43 +250,33 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 print_err2("minishell: ", filename, ": ");
 				print_err2(strerror(errno), "\n", NULL);
 				mshell->exit_code = 1;
-				ft_free((void **)&filename);
-				ft_free_matrix((void **)argv);
-				return (NULL);
+				fd_out = -2;
+			}
+			else
+			{
+				if (fd_out != -1 && fd_out != -2)
+					close(fd_out);
+				fd_out = fd;
 			}
 			ft_free((void **)&filename);
-			node = ent_new_node(NODE_COMMAND, argv);
-			if (node)
-				node->fd_out = fd;
-			return (node);
+			continue ;
 		}
-		else
+		/* Normal argument or pattern */
+		if (wc_token_should_expand(tok))
 		{
-			if (wc_token_should_expand(tok))
+			mcount = 0;
+			matches = wc_expand(tok, &mcount);
+			if (matches && mcount > 0)
 			{
-				int		mcount;
-				int		i;
-				char	**matches;
-
-				mcount = 0;
-				matches = wc_expand(tok, &mcount);
-				if (matches && mcount > 0)
+				i = 0;
+				while (i < mcount)
 				{
-					i = 0;
-					while (i < mcount)
-					{
-						argv = ft_realloc_matrix(argv, argc, matches[i]);
-						argc++;
-						i++;
-					}
-					free(tok);
-					free(matches);
-				}
-				else
-				{
-					argv = ft_realloc_matrix(argv, argc, tok);
+					argv = ft_realloc_matrix(argv, argc, matches[i]);
 					argc++;
+					i++;
 				}
+				free(tok);
+				free(matches);
 			}
 			else
 			{
@@ -296,9 +284,23 @@ print_err2("minishell: ", filename, ": ");
 				argc++;
 			}
 		}
+		else
+		{
+			argv = ft_realloc_matrix(argv, argc, tok);
+			argc++;
+		}
 	}
+	argv = ft_realloc_matrix(argv, argc, NULL);
+	if (!argv)
+		return (NULL);
 	argv[argc] = NULL;
-	return (ent_new_node(NODE_COMMAND, argv));
+	node = ent_new_node(NODE_COMMAND, argv);
+	if (node)
+	{
+		node->fd_in = fd_in;
+		node->fd_out = fd_out;
+	}
+	return (node);
 }
 
 t_ent	*parse_subshell(const char **s, t_mshell *mshell)

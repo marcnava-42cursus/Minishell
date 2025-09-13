@@ -97,17 +97,12 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 		/* Handle backslashes before any expansion logic */
 		if (*in == '\\')
 		{
-			/* Preserve backslashes in output; they are part of lexical quoting.
-			 * But consume escapes that would otherwise trigger expansion. */
 			if (in_dquote)
 			{
+				/* In double quotes, allow \", \\ and \$ escapes; otherwise keep backslash */
 				if (*(in + 1) == '$' || *(in + 1) == '"' || *(in + 1) == '\\')
 				{
-					char one[2] = { '\\', 0 };
-					tmp = ft_strjoin(out, one);
-					ft_free((void **)&out);
-					out = tmp;
-					one[0] = *(in + 1);
+					char one[2] = { *(in + 1), 0 };
 					tmp = ft_strjoin(out, one);
 					ft_free((void **)&out);
 					out = tmp;
@@ -119,35 +114,93 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 					in += 2;
 					continue ;
 				}
+				/* keep backslash literal */
+				char bs[2] = { '\\', 0 };
+				tmp = ft_strjoin(out, bs);
+				ft_free((void **)&out);
+				out = tmp;
+				in++;
+				continue ;
 			}
-			else
+			/* Outside quotes: handle sequences and self-escape */
 			{
-				if (*(in + 1) == '$')
+				size_t k = 0;
+				while (in[k] == '\\')
+					k++;
+				char next = in[k];
+				if (next == '$')
 				{
-					char one[2] = { '\\', 0 };
-					tmp = ft_strjoin(out, one);
-					ft_free((void **)&out);
-					out = tmp;
-					one[0] = '$';
-					tmp = ft_strjoin(out, one);
-					ft_free((void **)&out);
-					out = tmp;
-					in += 2;
+					size_t pairs = k / 2;
+					while (pairs-- > 0)
+					{
+						char bs[2] = { '\\', 0 };
+						tmp = ft_strjoin(out, bs);
+						ft_free((void **)&out);
+						out = tmp;
+					}
+					if (k % 2 == 1)
+					{
+						/* odd count: escape the $, output literal '$' */
+						char dollar[2] = { '$', 0 };
+						tmp = ft_strjoin(out, dollar);
+						ft_free((void **)&out);
+						out = tmp;
+						in += k + 1;
+						continue ;
+					}
+					in += k;
 					continue ;
 				}
-				else if (*(in + 1) == '\n')
+				else if (next == '\n')
 				{
-					in += 2;
+					/* Swallow one backslash for line continuation, keep the rest */
+					if (k > 1)
+					{
+						size_t rem = k - 1;
+						while (rem-- > 0)
+						{
+							char bs[2] = { '\\', 0 };
+							tmp = ft_strjoin(out, bs);
+							ft_free((void **)&out);
+							out = tmp;
+						}
+					}
+					in += k + 1;
+					continue ;
+				}
+				else if (next == '\\')
+				{
+					/* Self-escape: \\ -> \ ; consume two at a time */
+					size_t pairs = k / 2;
+					while (pairs-- > 0)
+					{
+						char bs[2] = { '\\', 0 };
+						tmp = ft_strjoin(out, bs);
+						ft_free((void **)&out);
+						out = tmp;
+					}
+					if (k % 2 == 1)
+					{
+						/* one leftover backslash */
+						char bs[2] = { '\\', 0 };
+						tmp = ft_strjoin(out, bs);
+						ft_free((void **)&out);
+						out = tmp;
+					}
+					in += k;
+					continue ;
+				}
+				else
+				{
+					/* Not a special sequence: keep one backslash and continue */
+					char bs[2] = { '\\', 0 };
+					tmp = ft_strjoin(out, bs);
+					ft_free((void **)&out);
+					out = tmp;
+					in++;
 					continue ;
 				}
 			}
-			/* Default: copy backslash literally and move on */
-			char bs[2] = { '\\', 0 };
-			tmp = ft_strjoin(out, bs);
-			ft_free((void **)&out);
-			out = tmp;
-			in++;
-			continue ;
 		}
 		if (ft_strncmp(in, "$?", 2) == 0)
 		{
@@ -157,6 +210,40 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 			ft_free((void **)&num);
 			out = tmp;
 			in += 2;
+		}
+else if (*in == '$' && *(in + 1) == '"')
+		{
+			/* Treat $"..." like "..." (ignore $, expand inside) */
+			quote = *(in + 1);
+			in += 2;
+			start = in;
+			while (*in)
+			{
+				if (*in == '\\' && *(in + 1) != '\0')
+				{
+					in += 2;
+					continue ;
+				}
+				if (*in == quote)
+					break ;
+				in++;
+			}
+			content_len = in - start;
+			char *inner = ft_substr(start, 0, content_len);
+			char *expanded_inner = expand_variables_ctx(inner, envp, exit_code, 1);
+			ft_free((void **)&inner);
+			quote_content = process_quoted_content(expanded_inner,
+						expanded_inner ? ft_strlen(expanded_inner) : 0, '"');
+			ft_free((void **)&expanded_inner);
+			if (quote_content)
+			{
+				tmp = ft_strjoin(out, quote_content);
+				ft_free((void **)&out);
+				ft_free((void **)&quote_content);
+				out = tmp;
+			}
+			if (*in == '"')
+				in++;
 		}
 		else if (*in == '$' && (ft_isalpha(*(in + 1)) || *(in + 1) == '_'))
 		{
