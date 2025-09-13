@@ -23,13 +23,17 @@ static void	skip_whitespace(const char **s)
 
 static char	*get_next_token(const char **s)
 {
-	const char	*start;
-	size_t		len;
-	char		quote;
+	char		*buf;
+	size_t		cap;
+	size_t		out;
+	const char	*p;
+	int			in_squote;
+	int			in_dquote;
 
 	skip_whitespace(s);
 	if (**s == '\0')
 		return (NULL);
+	/* Single-char and double-char operators at token start (not escaped) */
 	if (**s == '(' || **s == ')')
 		return (ft_substr((*s)++, 0, 1));
 	if (**s == '&' && *(*s + 1) == '&')
@@ -46,24 +50,78 @@ static char	*get_next_token(const char **s)
 		return ((*s)++, ft_strdup(">"));
 	if (**s == '|')
 		return ((*s)++, ft_strdup("|"));
-	start = *s;
-	len = 0;
-	while ((*s)[len] && !ft_strchr(" \t()&|<>", (*s)[len]))
+
+	/* Build a word token honoring quotes and backslash escaping */
+	p = *s;
+	cap = ft_strlen(p) + 1;
+	buf = ft_calloc(cap, sizeof(char));
+	if (!buf)
+		return (NULL);
+	out = 0;
+	in_squote = 0;
+	in_dquote = 0;
+	while (*p)
 	{
-		if ((*s)[len] == '"' || (*s)[len] == '\'')
+		/* Token boundary (when not inside quotes) */
+		if (!in_squote && !in_dquote && ( *p == ' ' || *p == '\t'
+			|| *p == '(' || *p == ')' || *p == '&' || *p == '|' || *p == '<' || *p == '>'))
+			break ;
+		if (*p == '\\')
 		{
-			quote = (*s)[len];
-			len++;
-			while ((*s)[len] && (*s)[len] != quote)
-				len++;
-			if ((*s)[len] == quote)
-				len++;
+			if (in_squote)
+			{
+				/* Backslash is literal inside single quotes */
+				buf[out++] = *p++;
+			}
+			else if (in_dquote)
+			{
+				/* In double quotes, only escape \", \\ and \$ (and newline) */
+				if (*(p + 1) == '"' || *(p + 1) == '\\' || *(p + 1) == '$')
+				{
+					if (*(p + 1) != '\0')
+						buf[out++] = *(p + 1);
+					p += 2;
+				}
+				else if (*(p + 1) == '\n')
+					p += 2; /* line continuation */
+				else
+					buf[out++] = *p++;
+			}
+			else
+			{
+				/* Outside quotes, backslash escapes the next char (if any) */
+				if (*(p + 1) == '\0')
+				{
+					p++;
+					break ;
+				}
+				else if (*(p + 1) == '\n')
+					p += 2; /* swallow line continuation */
+				else
+				{
+					buf[out++] = *(p + 1);
+					p += 2;
+				}
+			}
+		}
+		else if (*p == '\'' && !in_dquote)
+		{
+			in_squote = !in_squote;
+			buf[out++] = *p++;
+		}
+		else if (*p == '"' && !in_squote)
+		{
+			in_dquote = !in_dquote;
+			buf[out++] = *p++;
 		}
 		else
-			len++;
+		{
+			buf[out++] = *p++;
+		}
 	}
-	*s += len;
-	return (ft_substr(start, 0, len));
+	buf[out] = '\0';
+	*s = p;
+	return (buf);
 }
 
 t_ent	*parse_cmd(const char **s, t_mshell *mshell)

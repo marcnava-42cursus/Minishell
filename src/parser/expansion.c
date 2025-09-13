@@ -85,7 +85,6 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 	char		*var;
 	char		*val;
 	char		*tmp;
-	char		*seg;
 	char		*num;
 	const char	*start;
 	char		*quote_content;
@@ -95,6 +94,61 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 	out = ft_strdup("");
 	while (*in)
 	{
+		/* Handle backslashes before any expansion logic */
+		if (*in == '\\')
+		{
+			/* Preserve backslashes in output; they are part of lexical quoting.
+			 * But consume escapes that would otherwise trigger expansion. */
+			if (in_dquote)
+			{
+				if (*(in + 1) == '$' || *(in + 1) == '"' || *(in + 1) == '\\')
+				{
+					char one[2] = { '\\', 0 };
+					tmp = ft_strjoin(out, one);
+					ft_free((void **)&out);
+					out = tmp;
+					one[0] = *(in + 1);
+					tmp = ft_strjoin(out, one);
+					ft_free((void **)&out);
+					out = tmp;
+					in += 2;
+					continue ;
+				}
+				else if (*(in + 1) == '\n')
+				{
+					in += 2;
+					continue ;
+				}
+			}
+			else
+			{
+				if (*(in + 1) == '$')
+				{
+					char one[2] = { '\\', 0 };
+					tmp = ft_strjoin(out, one);
+					ft_free((void **)&out);
+					out = tmp;
+					one[0] = '$';
+					tmp = ft_strjoin(out, one);
+					ft_free((void **)&out);
+					out = tmp;
+					in += 2;
+					continue ;
+				}
+				else if (*(in + 1) == '\n')
+				{
+					in += 2;
+					continue ;
+				}
+			}
+			/* Default: copy backslash literally and move on */
+			char bs[2] = { '\\', 0 };
+			tmp = ft_strjoin(out, bs);
+			ft_free((void **)&out);
+			out = tmp;
+			in++;
+			continue ;
+		}
 		if (ft_strncmp(in, "$?", 2) == 0)
 		{
 			num = ft_itoa(exit_code);
@@ -155,11 +209,21 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 		}
 		else if (*in == '"')
 		{
-			/* Double-quoted segment: expand inside, single quotes are literal */
+			/* Double-quoted segment: expand inside, but honor escapes */
 			quote = *in++;
 			start = in;
-			while (*in && *in != quote)
+			while (*in)
+			{
+				if (*in == '\\' && *(in + 1) != '\0')
+				{
+					/* Skip escaped character so we don't prematurely close */
+					in += 2;
+					continue ;
+				}
+				if (*in == quote)
+					break ;
 				in++;
+			}
 			content_len = in - start;
 			char *inner = ft_substr(start, 0, content_len);
 			char *expanded_inner = expand_variables_ctx(inner, envp, exit_code, 1);
@@ -179,17 +243,12 @@ static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, i
 		}
 		else
 		{
-			/* Plain segment: copy until next special-char */
-			start = in;
-			/* Stop at next special char. Single quotes are special only when we
-			   are NOT inside a double-quoted context. */
-			while (*in && *in != '$' && *in != '"' && (in_dquote || *in != '\''))
-				in++;
-			seg = ft_substr(start, 0, in - start);
-			tmp = ft_strjoin(out, seg);
+			/* Plain segment: copy one character */
+			char one[2] = { *in, 0 };
+			tmp = ft_strjoin(out, one);
 			ft_free((void **)&out);
-			ft_free((void **)&seg);
 			out = tmp;
+			in++;
 		}
 	}
 	return (out);
