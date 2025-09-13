@@ -11,14 +11,28 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "utils.h"
 
 int	exec_command(t_ent *node, t_mshell *mshell)
 {
 	pid_t	pid;
 	char	**env_arr;
+	char	**probe;
 
 	if (!node->argv || !node->argv[0])
 		return (0);
+	/* Detect comando vacío tras quitar comillas (p.ej. $NOVAR => "") */
+	probe = process_argv_quotes(node->argv);
+	if (!probe)
+		return (1);
+	if (!probe[0] || probe[0][0] == '\0')
+	{
+		/* Bash: command not found => 127 y stderr no vacío */
+		print_err2("minishell: ", ": command not found\n", NULL);
+		free_processed_argv(probe);
+		return (127);
+	}
+	free_processed_argv(probe);
 	if (is_builtin(node->argv[0]) && node->fd_in == -1 && node->fd_out == -1)
 		return (exec_builtin(node, mshell));
 	env_arr = envp_to_array(mshell->envp);

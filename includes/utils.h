@@ -19,6 +19,9 @@
 
 void	print_tree(t_ent *node, int indent);
 
+/* Write up to three contiguous strings to STDERR (fd=2). NULLs are ignored. */
+void	print_err2(const char *a, const char *b, const char *c);
+
 void	enable_raw(struct termios *terminal_attrs);
 void	disable_raw(struct termios *terminal_attrs);
 void	clear_scr(void);

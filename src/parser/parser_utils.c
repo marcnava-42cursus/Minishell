@@ -12,6 +12,8 @@
 
 #include "parser.h"
 #include "wildcards.h"
+#include <errno.h>
+#include "utils.h"
 
 static void	skip_whitespace(const char **s)
 {
@@ -109,6 +111,8 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			ft_free((void **)&filename);
 			if (fd == -1)
 			{
+				/* heredoc error already reported via perror; set exit 1 */
+				mshell->exit_code = 1;
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
@@ -123,16 +127,24 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			filename = get_next_token(s);
 			if (!filename)
 			{
+				/* syntax error: missing filename after '<' */
+print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
 			fd = open(filename, O_RDONLY);
-			ft_free((void **)&filename);
 			if (fd == -1)
 			{
+				/* runtime error: file not found or permission -> exit 1 */
+print_err2("minishell: ", filename, ": ");
+				print_err2(strerror(errno), "\n", NULL);
+				mshell->exit_code = 1;
+				ft_free((void **)&filename);
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
+			ft_free((void **)&filename);
 			node = ent_new_node(NODE_COMMAND, argv);
 			if (node)
 				node->fd_in = fd;
@@ -144,16 +156,22 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			filename = get_next_token(s);
 			if (!filename)
 			{
+print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
 			fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			ft_free((void **)&filename);
 			if (fd == -1)
 			{
+print_err2("minishell: ", filename, ": ");
+				print_err2(strerror(errno), "\n", NULL);
+				mshell->exit_code = 1;
+				ft_free((void **)&filename);
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
+			ft_free((void **)&filename);
 			node = ent_new_node(NODE_COMMAND, argv);
 			if (node)
 				node->fd_out = fd;
@@ -165,16 +183,22 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			filename = get_next_token(s);
 			if (!filename)
 			{
+print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
 			fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			ft_free((void **)&filename);
 			if (fd == -1)
 			{
+print_err2("minishell: ", filename, ": ");
+				print_err2(strerror(errno), "\n", NULL);
+				mshell->exit_code = 1;
+				ft_free((void **)&filename);
 				ft_free_matrix((void **)argv);
 				return (NULL);
 			}
+			ft_free((void **)&filename);
 			node = ent_new_node(NODE_COMMAND, argv);
 			if (node)
 				node->fd_out = fd;

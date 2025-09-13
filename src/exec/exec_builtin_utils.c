@@ -31,18 +31,31 @@ int	handle_echo_builtin(t_ent *node, char **processed_argv)
 
 int	handle_export_builtin(char **processed_argv, t_envp **envp)
 {
+	int		i;
+	int		status;
 	char	*eq;
 
 	if (!processed_argv[1])
 		return (msh_exec_bt_env(*envp));
-	eq = ft_strchr(processed_argv[1], '=');
-	if (eq)
+	i = 1;
+	status = 0;
+	while (processed_argv[i])
 	{
-		*eq = '\0';
-		return (msh_exec_bt_export(envp, processed_argv[1], eq + 1));
+		eq = ft_strchr(processed_argv[i], '=');
+		if (eq)
+		{
+			*eq = '\0';
+			if (msh_exec_bt_export(envp, processed_argv[i], eq + 1) != 0)
+				status = 1;
+		}
+		else
+		{
+			if (msh_exec_bt_export(envp, processed_argv[i], "") != 0)
+				status = 1;
+		}
+		i++;
 	}
-	else
-		return (msh_exec_bt_export(envp, processed_argv[1], ""));
+	return (status);
 }
 
 int	handle_unset_builtin(char **processed_argv, t_envp **envp)

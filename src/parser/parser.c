@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "utils.h"
 
 static int	is_empty_or_whitespace(const char *str)
 {
@@ -36,10 +37,18 @@ int	parse_command(t_mshell *mshell, char *cmd)
 		ft_free((void **)&mshell->raw_command);
 	mshell->raw_command = ft_strdup(cmd);
 	if (!mshell->raw_command)
-		return (write(2, "Error allocating\n", 17), 1);
+	{
+print_err2("minishell: allocation error\n", NULL, NULL);
+		mshell->exit_code = 1;
+		return (0);
+	}
 	exp = expand_variables(cmd, mshell->envp, mshell->exit_code);
 	if (!exp)
-		return (write(2, "Error allocating\n", 17), 1);
+	{
+print_err2("minishell: allocation error\n", NULL, NULL);
+		mshell->exit_code = 1;
+		return (0);
+	}
 	if (is_empty_or_whitespace(exp))
 	{
 		ft_free((void **)&exp);
@@ -52,8 +61,16 @@ int	parse_command(t_mshell *mshell, char *cmd)
 	root = parse_command_tree(exp, mshell);
 	if (!root)
 	{
+		/* Si no hay árbol, puede ser error de sintaxis (exit 2) o
+		   un error de redirección ya reportado (exit 1) */
+		if (mshell->exit_code == 0)
+		{
+print_err2("minishell: syntax error\n", NULL, NULL);
+			mshell->exit_code = 2;
+		}
 		ft_free((void **)&exp);
-		return (write(2, "Parse error\n", 12), 1);
+		mshell->tree = NULL;
+		return (0);
 	}
 	mshell->tree = root;
 	ft_free((void **)&exp);

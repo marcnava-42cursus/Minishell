@@ -81,7 +81,8 @@ SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
 
 SRCS		+=	$(UTILS)/print_tree.c \
 					$(UTILS)/matrix_utils.c \
-					$(UTILS)/termios_utils.c
+					$(UTILS)/termios_utils.c \
+					$(UTILS)/io_utils.c
 
 # Wildcards (globbing '*')
 SRCS		+=	$(WILDCARDS)/pattern.c \

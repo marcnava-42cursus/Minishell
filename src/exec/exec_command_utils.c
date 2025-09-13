@@ -11,28 +11,50 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include <errno.h>
+#include "utils.h"
 
 void	perror_exit(char *msg, int exit_code);
+
+static void	exit_with_errno_message(const char *cmd)
+{
+	print_err2("minishell: ", cmd, ": ");
+	print_err2(strerror(errno), "\n", NULL);
+	if (errno == ENOENT)
+		exit(127);
+	else
+		exit(126);
+}
 
 static void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr)
 {
 	char	*path;
 	char	**processed_argv;
+	char	*cmd0;
 
-	path = find_command_path(node->argv[0], *envp);
-	if (!path)
-	{
-		printf("minishell: %s: command not found\n", node->argv[0]);
-		exit(127);
-	}
 	processed_argv = process_argv_quotes(node->argv);
 	if (!processed_argv)
-	{
-		free(path);
 		exit(1);
+	cmd0 = processed_argv[0];
+	/* If command contains '/', try executing directly to let errno decide */
+	if (cmd0 && ft_strchr(cmd0, '/'))
+	{
+		execve(cmd0, processed_argv, env_arr);
+		/* execve failed: map errno to exit code per bash semantics */
+		exit_with_errno_message(cmd0);
+	}
+	/* Otherwise search in PATH */
+	path = find_command_path(cmd0, *envp);
+	if (!path)
+	{
+		print_err2("minishell: ", cmd0, ": command not found\n");
+		free_processed_argv(processed_argv);
+		exit(127);
 	}
 	execve(path, processed_argv, env_arr);
-	perror("execve");
+	/* If we are here, execve failed with a found path: permission or similar */
+	print_err2("minishell: ", cmd0, ": ");
+	print_err2(strerror(errno), "\n", NULL);
 	free(path);
 	free_processed_argv(processed_argv);
 	exit(126);

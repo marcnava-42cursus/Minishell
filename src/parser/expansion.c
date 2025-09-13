@@ -68,25 +68,15 @@ static char	*process_quoted_content(const char *content, size_t len,
 {
 	char	*result;
 
-	if (len == 0)
-	{
-		return (ft_strdup(""));
-	}
-	if (has_only_whitespace(content, len) && len <= 2)
-	{
-		return (ft_substr(content, 0, len));
-	}
-	if (contains_whitespace(content, len))
-	{
-		result = ft_calloc(len + 3, sizeof(char));
-		if (!result)
-			return (NULL);
-		result[0] = quote_type;
+	/* Always preserve quotes to keep operators literal until parsing stage */
+	result = ft_calloc(len + 3, sizeof(char));
+	if (!result)
+		return (NULL);
+	result[0] = quote_type;
+	if (content && len > 0)
 		ft_strlcpy(result + 1, content, len + 1);
-		result[len + 1] = quote_type;
-		return (result);
-	}
-	return (ft_substr(content, 0, len));
+	result[len + 1] = quote_type;
+	return (result);
 }
 
 char	*expand_variables(const char *in, t_envp *envp, int exit_code)
@@ -136,6 +126,14 @@ char	*expand_variables(const char *in, t_envp *envp, int exit_code)
 			if (var)
 				ft_free((void **)&var);
 		}
+		else if (*in == '$')
+		{
+			/* Treat isolated '$' (not followed by valid var and not $? ) as literal '$' */
+			tmp = ft_strjoin(out, "$");
+			ft_free((void **)&out);
+			out = tmp;
+			in++;
+		}
 		else if (*in == '\'' || *in == '\"')
 		{
 			quote = *in++;
@@ -143,7 +141,19 @@ char	*expand_variables(const char *in, t_envp *envp, int exit_code)
 			while (*in && *in != quote)
 				in++;
 			content_len = in - start;
-			quote_content = process_quoted_content(start, content_len, quote);
+			if (quote == '\"')
+			{
+				char *inner = ft_substr(start, 0, content_len);
+				char *expanded_inner = expand_variables(inner, envp, exit_code);
+				ft_free((void **)&inner);
+				quote_content = process_quoted_content(expanded_inner,
+						expanded_inner ? ft_strlen(expanded_inner) : 0, quote);
+				ft_free((void **)&expanded_inner);
+			}
+			else
+			{
+				quote_content = process_quoted_content(start, content_len, quote);
+			}
 			if (quote_content)
 			{
 				tmp = ft_strjoin(out, quote_content);
