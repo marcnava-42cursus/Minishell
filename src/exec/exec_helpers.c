@@ -143,27 +143,56 @@ void	free_env_array(char **env_array)
 }
 
 /**
- * @brief Remove outer quotes from a string if they are paired
+ * @brief Remove all quoting characters from a string, preserving content
  * 
- * @param str The string to process
- * @return A new string without outer quotes, or copy of original if no quotes
+ * Implements the shell's "quote removal" step: removes both ' and " that were
+ * used for quoting, while keeping the inner content intact. This happens after
+ * expansions, so quotes are no longer needed to preserve grouping.
  */
-static char	*remove_quotes(const char *str)
+static char	*remove_all_quotes(const char *str)
 {
+	char	*out;
+	size_t	i;
+	size_t	j;
 	size_t	len;
-	char	first;
-	char	last;
 
 	if (!str)
 		return (NULL);
 	len = ft_strlen(str);
-	if (len < 2)
-		return (ft_strdup(str));
-	first = str[0];
-	last = str[len - 1];
-	if ((first == '"' && last == '"') || (first == '\'' && last == '\''))
-		return (ft_substr(str, 1, len - 2));
-	return (ft_strdup(str));
+	out = malloc(len + 1);
+	if (!out)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+		{
+			/* skip opening single quote */
+			i++;
+			while (str[i] && str[i] != '\'')
+				out[j++] = str[i++];
+			/* skip closing single quote if present */
+			if (str[i] == '\'')
+				i++;
+		}
+		else if (str[i] == '"')
+		{
+			/* skip opening double quote */
+			i++;
+			while (str[i] && str[i] != '"')
+				out[j++] = str[i++];
+			/* skip closing double quote if present */
+			if (str[i] == '"')
+				i++;
+		}
+		else
+		{
+			out[j++] = str[i++];
+		}
+	}
+	out[j] = '\0';
+	return (out);
 }
 
 /**
@@ -189,7 +218,7 @@ char	**process_argv_quotes(char **argv)
 	i = 0;
 	while (i < count)
 	{
-		new_argv[i] = remove_quotes(argv[i]);
+		new_argv[i] = remove_all_quotes(argv[i]);
 		if (!new_argv[i])
 		{
 			while (--i >= 0)

@@ -79,7 +79,7 @@ static char	*process_quoted_content(const char *content, size_t len,
 	return (result);
 }
 
-char	*expand_variables(const char *in, t_envp *envp, int exit_code)
+static char	*expand_variables_ctx(const char *in, t_envp *envp, int exit_code, int in_dquote)
 {
 	char		*out;
 	char		*var;
@@ -128,32 +128,21 @@ char	*expand_variables(const char *in, t_envp *envp, int exit_code)
 		}
 		else if (*in == '$')
 		{
-			/* Treat isolated '$' (not followed by valid var and not $? ) as literal '$' */
+			/* Treat isolated '$' as literal */
 			tmp = ft_strjoin(out, "$");
 			ft_free((void **)&out);
 			out = tmp;
 			in++;
 		}
-		else if (*in == '\'' || *in == '\"')
+		else if (*in == '\'' && !in_dquote)
 		{
+			/* Single-quoted literal segment (no expansion) */
 			quote = *in++;
 			start = in;
 			while (*in && *in != quote)
 				in++;
 			content_len = in - start;
-			if (quote == '\"')
-			{
-				char *inner = ft_substr(start, 0, content_len);
-				char *expanded_inner = expand_variables(inner, envp, exit_code);
-				ft_free((void **)&inner);
-				quote_content = process_quoted_content(expanded_inner,
-						expanded_inner ? ft_strlen(expanded_inner) : 0, quote);
-				ft_free((void **)&expanded_inner);
-			}
-			else
-			{
-				quote_content = process_quoted_content(start, content_len, quote);
-			}
+			quote_content = process_quoted_content(start, content_len, quote);
 			if (quote_content)
 			{
 				tmp = ft_strjoin(out, quote_content);
@@ -164,10 +153,37 @@ char	*expand_variables(const char *in, t_envp *envp, int exit_code)
 			if (*in == quote)
 				in++;
 		}
+		else if (*in == '"')
+		{
+			/* Double-quoted segment: expand inside, single quotes are literal */
+			quote = *in++;
+			start = in;
+			while (*in && *in != quote)
+				in++;
+			content_len = in - start;
+			char *inner = ft_substr(start, 0, content_len);
+			char *expanded_inner = expand_variables_ctx(inner, envp, exit_code, 1);
+			ft_free((void **)&inner);
+			quote_content = process_quoted_content(expanded_inner,
+						expanded_inner ? ft_strlen(expanded_inner) : 0, '"');
+			ft_free((void **)&expanded_inner);
+			if (quote_content)
+			{
+				tmp = ft_strjoin(out, quote_content);
+				ft_free((void **)&out);
+				ft_free((void **)&quote_content);
+				out = tmp;
+			}
+			if (*in == '"')
+				in++;
+		}
 		else
 		{
+			/* Plain segment: copy until next special-char */
 			start = in;
-			while (*in && *in != '$' && *in != '\"' && *in != '\'')
+			/* Stop at next special char. Single quotes are special only when we
+			   are NOT inside a double-quoted context. */
+			while (*in && *in != '$' && *in != '"' && (in_dquote || *in != '\''))
 				in++;
 			seg = ft_substr(start, 0, in - start);
 			tmp = ft_strjoin(out, seg);
@@ -177,4 +193,9 @@ char	*expand_variables(const char *in, t_envp *envp, int exit_code)
 		}
 	}
 	return (out);
+}
+
+char	*expand_variables(const char *in, t_envp *envp, int exit_code)
+{
+	return expand_variables_ctx(in, envp, exit_code, 0);
 }

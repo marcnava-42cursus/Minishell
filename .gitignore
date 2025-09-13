@@ -6,6 +6,9 @@ minishell
 
 tmp*
 
+echo
+grep
+
 build/
 libs/
 tmp/
