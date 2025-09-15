@@ -11,62 +11,95 @@
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
+#include <limits.h>
+#include <unistd.h>
 
-static int	ft_is_valid_number(const char *str)
+static int	parse_ll_strict(const char *s, long long *out)
 {
-	int	i;
+	int			i;
+	int			sign;
+	unsigned long long acc;
+	unsigned long long limit;
+	int			d;
 
-	if (!str || !*str)
+	if (!s || !*s)
 		return (0);
 	i = 0;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	if (!str[i])
+	sign = 1;
+	if (s[i] == '+' || s[i] == '-')
+		sign = (s[i++] == '-') ? -1 : 1;
+	if (!s[i])
 		return (0);
-	while (str[i])
+	acc = 0ULL;
+	limit = (sign < 0) ? (unsigned long long)LLONG_MAX + 1ULL
+					  : (unsigned long long)LLONG_MAX;
+	while (s[i])
 	{
-		if (!ft_isdigit(str[i]))
+		if (!ft_isdigit(s[i]))
 			return (0);
+		d = s[i] - '0';
+		if (acc > (limit / 10ULL) || (acc == (limit / 10ULL)
+			&& (unsigned long long)d > (limit % 10ULL)))
+			return (0);
+		acc = acc * 10ULL + (unsigned long long)d;
 		i++;
+	}
+	if (sign > 0)
+		*out = (long long)acc;
+	else
+	{
+		if (acc == (unsigned long long)LLONG_MAX + 1ULL)
+			*out = LLONG_MIN;
+		else
+			*out = -(long long)acc;
 	}
 	return (1);
 }
 
+static void	print_exit_prefix_if_interactive(void)
+{
+	/* Print the banner only in interactive mode (like bash). */
+	if (isatty(STDIN_FILENO))
+		write(STDOUT_FILENO, "exit\n", 5);
+}
+
 int	msh_exec_bt_exit(char **argv, int last_exit_code)
 {
-	int	exit_code;
-	int	argc;
+	long long	val;
+	int			argc;
+	int			ecode;
 
 	/* Count arguments */
 	argc = 0;
 	while (argv[argc])
 		argc++;
-	
-	printf("exit\n");
-	
+
 	/* No arguments: exit with last exit code */
 	if (argc == 1)
-		exit(last_exit_code);
-	
-	/* More than one argument: error but don't exit */
-	if (argc > 2)
 	{
-		printf("minishell: exit: too many arguments\n");
-		return (1);
+		print_exit_prefix_if_interactive();
+		exit(last_exit_code);
 	}
 	
-	/* One argument: validate and use as exit code */
-	if (!ft_is_valid_number(argv[1]))
+	/* Validate first argument */
+	if (!parse_ll_strict(argv[1], &val))
 	{
-		printf("minishell: exit: %s: numeric argument required\n", argv[1]);
+		print_exit_prefix_if_interactive();
+		print_err2("minishell: exit: ", argv[1], ": numeric argument required\n");
+		/* Ensure message is flushed to stderr before exiting */
+		fsync(STDERR_FILENO);
 		exit(2);
 	}
-	
-	exit_code = ft_atoi(argv[1]);
-	/* Exit code is taken modulo 256 (bash behavior) */
-	exit_code = exit_code % 256;
-	if (exit_code < 0)
-		exit_code += 256;
-	
-	exit(exit_code);
+	/* Too many arguments: error but don't exit */
+	if (argc > 2)
+	{
+		print_err2("minishell: exit: too many arguments\n", NULL, NULL);
+		return (1);
+	}
+	/* Compute code modulo 256 like bash */
+	ecode = (int)(val % 256);
+	if (ecode < 0)
+		ecode += 256;
+	print_exit_prefix_if_interactive();
+	exit(ecode);
 }

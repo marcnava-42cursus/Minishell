@@ -60,10 +60,20 @@ int	handle_export_builtin(char **processed_argv, t_envp **envp)
 
 int	handle_unset_builtin(char **processed_argv, t_envp **envp)
 {
-	if (processed_argv[1])
-		return (msh_exec_bt_unset(envp, processed_argv[1]));
-	else
+	int	i;
+	int	status;
+
+	if (!processed_argv[1])
 		return (0);
+	status = 0;
+	i = 1;
+	while (processed_argv[i])
+	{
+		if (msh_exec_bt_unset(envp, processed_argv[i]) != 0)
+			status = 1;
+		i++;
+	}
+	return (status);
 }
 
 int	handle_exit_builtin(char **processed_argv, int last_exit_code)

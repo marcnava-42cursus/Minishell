@@ -17,10 +17,10 @@
 void	print_err2(const char *a, const char *b, const char *c)
 {
 	if (a)
-		write(2, a, ft_strlen(a));
+		write(STDERR_FILENO, a, ft_strlen(a));
 	if (b)
-		write(2, b, ft_strlen(b));
+		write(STDERR_FILENO, b, ft_strlen(b));
 	if (c)
-		write(2, c, ft_strlen(c));
+		write(STDERR_FILENO, c, ft_strlen(c));
 }
 
