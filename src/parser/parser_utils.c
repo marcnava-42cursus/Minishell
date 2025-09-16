@@ -268,6 +268,8 @@ int	check_heredoc_quotes(const char *cmd, const char *delimiter_pos)
 {
 	const char	*search_pos;
 
+	if (!delimiter_pos)
+		delimiter_pos = NULL;
 	if (!cmd)
 		return (-1);
 	search_pos = ft_strnstr(cmd, "<<", ft_strlen(cmd));

@@ -24,5 +24,6 @@
 # include "exec.h"
 # include "forkerman.h"
 # include "suggestions.h"
+# include "signals.h"
 
 #endif

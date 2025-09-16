@@ -33,8 +33,11 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 }
 
 static int	execute_pipeline_child(t_ent **commands, int **pipes,
-	t_mshell *mshell, int i, int cmd_count)
+t_mshell *mshell, int i, int cmd_count)
 {
+	// Restaurar señales a comportamiento por defecto en procesos hijos
+	setup_child_signals();
+	
 	setup_input_redirection(pipes, commands[i], i);
 	setup_output_redirection(pipes, commands[i], i, cmd_count);
 	close_all_pipes(pipes, cmd_count);
@@ -83,9 +86,11 @@ int	exec_pipeline(t_ent *node, t_mshell *mshell)
 			execute_pipeline_child(commands, pipes, mshell, i, cmd_count);
 	}
 	close_all_pipes(pipes, cmd_count);
+	set_child_executing();
 	i = -1;
 	while (++i < cmd_count)
 		waitpid(pids[i], &status, 0);
+	unset_child_executing();
 	cleanup_pipeline_resources(commands, pipes, pids, cmd_count);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
@@ -137,13 +142,18 @@ int	exec_subshell(t_ent *node, t_mshell *mshell)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
+		// Restaurar señales a comportamiento por defecto en subshells
+		setup_child_signals();
+		
 		if (apply_redirections(node))
 			exit(1);
 		child_shell = *mshell;
 		child_shell.tree = node->child;
 		exit(exec_tree(&child_shell));
 	}
+	set_child_executing();
 	waitpid(pid, &status, 0);
+	unset_child_executing();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
