@@ -21,6 +21,7 @@
 # include <fcntl.h>
 # include "structs.h"
 # include "exec_builtins.h"
+# include "signals.h"
 
 // Punto de entrada principal (exec.c)
 int		exec_tree(t_mshell *mshell);

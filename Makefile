@@ -28,6 +28,7 @@ EXEC		:=	$(SRCPATH)/exec
 BUILTINS	:=	$(EXEC)/builtins
 FORKERMAN	:=	$(SRCPATH)/forkerman
 PARSER		:=	$(SRCPATH)/parser
+SIGNALS		:=	$(SRCPATH)/signals
 STRUCTS		:=	$(SRCPATH)/structs
 SUGGESTIONS	:=	$(SRCPATH)/suggestions
 UTILS		:=	$(SRCPATH)/utils
@@ -69,6 +70,8 @@ SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_tree.c \
 				$(PARSER)/save_envp.c
 
+
+SRCS        +=  $(SIGNALS)/signal_handler.c
 
 SRCS        +=  $(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/tree_manager.c

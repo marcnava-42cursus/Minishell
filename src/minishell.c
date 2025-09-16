@@ -32,6 +32,10 @@ int	main(int argc, char **argv, char **env)
 		return (printf("Error saving envp\n"), 1);
 	mshell.exit_code = 0;
 	mshell.should_exit = 0;
+	
+	// Configurar manejo de señales
+	setup_parent_signals();
+	
 	if (mshell.config->use_suggestions)
 	{
 		mshell.suggestions = suggestion_init(mshell.config->prompt);
@@ -84,6 +88,11 @@ int	main(int argc, char **argv, char **env)
 				printf("exit\n");
 			break ;
 		}
+		// Verificar si se ha recibido una señal
+		int signal_exit_code = check_signal_exit_code();
+		if (signal_exit_code != 0)
+			mshell.exit_code = signal_exit_code;
+		
 		if (*line)
 		{
 			add_history(line);
