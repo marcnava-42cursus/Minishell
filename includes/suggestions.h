@@ -39,6 +39,14 @@ void			cmdlist_load_from_path(t_cmd_list *list, char *path_env);
 int				terminal_init_caps(t_terminal *term);
 int				terminal_putchar(int c);
 
+/* Readline state structure */
+typedef struct s_readline_state
+{
+	char		*buffer;
+	size_t		*buffer_len;
+	struct termios	*original_termios;
+}				t_readline_state;
+
 /* Main suggestion functions */
 t_suggestion_ctx	*suggestion_init(const char *prompt);
 char				*suggestion_readline(t_suggestion_ctx *ctx);

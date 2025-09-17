@@ -102,7 +102,9 @@ SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
 				$(SUGGESTIONS)/cmd_list.c \
 				$(SUGGESTIONS)/path_loader.c \
 				$(SUGGESTIONS)/terminal.c \
-				$(SUGGESTIONS)/suggestion_main.c
+				$(SUGGESTIONS)/suggestion_main.c \
+				$(SUGGESTIONS)/suggestion_utils.c \
+				$(SUGGESTIONS)/suggestion_prompt.c
 
 SRCS		+=	$(UTILS)/print_tree.c \
 				$(UTILS)/matrix_utils.c \
