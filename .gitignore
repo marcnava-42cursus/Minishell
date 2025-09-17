@@ -3,6 +3,7 @@
 *.a
 *.config
 minishell
+*.log
 
 tmp*
 
