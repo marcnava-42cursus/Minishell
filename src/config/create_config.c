@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:06 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 18:26:54 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/17 18:25:39 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-int	create_default_config(void)
+static const char	**get_config_lines(void)
 {
-	int			fd;
-	int			i;
-	const char	*lines[] = {
+	static const char	*lines[] = {
 		"# Minishell configuration file\n",
 		"# Available keywords:\n",
 		"# HOSTNAME    - Hostname of the machine\n",
@@ -31,15 +29,18 @@ int	create_default_config(void)
 		NULL
 	};
 
+	return (lines);
+}
+
+int	create_default_config(void)
+{
+	int	fd;
+	int	result;
+
 	fd = open(CONFIG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 		return (1);
-	i = 0;
-	while (lines[i])
-	{
-		write(fd, lines[i], ft_strlen(lines[i]));
-		i++;
-	}
+	result = write_config_lines(fd, get_config_lines());
 	close(fd);
-	return (0);
+	return (result);
 }

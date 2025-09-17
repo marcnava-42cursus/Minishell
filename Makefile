@@ -45,7 +45,11 @@ SRCS		+=	$(CONFIG)/build_prompt.c \
 				$(CONFIG)/colors.c \
 				$(CONFIG)/create_config.c \
 				$(CONFIG)/keywords.c \
-				$(CONFIG)/load_config.c
+				$(CONFIG)/keywords_system.c \
+				$(CONFIG)/load_config.c \
+				$(CONFIG)/config_utils.c \
+				$(CONFIG)/config_parser.c \
+				$(CONFIG)/prompt_utils.c
 
 SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/echo.c \

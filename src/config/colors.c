@@ -12,23 +12,23 @@
 
 #include "config.h"
 
-char	*get_color_code(char *color)
+char	*get_color_code(const char *color)
 {
-	if (!ft_strcmp(color, "WHITE"))
+	if (!ft_strcmp((char *)color, "WHITE"))
 		return ("\033[0;37m");
-	if (!ft_strcmp(color, "GREEN"))
+	if (!ft_strcmp((char *)color, "GREEN"))
 		return ("\033[0;32m");
-	if (!ft_strcmp(color, "LIME"))
+	if (!ft_strcmp((char *)color, "LIME"))
 		return ("\033[1;32m");
-	if (!ft_strcmp(color, "YELLOW"))
+	if (!ft_strcmp((char *)color, "YELLOW"))
 		return ("\033[0;33m");
-	if (!ft_strcmp(color, "BLUE"))
+	if (!ft_strcmp((char *)color, "BLUE"))
 		return ("\033[0;34m");
-	if (!ft_strcmp(color, "RED"))
+	if (!ft_strcmp((char *)color, "RED"))
 		return ("\033[0;31m");
-	if (!ft_strcmp(color, "CYAN"))
+	if (!ft_strcmp((char *)color, "CYAN"))
 		return ("\033[0;36m");
-	if (!ft_strcmp(color, "MAGENTA"))
+	if (!ft_strcmp((char *)color, "MAGENTA"))
 		return ("\033[0;35m");
 	return ("");
 }

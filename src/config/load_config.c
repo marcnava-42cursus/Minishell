@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:50:41 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/03 14:13:37 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/17 18:26:02 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,77 +14,47 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-static char	*extract_value(char *line)
+static int	open_config_file(void)
 {
-	char	*colon;
-	char	*value;
-	size_t	len;
+	int	fd;
 
-	colon = ft_strchr(line, ':');
-	if (!colon)
-		return (NULL);
-	colon++;
-	while (*colon == ' ' || *colon == '\t')
-		colon++;
-	value = ft_strdup(colon);
-	if (!value)
-		return (NULL);
-	len = ft_strlen(value);
-	if (len > 0 && value[len - 1] == '\n')
-		value[len - 1] = '\0';
-	return (value);
+	fd = open(CONFIG_FILE, O_RDONLY);
+	if (fd < 0)
+	{
+		if (create_default_config())
+			return (-1);
+		fd = open(CONFIG_FILE, O_RDONLY);
+	}
+	return (fd);
 }
 
-static char	*read_line(int fd)
+static void	parse_config_file(int fd, char **prompt_line,
+	char **suggestions_line)
 {
-	char	buffer[MAX_LINE_LEN];
-	int		i;
-	ssize_t	bytes;
-	char	c;
+	char	*line;
 
-	i = 0;
-	while (i < MAX_LINE_LEN - 1)
+	*prompt_line = NULL;
+	*suggestions_line = NULL;
+	line = read_single_line(fd);
+	while (line != NULL)
 	{
-		bytes = read(fd, &c, 1);
-		if (bytes <= 0)
-			break ;
-		if (c == '\n')
-			break ;
-		buffer[i++] = c;
+		process_config_line(line, prompt_line, suggestions_line);
+		ft_free((void **)&line);
+		line = read_single_line(fd);
 	}
-	if (bytes <= 0 && i == 0)
-		return (NULL);
-	buffer[i] = '\0';
-	return (ft_strdup(buffer));
 }
 
 int	load_config(t_config *config, char **envp)
 {
 	int		fd;
-	char	*line;
 	char	*prompt_line;
 	char	*suggestions_line;
 
 	(void)envp;
-	fd = open(CONFIG_FILE, O_RDONLY);
+	fd = open_config_file();
 	if (fd < 0)
-	{
-		if (create_default_config())
-			return (1);
-		fd = open(CONFIG_FILE, O_RDONLY);
-	}
-	prompt_line = NULL;
-	suggestions_line = NULL;
-	line = read_line(fd);
-	while (line != NULL)
-	{
-		if (ft_strncmp(line, "MINISHELLPROMPT", 15) == 0)
-			prompt_line = extract_value(line);
-		else if (ft_strncmp(line, "SUGGESTIONS", 11) == 0)
-			suggestions_line = extract_value(line);
-		ft_free((void **)&line);
-		line = read_line(fd);
-	}
+		return (1);
+	parse_config_file(fd, &prompt_line, &suggestions_line);
 	close(fd);
 	if (!prompt_line)
 		return (1);
