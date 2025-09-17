@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/05 15:16:15 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/17 18:48:07 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,18 @@ LIBFT_A		:=	$(LIBFT)/libft.a
 
 INCLUDES	:=	-Iincludes -I$(LIBFT)/includes
 
+HEADERS		:=	includes/config.h \
+				includes/exec.h \
+				includes/exec_builtins.h \
+				includes/forkerman.h \
+				includes/minishell.h \
+				includes/parser.h \
+				includes/signals.h \
+				includes/structs.h \
+				includes/suggestions.h \
+				includes/utils.h \
+				includes/wildcards.h
+
 SRCS		:=	$(SRCPATH)/minishell.c
 
 SRCS		+=	$(CONFIG)/build_prompt.c \
@@ -68,16 +80,22 @@ SRCS		+=	$(EXEC)/exec.c \
 				$(EXEC)/exec_pipeline_utils.c \
 				$(EXEC)/exec_builtin_utils.c
 
+SRCS		+=	$(FORKERMAN)/bombs.c \
+				$(FORKERMAN)/game.c \
+				$(FORKERMAN)/map.c \
+				$(FORKERMAN)/player.c \
+				$(FORKERMAN)/render.c
+
 SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_utils.c \
 				$(PARSER)/parser.c \
 				$(PARSER)/parser_tree.c \
 				$(PARSER)/save_envp.c
 
+SRCS		+=	$(SIGNALS)/signal_handler.c
 
-SRCS        +=  $(SIGNALS)/signal_handler.c
-
-SRCS        +=  $(STRUCTS)/envp_manager.c \
+SRCS		+=	$(STRUCTS)/envp_manager.c \
+				$(STRUCTS)/envp_utils.c \
 				$(STRUCTS)/tree_manager.c
 
 SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
@@ -87,21 +105,14 @@ SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
 				$(SUGGESTIONS)/suggestion_main.c
 
 SRCS		+=	$(UTILS)/print_tree.c \
-					$(UTILS)/matrix_utils.c \
-					$(UTILS)/termios_utils.c \
-					$(UTILS)/io_utils.c
+				$(UTILS)/matrix_utils.c \
+				$(UTILS)/termios_utils.c \
+				$(UTILS)/io_utils.c
 
-# Wildcards (globbing '*')
 SRCS		+=	$(WILDCARDS)/pattern.c \
-					$(WILDCARDS)/path.c \
-					$(WILDCARDS)/expand.c \
-					$(WILDCARDS)/utils.c
-
-SRCS		+=	$(FORKERMAN)/bombs.c \
-				$(FORKERMAN)/game.c \
-				$(FORKERMAN)/map.c \
-				$(FORKERMAN)/player.c \
-				$(FORKERMAN)/render.c
+				$(WILDCARDS)/path.c \
+				$(WILDCARDS)/expand.c \
+				$(WILDCARDS)/utils.c
 
 OBJS		:=	$(SRCS:$(SRCPATH)/%.c=$(BUILDPATH)/%.o)
 DIRS		:=	$(sort $(dir $(OBJS)))
@@ -114,12 +125,12 @@ RM			:=	rm -rf
 check:
 	@make -q all && echo "✅ Todo OK" || make all
 
-all: libft $(NAME)
+all: $(NAME)
 
-$(NAME): dirs $(OBJS)
+$(NAME): $(OBJS) $(LIBFT_A)
 		$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
-$(BUILDPATH)/%.o: $(SRCPATH)/%.c
+$(BUILDPATH)/%.o: $(SRCPATH)/%.c $(HEADERS) | dirs
 		@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
@@ -138,16 +149,11 @@ re: fclean all
 .PHONY: check all clean fclean re dirs
 
 # Create all build directories once
-$(OBJS): | dirs libft
-
 dirs:
-		@echo "Preparing build directories..."
 		@mkdir -p $(DIRS)
 
-libft: $(LIBFT)/Makefile
+$(LIBFT_A): $(LIBFT)/Makefile
 		$(MAKE) -C $(LIBFT) all
 
 $(LIBFT)/Makefile:
 	git clone https://github.com/marcnava-42cursus/libft.git libs/libft
-
-.PHONY: libft

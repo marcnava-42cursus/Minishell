@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 15:58:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 11:11:48 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/17 18:43:34 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,17 +126,15 @@ t_envp	*envp_edit_key(t_envp *head, char *key)
 	char	*val;
 	t_envp	*current;
 
-	if (!key || !(eq = ft_strchr(key, '=')) || eq == key)
+	eq = ft_strchr(key, '=');
+	if (!key || !eq || eq == key)
 		return (head);
 	var = ft_substr(key, 0, eq - key);
 	if (!var)
 		return (head);
 	val = ft_strdup(eq + 1);
 	if (!val)
-	{
-		ft_free((void **)&var);
-		return (head);
-	}
+		return (ft_free((void **)&var), head);
 	current = head;
 	while (current && ft_strcmp(current->key, var))
 		current = current->next;
@@ -172,15 +170,4 @@ void	envp_clear(t_envp *head)
 		ft_free((void **)&current);
 		current = next;
 	}
-}
-
-char	*get_env_value(t_envp *envp, const char *key)
-{
-	while (envp)
-	{
-		if (!ft_strcmp(envp->key, (char *)key))
-			return (envp->value);
-		envp = envp->next;
-	}
-	return ("");
 }
