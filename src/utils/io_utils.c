@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/08 22:51:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/08 22:51:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:05:18 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,3 @@ void	print_err2(const char *a, const char *b, const char *c)
 	if (c)
 		write(STDERR_FILENO, c, ft_strlen(c));
 }
-
