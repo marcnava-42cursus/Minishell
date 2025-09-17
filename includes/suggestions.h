@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:22:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 11:22:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/17 20:34:48 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,11 @@ void			cmdlist_load_from_path(t_cmd_list *list, char *path_env);
 int				terminal_init_caps(t_terminal *term);
 int				terminal_putchar(int c);
 
-/* Readline state structure */
-typedef struct s_readline_state
-{
-	char		*buffer;
-	size_t		*buffer_len;
-	struct termios	*original_termios;
-}				t_readline_state;
-
 /* Main suggestion functions */
 t_suggestion_ctx	*suggestion_init(const char *prompt);
 char				*suggestion_readline(t_suggestion_ctx *ctx);
-void				suggestion_update_prompt(t_suggestion_ctx *ctx, const char *new_prompt);
+void				suggestion_update_prompt(t_suggestion_ctx *ctx,
+	const char *new_prompt);
 void				suggestion_cleanup(t_suggestion_ctx *ctx);
 
 #endif

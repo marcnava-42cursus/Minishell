@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 19:01:01 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/05 18:41:01 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/17 20:38:18 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ typedef struct s_envp
 
 typedef struct s_config
 {
+	int		use_suggestions;
 	char	*prompt_raw;
 	char	*prompt;
-	int		use_suggestions;
 }			t_config;
 
 /**
@@ -68,9 +68,9 @@ typedef struct s_cmd_list
  */
 typedef struct s_terminal
 {
+	int				capabilities_loaded;
 	char			*clear_to_eol;
 	char			*cursor_move;
-	int				capabilities_loaded;
 }					t_terminal;
 
 /**
@@ -83,6 +83,13 @@ typedef struct s_suggestion_ctx
 	char		*prompt;
 	size_t		prompt_len;
 }				t_suggestion_ctx;
+
+typedef struct s_readline_state
+{
+	char			*buffer;
+	size_t			*buffer_len;
+	struct termios	*original_termios;
+}					t_readline_state;
 
 /**
  * @brief Main shell structure that encapsulates all program data
