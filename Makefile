@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/17 18:48:07 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/18 22:05:17 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -92,7 +92,6 @@ SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_tree.c \
 				$(PARSER)/save_envp.c
 
-SRCS		+=	$(SIGNALS)/signal_handler.c
 
 SRCS		+=	$(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/envp_utils.c \
