@@ -75,7 +75,10 @@ char	**wc_expand(const char *pattern, int *outc)
 	int		c;
 
 	*outc = 0;
-	segs = ft_split(pattern ? pattern : "", '/');
+	if (pattern)
+		segs = ft_split(pattern, '/');
+	else
+		segs = ft_split("", '/');
 	if (!segs)
 		return (NULL);
 	bases = init_bases(pattern, &basec);

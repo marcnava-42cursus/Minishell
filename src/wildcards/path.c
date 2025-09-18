@@ -53,7 +53,10 @@ char	**wc_expand_in_dir(const char *base, const char *segment, int *outc)
 			continue ;
 		if (!wc_match_segment(de->d_name, segment))
 			continue ;
-		path = wc_join_path(base && *base ? base : ".", de->d_name);
+		if (base && *base)
+			path = wc_join_path(base, de->d_name);
+		else
+			path = wc_join_path(".", de->d_name);
 		if (!path)
 			continue ;
 		out = ft_realloc_matrix(out, *outc, path);

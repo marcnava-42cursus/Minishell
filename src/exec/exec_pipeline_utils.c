@@ -12,12 +12,6 @@
 
 #include "exec.h"
 
-void	perror_exit(char *msg, int exit_code)
-{
-	perror(msg);
-	exit(exit_code);
-}
-
 int	count_pipeline_commands(t_ent *node)
 {
 	t_ent	*current;
@@ -58,7 +52,10 @@ int	setup_pipeline_pipes(int **pipes, int cmd_count)
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
 		if (!pipes[i] || pipe(pipes[i]) == -1)
-			return (perror("pipe"), 1);
+		{
+			perror("pipe");
+			return (1);
+		}
 		i++;
 	}
 	return (0);
@@ -69,11 +66,11 @@ void	setup_input_redirection(int **pipes, t_ent *command, int i)
 	if (command->fd_in != -1)
 	{
 		if (dup2(command->fd_in, STDIN_FILENO) == -1)
-			perror_exit("dup2", 1);
+			perror("dup2");
 		return ;
 	}
 	if (i > 0 && dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
-		perror_exit("dup2", 1);
+		perror("dup2");
 }
 
 void	setup_output_redirection(int **pipes, t_ent *command,
@@ -82,38 +79,10 @@ void	setup_output_redirection(int **pipes, t_ent *command,
 	if (command->fd_out != -1)
 	{
 		if (dup2(command->fd_out, STDOUT_FILENO) == -1)
-			perror_exit("dup2", 1);
+			perror("dup2");
 		return ;
 	}
 	if (i < cmd_count - 1 && dup2(pipes[i][1], STDOUT_FILENO) == -1)
-		perror_exit("dup2", 1);
+		perror("dup2");
 }
-
-void	close_all_pipes(int **pipes, int cmd_count)
-{
-	int	j;
-
-	j = 0;
-	while (j < cmd_count - 1)
-	{
-		close(pipes[j][0]);
-		close(pipes[j][1]);
-		j++;
-	}
-}
-
-void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids,
-	int cmd_count)
-{
-	int	i;
-
-	i = 0;
-	while (i < cmd_count - 1)
-	{
-		ft_free((void **)&pipes[i]);
-		i++;
-	}
-	ft_free((void **)&commands);
-	ft_free((void **)&pipes);
-	ft_free((void **)&pids);
-}
+/* end */

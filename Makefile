@@ -68,6 +68,8 @@ SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/env.c \
 				$(BUILTINS)/envp_helpers.c \
 				$(BUILTINS)/exit.c \
+				$(BUILTINS)/exit_utils.c \
+				$(BUILTINS)/exit_numparse.c \
 				$(BUILTINS)/export.c \
 				$(BUILTINS)/pwd.c \
 				$(BUILTINS)/unset.c
@@ -75,9 +77,16 @@ SRCS		+=	$(BUILTINS)/cd.c \
 SRCS		+=	$(EXEC)/exec.c \
 				$(EXEC)/exec_commands.c \
 				$(EXEC)/exec_utils.c \
-				$(EXEC)/exec_helpers.c \
+				$(EXEC)/exec_path.c \
+				$(EXEC)/exec_env.c \
+				$(EXEC)/exec_quotes.c \
 				$(EXEC)/exec_command_utils.c \
+				$(EXEC)/exec_external.c \
 				$(EXEC)/exec_pipeline_utils.c \
+				$(EXEC)/exec_pipeline_run.c \
+				$(EXEC)/exec_pipeline.c \
+				$(EXEC)/exec_errors.c \
+				$(EXEC)/exec_logic.c \
 				$(EXEC)/exec_builtin_utils.c
 
 SRCS		+=	$(FORKERMAN)/bombs.c \

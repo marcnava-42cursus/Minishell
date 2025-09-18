@@ -232,8 +232,11 @@ else if (*in == '$' && *(in + 1) == '"')
 			char *inner = ft_substr(start, 0, content_len);
 			char *expanded_inner = expand_variables_ctx(inner, envp, exit_code, 1);
 			ft_free((void **)&inner);
-			quote_content = process_quoted_content(expanded_inner,
-						expanded_inner ? ft_strlen(expanded_inner) : 0, '"');
+			if (expanded_inner)
+				quote_content = process_quoted_content(expanded_inner,
+						ft_strlen(expanded_inner), '"');
+			else
+				quote_content = process_quoted_content(expanded_inner, 0, '"');
 			ft_free((void **)&expanded_inner);
 			if (quote_content)
 			{
@@ -315,8 +318,11 @@ else if (*in == '$' && *(in + 1) == '"')
 			char *inner = ft_substr(start, 0, content_len);
 			char *expanded_inner = expand_variables_ctx(inner, envp, exit_code, 1);
 			ft_free((void **)&inner);
-			quote_content = process_quoted_content(expanded_inner,
-						expanded_inner ? ft_strlen(expanded_inner) : 0, '"');
+			if (expanded_inner)
+				quote_content = process_quoted_content(expanded_inner,
+						ft_strlen(expanded_inner), '"');
+			else
+				quote_content = process_quoted_content(expanded_inner, 0, '"');
 			ft_free((void **)&expanded_inner);
 			if (quote_content)
 			{

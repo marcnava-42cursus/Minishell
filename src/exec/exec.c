@@ -12,41 +12,39 @@
 
 #include "exec.h"
 
+static int	has_pipeline(t_ent *node)
+{
+	while (node)
+	{
+		if (node->type == NODE_PIPE)
+			return (1);
+		node = node->next;
+	}
+	return (0);
+}
+
+static int	dispatch_root(t_ent *node, t_mshell *mshell)
+{
+	if (node->type == NODE_COMMAND)
+		return (exec_command(node, mshell));
+	if (node->type == NODE_AND || node->type == NODE_OR)
+		return (exec_logic(node, mshell));
+	if (node->type == NODE_SUBSHELL)
+		return (exec_subshell(node, mshell));
+	printf("minishell: unsupported operation\n");
+	return (1);
+}
+
 int	exec_tree(t_mshell *mshell)
 {
-	t_ent	*current;
 	t_ent	*node;
-	int		has_pipe;
 
 	node = mshell->tree;
 	if (!node)
 		return (0);
-	has_pipe = 0;
-	current = node;
-	while (current)
-	{
-		if (current->type == NODE_PIPE)
-		{
-			has_pipe = 1;
-			break ;
-		}
-		current = current->next;
-	}
-	if (has_pipe)
-	{
+	if (has_pipeline(node))
 		mshell->exit_code = exec_pipeline(node, mshell);
-		return (mshell->exit_code);
-	}
-	if (node->type == NODE_COMMAND)
-		mshell->exit_code = exec_command(node, mshell);
-	else if (node->type == NODE_AND || node->type == NODE_OR)
-		mshell->exit_code = exec_logic(node, mshell);
-	else if (node->type == NODE_SUBSHELL)
-		mshell->exit_code = exec_subshell(node, mshell);
 	else
-	{
-		printf("minishell: unsupported operation\n");
-		mshell->exit_code = 1;
-	}
+		mshell->exit_code = dispatch_root(node, mshell);
 	return (mshell->exit_code);
 }
