@@ -110,10 +110,10 @@ void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids,
 	i = 0;
 	while (i < cmd_count - 1)
 	{
-		free(pipes[i]);
+		ft_free((void **)&pipes[i]);
 		i++;
 	}
-	free(commands);
-	free(pipes);
-	free(pids);
+	ft_free((void **)&commands);
+	ft_free((void **)&pipes);
+	ft_free((void **)&pids);
 }

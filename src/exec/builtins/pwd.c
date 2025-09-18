@@ -36,6 +36,6 @@ int	msh_exec_bt_pwd(t_envp *envp)
 		return (1);
 	}
 	printf("%s\n", cwd);
-	free(cwd);
+	ft_free((void **)&cwd);
 	return (0);
 }

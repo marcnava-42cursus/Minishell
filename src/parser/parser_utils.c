@@ -275,8 +275,8 @@ print_err2("minishell: ", filename, ": ");
 					argc++;
 					i++;
 				}
-				free(tok);
-				free(matches);
+				ft_free((void **)&tok);
+				ft_free((void **)&matches);
 			}
 			else
 			{
@@ -479,7 +479,7 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	if (!count_str)
 		return (ft_free((void **)&clean_delimiter), -1);
 	tmp_filename = ft_strjoin("/tmp/heredoc_", count_str);
-	free(count_str);
+	ft_free((void **)&count_str);
 	if (!tmp_filename)
 		return (ft_free((void **)&clean_delimiter), -1);
 	tmp_fd = open(tmp_filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
@@ -487,7 +487,7 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	{
 		perror("heredoc: open");
 		ft_free((void **)&clean_delimiter);
-		free(tmp_filename);
+		ft_free((void **)&tmp_filename);
 		return (-1);
 	}
 	printf("> ");
@@ -495,7 +495,7 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	{
 		if (ft_strcmp(line, clean_delimiter) == 0)
 		{
-			free(line);
+			ft_free((void **)&line);
 			break ;
 		}
 		if (is_quoted)
@@ -513,7 +513,7 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 				write(tmp_fd, line, ft_strlen(line));
 		}
 		write(tmp_fd, "\n", 1);
-		free(line);
+		ft_free((void **)&line);
 		printf("> ");
 	}
 	close(tmp_fd);
@@ -522,12 +522,12 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	{
 		perror("heredoc: reopen");
 		unlink(tmp_filename);
-		free(tmp_filename);
+		ft_free((void **)&tmp_filename);
 		ft_free((void **)&clean_delimiter);
 		return (-1);
 	}
 	unlink(tmp_filename);
-	free(tmp_filename);
+	ft_free((void **)&tmp_filename);
 	ft_free((void **)&clean_delimiter);
 	return (read_fd);
 }

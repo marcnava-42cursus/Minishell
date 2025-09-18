@@ -42,7 +42,7 @@ static void	cmdlist_resize(t_cmd_list *list)
 		new_items[i] = list->items[i];
 		i++;
 	}
-	free(list->items);
+	ft_free((void **)&list->items);
 	list->items = new_items;
 	list->capacity = new_capacity;
 }
@@ -86,10 +86,10 @@ void	cmdlist_free(t_cmd_list *list)
 	i = 0;
 	while (i < list->count)
 	{
-		free(list->items[i]);
+		ft_free((void **)&list->items[i]);
 		i++;
 	}
-	free(list->items);
+	ft_free((void **)&list->items);
 	list->items = NULL;
 	list->count = 0;
 	list->capacity = 0;

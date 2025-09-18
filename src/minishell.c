@@ -113,14 +113,14 @@ int	main(int argc, char **argv, char **env)
 				mshell.tree = NULL;
 			}
 			if (mshell.config->prompt)
-				free(mshell.config->prompt);
+				ft_free((void **)&mshell.config->prompt);
 			mshell.config->prompt = build_prompt(mshell.config->prompt_raw,
 					mshell.exit_code);
 			/* Update suggestions prompt if enabled */
 			if (mshell.config->use_suggestions && mshell.suggestions)
 				suggestion_update_prompt(mshell.suggestions, mshell.config->prompt);
 		}
-		free(line);
+		ft_free((void **)&line);
 	}
 	if (mshell.raw_command)
 		ft_free((void **)&mshell.raw_command);
@@ -131,10 +131,10 @@ int	main(int argc, char **argv, char **env)
 	if (mshell.config)
 	{
 		if (mshell.config->prompt)
-			free(mshell.config->prompt);
+			ft_free((void **)&mshell.config->prompt);
 		if (mshell.config->prompt_raw)
-			free(mshell.config->prompt_raw);
-		free(mshell.config);
+			ft_free((void **)&mshell.config->prompt_raw);
+		ft_free((void **)&mshell.config);
 	}
 	if (mshell.envp)
 		envp_clear(mshell.envp);

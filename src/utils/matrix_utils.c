@@ -28,6 +28,6 @@ char	**ft_realloc_matrix(char **old, int oldc, char *new_str)
 	}
 	new[i++] = new_str;
 	new[i] = NULL;
-	free(old);
+	ft_free((void **)&old);
 	return (new);
 }

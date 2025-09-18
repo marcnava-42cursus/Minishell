@@ -28,7 +28,7 @@ char	*wc_join_path(const char *dir, const char *name)
 	if (!pre)
 		return (NULL);
 	out = ft_strjoin(pre, name);
-	free(pre);
+	ft_free((void **)&pre);
 	return (out);
 }
 
@@ -84,7 +84,7 @@ char	**wc_next_paths(char **bases, int basec, const char *segment, int *outc)
 			*outc += 1;
 			j++;
 		}
-		free(tmp);
+		ft_free((void **)&tmp);
 		i++;
 	}
 	return (res);

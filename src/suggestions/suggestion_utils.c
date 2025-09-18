@@ -43,10 +43,10 @@ static t_suggestion_ctx	*alloc_suggestion_ctx(void)
 	ctx->prompt = NULL;
 	ctx->commands = malloc(sizeof(t_cmd_list));
 	if (!ctx->commands)
-		return (free(ctx), NULL);
+		return (ft_free((void **)&ctx), NULL);
 	ctx->terminal = malloc(sizeof(t_terminal));
 	if (!ctx->terminal)
-		return (free(ctx->commands), free(ctx), NULL);
+		return (ft_free((void **)&ctx->commands), ft_free((void **)&ctx), NULL);
 	return (ctx);
 }
 
@@ -75,11 +75,11 @@ void	suggestion_cleanup(t_suggestion_ctx *ctx)
 	if (ctx->commands)
 	{
 		cmdlist_free(ctx->commands);
-		free(ctx->commands);
+		ft_free((void **)&ctx->commands);
 	}
 	if (ctx->terminal)
-		free(ctx->terminal);
+		ft_free((void **)&ctx->terminal);
 	if (ctx->prompt)
-		free(ctx->prompt);
-	free(ctx);
+		ft_free((void **)&ctx->prompt);
+	ft_free((void **)&ctx);
 }

@@ -23,7 +23,7 @@ void	suggestion_update_prompt(t_suggestion_ctx *ctx, const char *new_prompt)
 	if (!ctx)
 		return ;
 	if (ctx->prompt)
-		free(ctx->prompt);
+		ft_free((void **)&ctx->prompt);
 	if (new_prompt && sug_strlen(new_prompt) > 0)
 	{
 		ctx->prompt = sug_strdup(new_prompt);

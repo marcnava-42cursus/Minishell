@@ -62,6 +62,6 @@ void	wc_free_matrix(char **arr)
 		return ;
 	i = 0;
 	while (arr[i])
-		free(arr[i++]);
-	free(arr);
+		ft_free((void **)&arr[i++]);
+	ft_free((void **)&arr);
 }

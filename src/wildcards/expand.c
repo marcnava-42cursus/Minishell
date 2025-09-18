@@ -24,7 +24,7 @@ static char	**init_bases(const char *pattern, int *count)
 	else
 		out[0] = ft_strdup(".");
 	if (!out[0])
-		return (free(out), NULL);
+		return (ft_free((void **)&out), NULL);
 	out[1] = NULL;
 	*count = 1;
 	return (out);
@@ -50,7 +50,7 @@ static char	**advance_literal(char **bases, int basec, const char *seg,
 			*outc += 1;
 		}
 		else if (joined)
-			free(joined);
+			ft_free((void **)&joined);
 		i++;
 	}
 	return (res);

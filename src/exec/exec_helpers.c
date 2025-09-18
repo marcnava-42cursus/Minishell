@@ -51,7 +51,7 @@ char	*find_command_path(char *cmd, t_envp *envp)
 			return (NULL);
 		}
 		full_path = ft_strjoin(temp, cmd);
-		free(temp);
+		ft_free((void **)&temp);
 		if (!full_path)
 		{
 			ft_free_matrix((void **)paths);
@@ -62,7 +62,7 @@ char	*find_command_path(char *cmd, t_envp *envp)
 			ft_free_matrix((void **)paths);
 			return (full_path);
 		}
-		free(full_path);
+		ft_free((void **)&full_path);
 		i++;
 	}
 	ft_free_matrix((void **)paths);
@@ -109,7 +109,7 @@ char	**envp_to_array(t_envp *envp)
 			env_array[i] = ft_strjoin(temp, current->value);
 		else
 			env_array[i] = ft_strjoin(temp, "");
-		free(temp);
+		ft_free((void **)&temp);
 		if (!env_array[i])
 		{
 			ft_free_matrix((void **)env_array);
@@ -198,8 +198,8 @@ char	**process_argv_quotes(char **argv)
 		if (!new_argv[i])
 		{
 			while (--i >= 0)
-				free(new_argv[i]);
-			free(new_argv);
+				ft_free((void **)&new_argv[i]);
+			ft_free((void **)&new_argv);
 			return (NULL);
 		}
 		i++;

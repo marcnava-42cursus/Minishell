@@ -69,7 +69,7 @@ static int	chdir_and_update_env(t_envp **envp, const char *target_path,
 	envp_set_value(envp, "OLDPWD", old_pwd);
 	envp_set_value(envp, "PWD", new_pwd);
 	ft_free((void **)&old_pwd);
-	free(new_pwd);
+	ft_free((void **)&new_pwd);
 	return (0);
 }
 

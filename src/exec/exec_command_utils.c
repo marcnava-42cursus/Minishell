@@ -55,7 +55,7 @@ static void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr)
 	/* If we are here, execve failed with a found path: permission or similar */
 	print_err2("minishell: ", cmd0, ": ");
 	print_err2(strerror(errno), "\n", NULL);
-	free(path);
+	ft_free((void **)&path);
 	ft_free_matrix((void **)processed_argv);
 	exit(126);
 }
