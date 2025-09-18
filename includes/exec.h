@@ -40,9 +40,7 @@ int		apply_redirections(t_ent *node);
 // Funciones auxiliares (exec_helpers.c)
 char	*find_command_path(char *cmd, t_envp *envp);
 char	**process_argv_quotes(char **argv);
-void	free_processed_argv(char **argv);
 char	**envp_to_array(t_envp *envp);
-void	free_env_array(char **env_array);
 
 // Utilidades específicas de comandos (exec_command_utils.c)
 void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr);

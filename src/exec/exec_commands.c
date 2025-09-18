@@ -29,10 +29,10 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 	{
 		/* Bash: command not found => 127 y stderr no vacío */
 		print_err2("minishell: ", ": command not found\n", NULL);
-		free_processed_argv(probe);
+		ft_free_matrix((void **)probe);
 		return (127);
 	}
-	free_processed_argv(probe);
+	ft_free_matrix((void **)probe);
 	if (is_builtin(node->argv[0]) && node->fd_in == -1 && node->fd_out == -1)
 		return (exec_builtin(node, mshell));
 	env_arr = envp_to_array(mshell->envp);
@@ -40,7 +40,7 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 		return (1);
 	pid = fork();
 	if (pid == -1)
-		return (perror("fork"), free_env_array(env_arr), 1);
+return (perror("fork"), ft_free_matrix((void **)env_arr), 1);
 	if (pid == 0)
 		handle_child_process(node, mshell, env_arr);
 	return (wait_for_child_and_cleanup(pid, env_arr));
@@ -200,6 +200,6 @@ int	exec_builtin(t_ent *node, t_mshell *mshell)
 		result = msh_exec_bt_pwd(mshell->envp);
 	else if (ft_strcmp(cmd, "unset") == 0)
 		result = handle_unset_builtin(processed_argv, &(mshell->envp));
-	free_processed_argv(processed_argv);
+	ft_free_matrix((void **)processed_argv);
 	return (result);
 }

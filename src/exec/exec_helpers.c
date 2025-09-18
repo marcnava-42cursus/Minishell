@@ -102,7 +102,7 @@ char	**envp_to_array(t_envp *envp)
 		temp = ft_strjoin(current->key, "=");
 		if (!temp)
 		{
-			free_env_array(env_array);
+			ft_free_matrix((void **)env_array);
 			return (NULL);
 		}
 		if (current->value)
@@ -112,7 +112,7 @@ char	**envp_to_array(t_envp *envp)
 		free(temp);
 		if (!env_array[i])
 		{
-			free_env_array(env_array);
+			ft_free_matrix((void **)env_array);
 			return (NULL);
 		}
 		current = current->next;
@@ -120,26 +120,6 @@ char	**envp_to_array(t_envp *envp)
 	}
 	env_array[i] = NULL;
 	return (env_array);
-}
-
-/**
- * @brief Free an environment array created by envp_to_array
- * 
- * @param env_array Array to free
- */
-void	free_env_array(char **env_array)
-{
-	int	i;
-
-	if (!env_array)
-		return ;
-	i = 0;
-	while (env_array[i])
-	{
-		free(env_array[i]);
-		i++;
-	}
-	free(env_array);
 }
 
 /**
@@ -228,22 +208,3 @@ char	**process_argv_quotes(char **argv)
 	return (new_argv);
 }
 
-/**
- * @brief Free argv array created by process_argv_quotes
- * 
- * @param argv Array to free
- */
-void	free_processed_argv(char **argv)
-{
-	int	i;
-
-	if (!argv)
-		return ;
-	i = 0;
-	while (argv[i])
-	{
-		free(argv[i]);
-		i++;
-	}
-	free(argv);
-}

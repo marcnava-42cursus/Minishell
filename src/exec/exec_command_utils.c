@@ -48,7 +48,7 @@ static void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr)
 	if (!path)
 	{
 		print_err2("minishell: ", cmd0, ": command not found\n");
-		free_processed_argv(processed_argv);
+		ft_free_matrix((void **)processed_argv);
 		exit(127);
 	}
 	execve(path, processed_argv, env_arr);
@@ -56,7 +56,7 @@ static void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr)
 	print_err2("minishell: ", cmd0, ": ");
 	print_err2(strerror(errno), "\n", NULL);
 	free(path);
-	free_processed_argv(processed_argv);
+	ft_free_matrix((void **)processed_argv);
 	exit(126);
 }
 
@@ -79,7 +79,7 @@ int	wait_for_child_and_cleanup(pid_t pid, char **env_arr)
 	set_child_executing();
 	waitpid(pid, &status, 0);
 	unset_child_executing();
-	free_env_array(env_arr);
+	ft_free_matrix((void **)env_arr);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
