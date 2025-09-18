@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:29:31 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/03 17:03:18 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:33:45 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ int	msh_exec_bt_echo(t_ent *cmd)
 	if (ft_strcmp(cmd->argv[i - 1], "echo") && !check)
 		i--;
 	while (cmd->argv[i++])
-    {
-        printf("%s", cmd->argv[i - 1]);
-        if (cmd->argv[i])
-            printf(" ");
-    }
+	{
+		printf("%s", cmd->argv[i - 1]);
+		if (cmd->argv[i])
+			printf(" ");
+	}
 	if (newline)
 		printf("\n");
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 17:44:36 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/02 13:44:47 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:36:54 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,7 @@ int	msh_exec_bt_export(t_envp **envp, char *key, char *value)
 	while (current && ft_strcmp(current->key, key))
 		current = current->next;
 	if (current)
-	{
-		ft_free((void **)&current->value);
-		current->value = ft_strdup(value);
-	}
+		(ft_free((void **)&current->value), current->value = ft_strdup(value));
 	else
 		*envp = envp_append_last(*envp, envp_new_node(key, value));
 	return (0);

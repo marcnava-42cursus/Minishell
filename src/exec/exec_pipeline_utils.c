@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 04:11:50 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/18 20:51:07 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ int	setup_pipeline_pipes(int **pipes, int cmd_count)
 
 void	setup_input_redirection(int **pipes, t_ent *command, int i)
 {
-	/* Command-specific redirection overrides pipeline input */
 	if (command->fd_in != -1)
 	{
 		if (dup2(command->fd_in, STDIN_FILENO) == -1)
@@ -80,7 +79,6 @@ void	setup_input_redirection(int **pipes, t_ent *command, int i)
 void	setup_output_redirection(int **pipes, t_ent *command,
 	int i, int cmd_count)
 {
-	/* Command-specific redirection overrides pipeline output */
 	if (command->fd_out != -1)
 	{
 		if (dup2(command->fd_out, STDOUT_FILENO) == -1)
