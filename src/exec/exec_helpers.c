@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 01:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 00:37:18 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/18 22:20:40 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,21 +168,17 @@ static char	*remove_all_quotes(const char *str)
 	{
 		if (str[i] == '\'')
 		{
-			/* skip opening single quote */
 			i++;
 			while (str[i] && str[i] != '\'')
 				out[j++] = str[i++];
-			/* skip closing single quote if present */
 			if (str[i] == '\'')
 				i++;
 		}
 		else if (str[i] == '"')
 		{
-			/* skip opening double quote */
 			i++;
 			while (str[i] && str[i] != '"')
 				out[j++] = str[i++];
-			/* skip closing double quote if present */
 			if (str[i] == '"')
 				i++;
 		}
