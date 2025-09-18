@@ -92,6 +92,7 @@ SRCS		+=	$(PARSER)/expansion.c \
 				$(PARSER)/parser_tree.c \
 				$(PARSER)/save_envp.c
 
+SRCS		+=	$(SIGNALS)/signal_handler.c
 
 SRCS		+=	$(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/envp_utils.c \
