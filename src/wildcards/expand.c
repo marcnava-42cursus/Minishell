@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:06:00 by agentmode         #+#    #+#             */
-/*   Updated: 2025/09/05 23:19:18 by marcnava         ###   ########.fr       */
+/*   Created: 2025/09/05 21:06:00 by marcnava          #+#    #+#             */
+/*   Updated: 2025/09/20 20:01:11 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ static char	**init_bases(const char *pattern, int *count)
 	return (out);
 }
 
-static char	**advance_literal(char **bases, int basec, const char *seg,
-	int is_last, int *outc)
+static char	**advance_literal_ctx(t_adv ctx, int *outc)
 {
 	int			i;
 	char		*joined;
@@ -40,11 +39,11 @@ static char	**advance_literal(char **bases, int basec, const char *seg,
 	*outc = 0;
 	res = NULL;
 	i = 0;
-	while (i < basec)
+	while (i < ctx.basec)
 	{
-		joined = wc_join_path(bases[i], seg);
-		if (joined && ((is_last && wc_path_exists(joined))
-				|| (!is_last && wc_path_is_dir(joined))))
+		joined = wc_join_path(ctx.bases[i], ctx.seg);
+		if (joined && ((ctx.is_last && wc_path_exists(joined))
+				|| (!ctx.is_last && wc_path_is_dir(joined))))
 		{
 			res = ft_realloc_matrix(res, *outc, joined);
 			*outc += 1;
@@ -65,44 +64,40 @@ int	wc_token_should_expand(const char *token)
 	return (!wc_is_quoted_token(token));
 }
 
+static int	step_segment(char **segs, t_walk *w)
+{
+	char	**next;
+	t_adv	ctx;
+
+	if (wc_contains_wild(segs[w->i]))
+		next = wc_next_paths(w->bases, w->basec, segs[w->i], &w->c);
+	else
+	{
+		ctx = (t_adv){w->bases, w->basec, segs[w->i], segs[w->i + 1] == NULL};
+		next = advance_literal_ctx(ctx, &w->c);
+	}
+	wc_free_matrix(w->bases);
+	w->bases = next;
+	w->basec = w->c;
+	w->i++;
+	return (w->bases && w->basec > 0);
+}
+
 char	**wc_expand(const char *pattern, int *outc)
 {
 	char	**segs;
-	char	**bases;
-	char	**next;
-	int		basec;
-	int		i;
-	int		c;
+	t_walk	w;
 
 	*outc = 0;
-	if (pattern)
-		segs = ft_split(pattern, '/');
-	else
-		segs = ft_split("", '/');
-	if (!segs)
+	if (!wc_init_walk(pattern, &w, &segs))
 		return (NULL);
-	bases = init_bases(pattern, &basec);
-	if (!bases)
-		return (ft_free_matrix((void **)segs), NULL);
-	i = 0;
-	while (segs[i])
-	{
-		if (wc_contains_wild(segs[i]))
-			next = wc_next_paths(bases, basec, segs[i], &c);
-		else
-			next = advance_literal(bases, basec, segs[i],
-					segs[i + 1] == NULL, &c);
-		wc_free_matrix(bases);
-		bases = next;
-		basec = c;
-		if (!bases || basec == 0)
+	while (segs[w.i])
+		if (!step_segment(segs, &w))
 			break ;
-		i++;
-	}
 	ft_free_matrix((void **)segs);
-	if (!bases || basec == 0)
+	if (!w.bases || w.basec == 0)
 		return (NULL);
-	wc_sort_strings(bases, basec);
-	*outc = basec;
-	return (bases);
+	wc_sort_strings(w.bases, w.basec);
+	*outc = w.basec;
+	return (w.bases);
 }

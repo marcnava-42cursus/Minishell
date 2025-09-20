@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:03:30 by agentmode         #+#    #+#             */
-/*   Updated: 2025/09/05 23:11:58 by marcnava         ###   ########.fr       */
+/*   Created: 2025/09/05 21:03:30 by marcnava          #+#    #+#             */
+/*   Updated: 2025/09/20 20:01:11 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,35 +32,45 @@ char	*wc_join_path(const char *dir, const char *name)
 	return (out);
 }
 
+static void	append_if_match(t_dirctx *ctx, const char *name)
+{
+	char	*path;
+
+	if (!ft_strcmp(name, ".") || !ft_strcmp(name, ".."))
+		return ;
+	if (!wc_match_segment(name, ctx->segment))
+		return ;
+	if (ctx->base && *ctx->base)
+		path = wc_join_path(ctx->base, name);
+	else
+		path = wc_join_path(".", name);
+	if (!path)
+		return ;
+	*ctx->out = ft_realloc_matrix(*ctx->out, *ctx->outc, path);
+	*ctx->outc += 1;
+}
+
 char	**wc_expand_in_dir(const char *base, const char *segment, int *outc)
 {
 	DIR				*d;
 	struct dirent	*de;
 	char			**out;
-	char			*path;
+	t_dirctx		ctx;
 
 	*outc = 0;
 	out = NULL;
+	ctx = (t_dirctx){&out, outc, base, segment};
 	if (base && *base)
 		d = opendir(base);
 	else
 		d = opendir(".");
 	if (!d)
 		return (NULL);
-	while ((de = readdir(d)))
+	de = readdir(d);
+	while (de)
 	{
-		if (!ft_strcmp(de->d_name, ".") || !ft_strcmp(de->d_name, ".."))
-			continue ;
-		if (!wc_match_segment(de->d_name, segment))
-			continue ;
-		if (base && *base)
-			path = wc_join_path(base, de->d_name);
-		else
-			path = wc_join_path(".", de->d_name);
-		if (!path)
-			continue ;
-		out = ft_realloc_matrix(out, *outc, path);
-		*outc += 1;
+		append_if_match(&ctx, de->d_name);
+		de = readdir(d);
 	}
 	closedir(d);
 	return (out);

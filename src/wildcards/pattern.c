@@ -5,47 +5,39 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:02:00 by agentmode         #+#    #+#             */
-/*   Updated: 2025/09/05 23:17:04 by marcnava         ###   ########.fr       */
+/*   Created: 2025/09/05 21:02:00 by marcnava          #+#    #+#             */
+/*   Updated: 2025/09/20 20:01:11 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wildcards.h"
 
+static int	mw_step(struct s_mw *st)
+{
+	if (st->p[st->j] == '*')
+		return (st->star = st->j, st->j++, st->mark = st->i, 1);
+	else if (st->p[st->j] == st->s[st->i])
+		return (st->i++, st->j++, 1);
+	else if (st->star != -1)
+		return (st->j = st->star + 1, st->i = ++st->mark, 1);
+	return (0);
+}
+
 static int	match_wild(const char *s, const char *p)
 {
-	int	i;
-	int	j;
-	int	star;
-	int	mark;
+	struct s_mw	st;
 
-	i = 0;
-	j = 0;
-	star = -1;
-	mark = 0;
-	while (s[i])
-	{
-		if (p[j] == '*')
-		{
-			star = j++;
-			mark = i;
-		}
-		else if (p[j] == s[i])
-		{
-			i++;
-			j++;
-		}
-		else if (star != -1)
-		{
-			j = star + 1;
-			i = ++mark;
-		}
-		else
+	st = (struct s_mw){0};
+	st.s = s;
+	st.p = p;
+	st.star = -1;
+	st.mark = 0;
+	while (st.s[st.i])
+		if (!mw_step(&st))
 			return (0);
-	}
-	while (p[j] == '*')
-		j++;
-	return (p[j] == '\0');
+	while (st.p[st.j] == '*')
+		st.j++;
+	return (st.p[st.j] == '\0');
 }
 
 int	wc_match_segment(const char *name, const char *pattern)
@@ -55,23 +47,4 @@ int	wc_match_segment(const char *name, const char *pattern)
 	if (name[0] == '.' && pattern[0] != '.')
 		return (0);
 	return (match_wild(name, pattern));
-}
-
-int	wc_contains_wild(const char *s)
-{
-	while (s && *s)
-		if (*s++ == '*')
-			return (1);
-	return (0);
-}
-
-int	wc_is_quoted_token(const char *s)
-{
-	while (s && *s)
-	{
-		if (*s == '\'' || *s == '"')
-			return (1);
-		s++;
-	}
-	return (0);
 }

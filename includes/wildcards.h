@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcards.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: agentmode <agentmode@warp.ai>               +#+  +:+       +#+        */
+/*   By: marcnava  <marcnava @warp.ai>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/05 21:00:00 by agentmode         #+#    #+#             */
-/*   Updated: 2025/09/05 21:00:00 by agentmode        ###   ########.fr       */
+/*   Created: 2025/09/05 21:00:00 by marcnava          #+#    #+#             */
+/*   Updated: 2025/09/05 21:00:00 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,41 @@
 # include "libft.h"
 # include "utils.h"
 
+/* Internal contexts */
+typedef struct s_walk
+{
+	char	**bases;
+	int		basec;
+	int		i;
+	int		c;
+}t_walk;
+
+typedef struct s_adv
+{
+	char		**bases;
+	int			basec;
+	const char	*seg;
+	int			is_last;
+}t_adv;
+
+typedef struct s_dirctx
+{
+	char		***out;
+	int			*outc;
+	const char	*base;
+	const char	*segment;
+}t_dirctx;
+
+struct s_mw
+{
+	int			i;
+	int			j;
+	int			star;
+	int			mark;
+	const char	*s;
+	const char	*p;
+};
+
 /* Pattern helpers */
 int	wc_contains_wild(const char *s);
 int	wc_is_quoted_token(const char *s);
@@ -32,6 +67,10 @@ char	**wc_next_paths(char **bases, int basec, const char *segment, int *outc);
 /* Expansion entry point */
 char	**wc_expand(const char *pattern, int *outc);
 int	wc_token_should_expand(const char *token);
+
+/* Expansion utils */
+char	**wc_split_or_empty(const char *pattern);
+int	wc_init_walk(const char *pattern, t_walk *w, char ***segs);
 
 /* Utils */
 void	wc_sort_strings(char **arr, int n);
