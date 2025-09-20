@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "config.h"
-#include <fcntl.h>
-#include <unistd.h>
 
 static const char	**get_config_lines(void)
 {

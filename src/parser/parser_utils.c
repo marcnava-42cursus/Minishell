@@ -12,7 +12,6 @@
 
 #include "parser.h"
 #include "wildcards.h"
-#include <errno.h>
 #include "utils.h"
 
 static void	skip_whitespace(const char **s)

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
-#include <limits.h>
 
 static int	parse_sign(const char *s, int *i)
 {

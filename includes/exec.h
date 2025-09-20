@@ -19,6 +19,7 @@
 # include <string.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <errno.h>
 # include "structs.h"
 # include "exec_builtins.h"
 # include "signals.h"

@@ -121,7 +121,9 @@ SRCS		+=	$(UTILS)/print_tree.c \
 				$(UTILS)/io_utils.c
 
 SRCS		+=	$(WILDCARDS)/pattern.c \
+				$(WILDCARDS)/pattern_utils.c \
 				$(WILDCARDS)/path.c \
+				$(WILDCARDS)/expand_utils.c \
 				$(WILDCARDS)/expand.c \
 				$(WILDCARDS)/utils.c
 
@@ -141,7 +143,7 @@ all: $(NAME)
 $(NAME): $(OBJS) $(LIBFT_A)
 		$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
-$(BUILDPATH)/%.o: $(SRCPATH)/%.c $(HEADERS) | dirs
+$(BUILDPATH)/%.o: $(SRCPATH)/%.c $(HEADERS) $(LIBFT)/Makefile | dirs
 		@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:

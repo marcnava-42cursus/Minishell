@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <signal.h>
 
 // Variable global para almacenar el exit_code cuando se recibe una señal
 volatile sig_atomic_t g_signal_received = 0;

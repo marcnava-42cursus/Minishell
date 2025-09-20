@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "exec.h"
-#include <errno.h>
 #include "utils.h"
 
 void	perror_exit(char *msg, int exit_code);

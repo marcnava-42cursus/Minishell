@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "config.h"
-#include <fcntl.h>
-#include <unistd.h>
 
 static int	open_config_file(void)
 {

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "exec.h"
-#include <errno.h>
 
 void	exit_with_errno_message(const char *cmd)
 {

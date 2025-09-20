@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
-#include <limits.h>
-#include <unistd.h>
 #include "utils.h"
 
 /* Prototipos de utilidades locales en exit_utils.c */

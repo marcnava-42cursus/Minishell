@@ -12,7 +12,6 @@
 
 #include "utils.h"
 #include "libft.h"
-#include <unistd.h>
 
 void	print_err2(const char *a, const char *b, const char *c)
 {
