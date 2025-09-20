@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 00:27:54 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/19 00:27:54 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/20 20:50:10 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ static int	parse_sign(const char *s, int *i)
 	return (sign);
 }
 
-static ull	limit_for_sign(int sign)
+static t_ull	limit_for_sign(int sign)
 {
 	if (sign < 0)
-		return ((ull)LLONG_MAX + 1ULL);
-	return ((ull)LLONG_MAX);
+		return ((t_ull)LLONG_MAX + 1ULL);
+	return ((t_ull)LLONG_MAX);
 }
 
-static int	accumulate_digits(const char *s, int *i, ull limit, ull *acc)
+static int	accumulate_digits(const char *s, int *i, t_ull limit, t_ull *acc)
 {
 	int	d;
 
@@ -46,19 +46,19 @@ static int	accumulate_digits(const char *s, int *i, ull limit, ull *acc)
 			return (0);
 		d = s[*i] - '0';
 		if (*acc > (limit / 10ULL)
-			|| (*acc == (limit / 10ULL) && (ull)d > (limit % 10ULL)))
+			|| (*acc == (limit / 10ULL) && (t_ull)d > (limit % 10ULL)))
 			return (0);
-		*acc = (*acc) * 10ULL + (ull)d;
+		*acc = (*acc) * 10ULL + (t_ull)d;
 		*i += 1;
 	}
 	return (1);
 }
 
-static void	assign_result(int sign, ull acc, long long *out)
+static void	assign_result(int sign, t_ull acc, long long *out)
 {
 	if (sign > 0)
 		*out = (long long)acc;
-	else if (acc == (ull)LLONG_MAX + 1ULL)
+	else if (acc == (t_ull)LLONG_MAX + 1ULL)
 		*out = LLONG_MIN;
 	else
 		*out = -(long long)acc;
@@ -68,8 +68,8 @@ int	parse_ll_strict(const char *s, long long *out)
 {
 	int		i;
 	int		sign;
-	ull		acc;
-	ull		limit;
+	t_ull		acc;
+	t_ull		limit;
 
 	if (!s || !*s)
 		return (0);

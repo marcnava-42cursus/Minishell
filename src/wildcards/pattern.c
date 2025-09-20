@@ -12,7 +12,7 @@
 
 #include "wildcards.h"
 
-static int	mw_step(struct s_mw *st)
+static int	mw_step(t_mw *st)
 {
 	if (st->p[st->j] == '*')
 		return (st->star = st->j, st->j++, st->mark = st->i, 1);
@@ -25,9 +25,9 @@ static int	mw_step(struct s_mw *st)
 
 static int	match_wild(const char *s, const char *p)
 {
-	struct s_mw	st;
+	t_mw	st;
 
-	st = (struct s_mw){0};
+	st = (t_mw){0};
 	st.s = s;
 	st.p = p;
 	st.star = -1;
