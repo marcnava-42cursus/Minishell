@@ -6,19 +6,48 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 19:01:01 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/17 20:38:18 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/20 20:46:26 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef STRUCTS_H
 # define STRUCTS_H
 
+/* Dependencias mínimas para tipos en estructuras */
 # include <stdio.h>
+# include <sys/types.h>
+# include <termios.h>
 # include "libft.h"
 
+/* ============================= Generales ================================= */
+/* Constantes generales de la aplicación */
 # define SUG_BUFFER_SIZE 1024
 # define CMD_INITIAL_CAPACITY 256
 
+/*
+** Lista enlazada simple para variables de entorno (KEY=VALUE)
+*/
+typedef struct s_envp
+{
+	char			*key;
+	char			*value;
+	struct s_envp	*next;
+}					t_envp;
+
+/*
+** Configuración general de Minishell (prompt y flags)
+*/
+typedef struct s_config
+{
+	int		use_suggestions;
+	char	*prompt_raw;
+	char	*prompt;
+}			t_config;
+
+/* =============================== Parseo ================================== */
+/*
+** Tipo de nodo para el árbol de sintaxis (AST)
+*/
 typedef enum e_node_type
 {
 	NODE_COMMAND,
@@ -28,6 +57,9 @@ typedef enum e_node_type
 	NODE_SUBSHELL
 }	t_node_type;
 
+/*
+** Nodo del AST: comando, pipe, operadores lógicos y subshells
+*/
 typedef struct s_ent
 {
 	t_node_type		type;
@@ -39,23 +71,9 @@ typedef struct s_ent
 	struct s_ent	*next;
 }					t_ent;
 
-typedef struct s_envp
-{
-	char			*key;
-	char			*value;
-	struct s_envp	*next;
-}					t_envp;
-
-typedef struct s_config
-{
-	int		use_suggestions;
-	char	*prompt_raw;
-	char	*prompt;
-}			t_config;
-
-/**
- * @brief Dynamic list for storing command suggestions
- */
+/* ============================ Funcionalidad ============================== */
+/* ---- Sugerencias -------------------------------------------------------- */
+/* Lista dinámica de comandos disponibles para autocompletado/sugerencias */
 typedef struct s_cmd_list
 {
 	char	**items;
@@ -63,9 +81,7 @@ typedef struct s_cmd_list
 	size_t	capacity;
 }			t_cmd_list;
 
-/**
- * @brief Terminal capabilities for suggestions
- */
+/* Capacidades del terminal necesarias para pintar sugerencias */
 typedef struct s_terminal
 {
 	int				capabilities_loaded;
@@ -73,9 +89,7 @@ typedef struct s_terminal
 	char			*cursor_move;
 }					t_terminal;
 
-/**
- * @brief Suggestion context containing all necessary data
- */
+/* Contexto de sugerencias: lista de comandos y estado de prompt */
 typedef struct s_suggestion_ctx
 {
 	t_cmd_list	*commands;
@@ -84,6 +98,75 @@ typedef struct s_suggestion_ctx
 	size_t		prompt_len;
 }				t_suggestion_ctx;
 
+/* ---- Wildcards ---------------------------------------------------------- */
+/* Estado para iterar rutas base durante la expansión de comodines */
+typedef struct s_walk
+{
+	char	**bases;
+	int		basec;
+	int		i;
+	int		c;
+}			t_walk;
+
+/* Contexto para avanzar un segmento del patrón de ruta */
+typedef struct s_adv
+{
+	char		**bases;
+	int			basec;
+	const char	*seg;
+	int			is_last;
+}				t_adv;
+
+/* Contexto para leer un directorio y acumular coincidencias */
+typedef struct s_dirctx
+{
+	char		***out;
+	int			*outc;
+	const char	*base;
+	const char	*segment;
+}				t_dirctx;
+
+/* Estado interno del matcher de '*' (no usar "struct" en .c) */
+typedef struct s_mw
+{
+	int			i;
+	int			j;
+	int			star;
+	int			mark;
+	const char	*s;
+	const char	*p;
+}				t_mw;
+
+/* ---- Forkerman (mini-juego) -------------------------------------------- */
+/* Constantes del tablero y bombas */
+# define WIDTH		21
+# define HEIGHT		11
+# define MAX_BOMBS	99
+# define BOMB_TIMER	5
+
+/* Bomba con posición y temporizador */
+typedef struct s_bomb
+{
+	int	x;
+	int	y;
+	int	timer;
+}		t_bomb;
+
+/* Estado del juego: jugador, bombas, mapa y atributos de terminal */
+typedef struct s_game
+{
+	int				player_x;
+	int				player_y;
+	int				lives;
+	int				bombs_available;
+	int				bomb_count;
+	t_bomb			bombs[MAX_BOMBS];
+	char			map[HEIGHT][WIDTH + 1];
+	struct termios	terminal_attrs;
+}					t_game;
+
+/* ================================ Utiles ================================= */
+/* Estado de readline para conmutar modo raw del terminal */
 typedef struct s_readline_state
 {
 	char			*buffer;
@@ -91,24 +174,38 @@ typedef struct s_readline_state
 	struct termios	*original_termios;
 }					t_readline_state;
 
-/**
- * @brief Main shell structure that encapsulates all program data
- * 
- * This structure simplifies function signatures by containing all the
- * essential data needed throughout the shell execution.
- */
+/* =============================== Core ==================================== */
+/*
+** Estructura principal del shell; centraliza datos globales para simplificar
+** firmas de funciones y acceso al estado.
+*/
 typedef struct s_mshell
 {
-	char		*raw_command;		/* Original command before expansion */
-	char		*expanded_command;	/* Command after variable expansion */
-	t_envp		*envp;				/* Environment variables */
-	t_ent		*tree;				/* Abstract syntax tree */
-	t_config	*config;			/* Shell configuration */
-	t_suggestion_ctx	*suggestions;	/* Suggestion context */
-	int			exit_code;			/* Last command exit code */
-	int			should_exit;		/* Flag to indicate shell should exit */
-}				t_mshell;
+	char				*raw_command;
+	char				*expanded_command;
+	t_envp				*envp;
+	t_ent				*tree;
+	t_config			*config;
+	t_suggestion_ctx	*suggestions;
+	int					exit_code;
+	int					should_exit;
+}						t_mshell;
 
+/* ============================== Ejecución ================================ */
+/*
+** Contexto para la ejecución de pipelines: comandos, pipes y PIDs
+*/
+typedef struct s_pipe_ctx
+{
+	t_ent		**commands;
+	int			**pipes;
+	pid_t		*pids;
+	int			cmd_count;
+	t_mshell	*mshell;
+}				t_pipe_ctx;
+
+/* ============================= Prototipos ================================ */
+/* Funciones asociadas a listas de entorno */
 t_envp	*envp_new_node(char *key, char *value);
 t_envp	*envp_append_last(t_envp *head, t_envp *node);
 t_envp	*envp_del_key(t_envp *head, char *key);
@@ -116,6 +213,7 @@ t_envp	*envp_edit_key(t_envp *head, char *key);
 void	envp_clear(t_envp *head);
 char	*get_env_value(t_envp *envp, const char *key);
 
+/* Funciones asociadas al árbol de sintaxis */
 t_ent	*ent_new_node(t_node_type type, char **argv);
 int		ent_new_sibling(t_ent *node, t_ent *sibling);
 int		ent_new_child(t_ent *parent, t_ent *child);

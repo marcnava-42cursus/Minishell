@@ -23,15 +23,7 @@
 # include "exec_builtins.h"
 # include "signals.h"
 
-// Contexto para ejecución de pipelines
-typedef struct s_pipe_ctx
-{
-	t_ent		**commands;
-	int			**pipes;
-	pid_t		*pids;
-	int			cmd_count;
-	t_mshell	*mshell;
-}t_pipe_ctx;
+/* t_pipe_ctx se declara ahora en structs.h */
 
 // Punto de entrada principal (exec.c)
 int		exec_tree(t_mshell *mshell);

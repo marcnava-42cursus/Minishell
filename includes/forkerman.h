@@ -14,30 +14,7 @@
 # define FORKERMAN_H
 
 # include "utils.h"
-
-# define WIDTH		21
-# define HEIGHT		11
-# define MAX_BOMBS	99
-# define BOMB_TIMER	5
-
-typedef struct s_bomb
-{
-	int	x;
-	int	y;
-	int	timer;
-}		t_bomb;
-
-typedef struct s_game
-{
-	int				player_x;
-	int				player_y;
-	int				lives;
-	int				bombs_available;
-	int				bomb_count;
-	t_bomb			bombs[MAX_BOMBS];
-	char			map[HEIGHT][WIDTH + 1];
-	struct termios	terminal_attrs;
-}					t_game;
+# include "structs.h"
 
 void	init_map(t_game *g);
 void	restart_game(t_game *g);
