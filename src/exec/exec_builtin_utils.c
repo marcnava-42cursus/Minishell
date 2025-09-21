@@ -14,6 +14,11 @@
 
 int	handle_cd_builtin(char **processed_argv, t_envp **envp)
 {
+	if (processed_argv[1] && processed_argv[2])
+	{
+		print_err2("minishell: cd: too many arguments\n", NULL, NULL);
+		return (1);
+	}
 	if (processed_argv[1])
 		return (msh_exec_bt_cd(envp, processed_argv[1]));
 	else
