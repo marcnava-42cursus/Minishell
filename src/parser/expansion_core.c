@@ -17,11 +17,16 @@ int	exp_process_char(const char **in, char **out,
 {
 	if (**in == '\'')
 	{
+		/* Preservar comillas simples para que el tokenizer no reinterprete operadores */
+		append_char(out, '\'');
 		(*in)++;
 		while (**in && **in != '\'')
 			append_char(out, *(*in)++);
 		if (**in == '\'')
+		{
 			(*in)++;
+			append_char(out, '\'');
+		}
 		return (1);
 	}
 	if (**in == '"')

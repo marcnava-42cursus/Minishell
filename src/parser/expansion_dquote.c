@@ -44,25 +44,20 @@ void	expdq_dollar(const char **p, char **out, t_envp *envp, int exit_code)
 void	expand_in_dquotes(const char **p, char **out,
 	t_envp *envp, int exit_code)
 {
-	const char	*start;
-
+	/* Preservar siempre las comillas dobles alrededor del contenido expandido */
 	(*p)++;
-	start = *p;
+	append_char(out, '"');
 	while (**p && **p != '"')
 	{
 		if (**p == '$' && (ft_isalpha(*((*p) + 1)) || *((*p) + 1) == '_'
 				|| *((*p) + 1) == '?'))
 		{
-			append_char(out, '"');
-			expdq_flush(&start, *p, out);
 			expdq_dollar(p, out, envp, exit_code);
-			append_char(out, '"');
-			start = *p;
 			continue ;
 		}
-		(*p)++;
+		append_char(out, *(*p)++);
 	}
-	expdq_flush(&start, *p, out);
 	if (**p == '"')
 		(*p)++;
+	append_char(out, '"');
 }

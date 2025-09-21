@@ -32,6 +32,16 @@ static int	pc_control_or_end(const char **s)
 	return (0);
 }
 
+static void	print_syntax_token(const char *tok)
+{
+	if (!tok || *tok == '\0')
+		print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+	else
+	{
+		print_err2("minishell: syntax error near unexpected token `", tok, "'\n");
+	}
+}
+
 static int	pc_apply_token(const char **s, t_mshell *mshell,
 							t_pc_ctx *ctx, char *tok)
 {
@@ -76,8 +86,30 @@ static int	pc_process_next(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 {
 	char	*tok;
 
+	parser_skip_whitespace(s);
 	if (pc_control_or_end(s))
+	{
+		/* Si aún no hemos consumido nada, es un error de sintaxis (p. ej. "| cmd"). */
+		if (ctx->argc == 0 && ctx->fd_in == -1 && ctx->fd_out == -1)
+		{
+			/* Determinar el token problemático para el mensaje */
+			if (**s == '|' && *(*s + 1) == '|')
+				print_syntax_token("||");
+			else if (**s == '&' && *(*s + 1) == '&')
+				print_syntax_token("&&");
+			else if (**s == ')' || **s == '|')
+			{
+				char t[3] = { **s, '\0', '\0' };
+				print_syntax_token(t);
+			}
+			else
+				print_syntax_token(NULL);
+			mshell->exit_code = 2;
+			ft_free_matrix((void **)ctx->argv);
+			return (-1);
+		}
 		return (1);
+	}
 	tok = get_next_token(s);
 	if (!tok)
 		return (1);
@@ -95,6 +127,8 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 	st = 0;
 	while (st == 0)
 		st = pc_process_next(s, mshell, &ctx);
+	if (st < 0)
+		return (NULL);
 	ctx.argv = ft_realloc_matrix(ctx.argv, ctx.argc, NULL);
 	if (!ctx.argv)
 		return (NULL);

@@ -12,20 +12,42 @@
 
 #include "parser.h"
 
+static void	advance_to_last(t_ent **node)
+{
+	while ((*node)->next)
+		*node = (*node)->next;
+}
+
 t_ent	*parse_pipeline(const char **s, t_mshell *mshell)
 {
 	t_ent	*head;
 	t_ent	*last;
+	t_ent	*rhs;
 
 	head = parse_primary(s, mshell);
 	if (!head)
 		return (NULL);
 	last = head;
-	while (last->next)
-		last = last->next;
+	advance_to_last(&last);
 	parser_skip_whitespace(s);
 	while (**s == '|' && *(*s + 1) != '|')
-		pt_attach_pipe(s, mshell, &last);
+	{
+		(*s)++;
+		last->next = ent_new_node(NODE_PIPE, NULL);
+		last = last->next;
+		parser_skip_whitespace(s);
+		rhs = parse_primary(s, mshell);
+		if (!rhs)
+		{
+			/* Error después de un pipe: liberar y propagar fallo */
+			ent_free(head);
+			mshell->exit_code = (mshell->exit_code == 0) ? 2 : mshell->exit_code;
+			return (NULL);
+		}
+		last->next = rhs;
+		advance_to_last(&last);
+		parser_skip_whitespace(s);
+	}
 	return (head);
 }
 
