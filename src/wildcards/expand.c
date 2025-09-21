@@ -12,24 +12,6 @@
 
 #include "wildcards.h"
 
-static char	**init_bases(const char *pattern, int *count)
-{
-	char	**out;
-
-	out = ft_calloc(2, sizeof(char *));
-	if (!out)
-		return (NULL);
-	if (pattern && pattern[0] == '/')
-		out[0] = ft_strdup("/");
-	else
-		out[0] = ft_strdup(".");
-	if (!out[0])
-		return (ft_free((void **)&out), NULL);
-	out[1] = NULL;
-	*count = 1;
-	return (out);
-}
-
 static char	**advance_literal_ctx(t_adv ctx, int *outc)
 {
 	int			i;

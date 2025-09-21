@@ -78,6 +78,7 @@ void	reset_signals_to_default(void)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTSTP, SIG_DFL);
+	/* Restaurar SIGPIPE por defecto: el escritor muere con SIGPIPE y se reporta "Broken pipe" */
 	signal(SIGPIPE, SIG_DFL);
 }
 

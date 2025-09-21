@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "utils.h"
 
 int	handle_cd_builtin(char **processed_argv, t_envp **envp)
 {

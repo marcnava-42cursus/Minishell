@@ -12,13 +12,33 @@
 
 #include "exec.h"
 #include "utils.h"
+#include <sys/stat.h>
 
 void	exit_with_errno_message(const char *cmd);
+
+static int	is_directory(const char *path)
+{
+	struct stat	st;
+
+	if (!path)
+		return (0);
+	if (stat(path, &st) == -1)
+		return (0);
+	return (S_ISDIR(st.st_mode));
+}
+
+static void	print_is_directory_and_exit(const char *path)
+{
+	print_err2("minishell: ", path, ": Is a directory\n");
+	exit(126);
+}
 
 static void	try_exec_direct(char *cmd0, char **argv, char **env_arr)
 {
 	if (cmd0 && ft_strchr(cmd0, '/'))
 	{
+		if (is_directory(cmd0))
+			print_is_directory_and_exit(cmd0);
 		execve(cmd0, argv, env_arr);
 		exit_with_errno_message(cmd0);
 	}
@@ -34,6 +54,8 @@ static char	*resolve_path_or_exit(const char *cmd0, t_envp *envp)
 		print_err2("minishell: ", cmd0, ": command not found\n");
 		exit(127);
 	}
+	if (is_directory(path))
+		print_is_directory_and_exit(path);
 	return (path);
 }
 

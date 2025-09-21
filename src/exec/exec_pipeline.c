@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "utils.h"
 
 static void	close_all_pipes_local(int **pipes, int cmd_count);
 
@@ -63,13 +64,18 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 {
 	int	status;
 	int	i;
+	int	first_sigpipe;
+	int	first_is_builtin;
 
 	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
 	set_child_executing();
+	first_sigpipe = 0;
 	i = 0;
 	while (i < ctx->cmd_count)
 	{
 		waitpid(ctx->pids[i], &status, 0);
+		if (i == 0 && WIFSIGNALED(status) && WTERMSIG(status) == SIGPIPE)
+			first_sigpipe = 1;
 		i++;
 	}
 	unset_child_executing();
@@ -79,9 +85,14 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 		ft_free((void **)&ctx->pipes[i]);
 		i++;
 	}
+	first_is_builtin = 0;
+	if (ctx->cmd_count > 0 && ctx->commands[0] && ctx->commands[0]->argv)
+		first_is_builtin = is_builtin(ctx->commands[0]->argv[0]);
 	ft_free((void **)&ctx->commands);
 	ft_free((void **)&ctx->pipes);
 	ft_free((void **)&ctx->pids);
+	if (first_sigpipe && !first_is_builtin)
+		print_err2(" Broken pipe\n", NULL, NULL);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);

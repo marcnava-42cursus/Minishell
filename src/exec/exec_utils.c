@@ -47,6 +47,9 @@ int	is_builtin(char *cmd)
  */
 int	apply_redirections(t_ent *node)
 {
+	/* Si alguna redirección falló en el parseo, no intentes dup2 ni imprimas EBADF */
+	if (node->fd_in == -2 || node->fd_out == -2)
+		return (1);
 	if (node->fd_in != -1)
 	{
 		if (dup2(node->fd_in, STDIN_FILENO) == -1)

@@ -36,7 +36,7 @@ static void	append_if_match(t_dirctx *ctx, const char *name)
 {
 	char	*path;
 
-	if (!ft_strcmp(name, ".") || !ft_strcmp(name, ".."))
+if (!ft_strcmp((char *)name, ".") || !ft_strcmp((char *)name, ".."))
 		return ;
 	if (!wc_match_segment(name, ctx->segment))
 		return ;

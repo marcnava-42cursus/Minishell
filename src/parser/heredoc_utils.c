@@ -89,21 +89,3 @@ char	*hd_clean_delimiter(const char *delimiter, int *is_quoted)
 	}
 	return (ft_strdup(delimiter));
 }
-
-static int	hd_write_line(int tmp_fd, char *line, t_mshell *mshell,
-	int is_quoted)
-{
-	char	*expanded_line;
-
-	if (is_quoted)
-		return (write(tmp_fd, line, ft_strlen(line)), 0);
-	expanded_line = expand_variables(line, mshell->envp, mshell->exit_code);
-	if (expanded_line)
-	{
-		write(tmp_fd, expanded_line, ft_strlen(expanded_line));
-		ft_free((void **)&expanded_line);
-	}
-	else
-		write(tmp_fd, line, ft_strlen(line));
-	return (0);
-}
