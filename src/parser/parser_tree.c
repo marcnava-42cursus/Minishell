@@ -53,36 +53,60 @@ t_ent	*parse_pipeline(const char **s, t_mshell *mshell)
 
 t_ent	*parse_and(const char **s, t_mshell *mshell)
 {
-	t_ent	*head;
-	t_ent	*last;
+	t_ent	*left;
+	t_ent	*right;
+	t_ent	*parent;
 
-	head = parse_pipeline(s, mshell);
-	if (!head)
+	left = parse_pipeline(s, mshell);
+	if (!left)
 		return (NULL);
-	last = head;
-	while (last->next)
-		last = last->next;
 	parser_skip_whitespace(s);
 	while (**s == '&' && *(*s + 1) == '&')
-		pt_attach_and(s, mshell, &last);
-	return (head);
+	{
+		(*s) += 2;
+		right = parse_pipeline(s, mshell);
+		if (!right)
+		{
+			ent_free(left);
+			mshell->exit_code = (mshell->exit_code == 0) ? 2 : mshell->exit_code;
+			return (NULL);
+		}
+		parent = ent_new_node(NODE_AND, NULL);
+		ent_new_child(parent, left);
+		ent_new_child(parent, right);
+		left = parent;
+		parser_skip_whitespace(s);
+	}
+	return (left);
 }
 
 t_ent	*parse_list(const char **s, t_mshell *mshell)
 {
-	t_ent	*head;
-	t_ent	*last;
+	t_ent	*left;
+	t_ent	*right;
+	t_ent	*parent;
 
-	head = parse_and(s, mshell);
-	if (!head)
+	left = parse_and(s, mshell);
+	if (!left)
 		return (NULL);
-	last = head;
-	while (last->next)
-		last = last->next;
 	parser_skip_whitespace(s);
 	while (**s == '|' && *(*s + 1) == '|')
-		pt_attach_or(s, mshell, &last);
-	return (head);
+	{
+		(*s) += 2;
+		right = parse_and(s, mshell);
+		if (!right)
+		{
+			ent_free(left);
+			mshell->exit_code = (mshell->exit_code == 0) ? 2 : mshell->exit_code;
+			return (NULL);
+		}
+		parent = ent_new_node(NODE_OR, NULL);
+		ent_new_child(parent, left);
+		ent_new_child(parent, right);
+		left = parent;
+		parser_skip_whitespace(s);
+	}
+	return (left);
 }
 
 t_ent	*parse_primary(const char **s, t_mshell *mshell)

@@ -12,6 +12,27 @@
 
 #include "exec_builtins.h"
 
+int	msh_exec_bt_export_print(t_envp *envp)
+{
+	t_envp	*cur;
+
+	cur = envp;
+	while (cur)
+	{
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(cur->key, 1);
+		if (cur->value && cur->value[0] != '\0')
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(cur->value, 1);
+			ft_putstr_fd("\"", 1);
+		}
+		ft_putstr_fd("\n", 1);
+		cur = cur->next;
+	}
+	return (0);
+}
+
 /**
  * @brief Print invalid identifier error for export builtin.
  * @param key The invalid identifier string.

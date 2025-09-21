@@ -41,7 +41,7 @@ int	handle_export_builtin(char **processed_argv, t_envp **envp)
 	char	*eq;
 
 	if (!processed_argv[1])
-		return (msh_exec_bt_env(*envp));
+		return (msh_exec_bt_export_print(*envp));
 	i = 1;
 	status = 0;
 	while (processed_argv[i])
