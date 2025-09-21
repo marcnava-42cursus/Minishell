@@ -33,13 +33,15 @@ static int	pc_control_or_end(const char **s)
 }
 
 static int	pc_apply_token(const char **s, t_mshell *mshell,
-	t_pc_ctx *ctx, char *tok)
+							t_pc_ctx *ctx, char *tok)
 {
 	int	ret;
 	int	append;
+	int	should_free;
 
 	ret = 0;
 	append = 0;
+	should_free = 1;
 	if (ft_strcmp(tok, "<<") == 0)
 	{
 		if (pc_handle_heredoc(s, mshell, ctx) < 0)
@@ -57,8 +59,16 @@ static int	pc_apply_token(const char **s, t_mshell *mshell,
 			ret = -1;
 	}
 	else
+	{
+		/* Ownership of `tok` is consumed inside pc_handle_word_or_glob:
+		   - Either it is added to ctx->argv (to be freed with the AST),
+		   - Or it is freed internally when wildcard expansion occurs.
+		*/
+		should_free = 0;
 		ret = pc_handle_word_or_glob(tok, ctx);
-	ft_free((void **)&tok);
+	}
+	if (should_free)
+		ft_free((void **)&tok);
 	return (ret);
 }
 
