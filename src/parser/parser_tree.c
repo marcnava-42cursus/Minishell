@@ -12,18 +12,10 @@
 
 #include "parser.h"
 
-static void	skip_whitespace(const char **s)
-{
-	while (**s == ' ' || **s == '\t')
-		(*s)++;
-}
-
 t_ent	*parse_pipeline(const char **s, t_mshell *mshell)
 {
 	t_ent	*head;
 	t_ent	*last;
-	t_ent	*op;
-	t_ent	*right;
 
 	head = parse_primary(s, mshell);
 	if (!head)
@@ -31,20 +23,9 @@ t_ent	*parse_pipeline(const char **s, t_mshell *mshell)
 	last = head;
 	while (last->next)
 		last = last->next;
-	skip_whitespace(s);
+	parser_skip_whitespace(s);
 	while (**s == '|' && *(*s + 1) != '|')
-	{
-		(*s)++;
-		op = ent_new_node(NODE_PIPE, NULL);
-		last->next = op;
-		last = op;
-		skip_whitespace(s);
-		right = parse_primary(s, mshell);
-		last->next = right;
-		while (last->next)
-			last = last->next;
-		skip_whitespace(s);
-	}
+		pt_attach_pipe(s, mshell, &last);
 	return (head);
 }
 
@@ -52,8 +33,6 @@ t_ent	*parse_and(const char **s, t_mshell *mshell)
 {
 	t_ent	*head;
 	t_ent	*last;
-	t_ent	*op;
-	t_ent	*sub;
 
 	head = parse_pipeline(s, mshell);
 	if (!head)
@@ -61,19 +40,9 @@ t_ent	*parse_and(const char **s, t_mshell *mshell)
 	last = head;
 	while (last->next)
 		last = last->next;
-	skip_whitespace(s);
+	parser_skip_whitespace(s);
 	while (**s == '&' && *(*s + 1) == '&')
-	{
-		(*s) += 2;
-		op = ent_new_node(NODE_AND, NULL);
-		last->next = op;
-		last = op;
-		sub = parse_pipeline(s, mshell);
-		last->next = sub;
-		while (last->next)
-			last = last->next;
-		skip_whitespace(s);
-	}
+		pt_attach_and(s, mshell, &last);
 	return (head);
 }
 
@@ -81,8 +50,6 @@ t_ent	*parse_list(const char **s, t_mshell *mshell)
 {
 	t_ent	*head;
 	t_ent	*last;
-	t_ent	*op;
-	t_ent	*sub;
 
 	head = parse_and(s, mshell);
 	if (!head)
@@ -90,25 +57,15 @@ t_ent	*parse_list(const char **s, t_mshell *mshell)
 	last = head;
 	while (last->next)
 		last = last->next;
-	skip_whitespace(s);
+	parser_skip_whitespace(s);
 	while (**s == '|' && *(*s + 1) == '|')
-	{
-		(*s) += 2;
-		op = ent_new_node(NODE_OR, NULL);
-		last->next = op;
-		last = op;
-		sub = parse_and(s, mshell);
-		last->next = sub;
-		while (last->next)
-			last = last->next;
-		skip_whitespace(s);
-	}
+		pt_attach_or(s, mshell, &last);
 	return (head);
 }
 
 t_ent	*parse_primary(const char **s, t_mshell *mshell)
 {
-	skip_whitespace(s);
+	parser_skip_whitespace(s);
 	if (**s == '(')
 		return (parse_subshell(s, mshell));
 	return (parse_cmd(s, mshell));

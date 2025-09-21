@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:33:33 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/18 20:45:43 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/20 20:50:19 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
 # include "libft.h"
 # include "structs.h"
 
-typedef unsigned long long ull;
+typedef unsigned long long	t_ull;
 
 // Helper functions for environment management
 char	*envp_get_value(t_envp *envp, const char *key);

@@ -4,6 +4,7 @@
 *.config
 minishell
 *.log
+*.py
 
 tmp*
 

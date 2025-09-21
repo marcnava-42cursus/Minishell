@@ -19,9 +19,12 @@
 # include <string.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <errno.h>
 # include "structs.h"
 # include "exec_builtins.h"
 # include "signals.h"
+
+/* t_pipe_ctx se declara ahora en structs.h */
 
 // Punto de entrada principal (exec.c)
 int		exec_tree(t_mshell *mshell);
@@ -47,16 +50,20 @@ void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr);
 int		wait_for_child_and_cleanup(pid_t pid, char **env_arr);
 
 // Utilidades específicas de pipelines (exec_pipeline_utils.c)
-void	perror_exit(char *msg, int exit_code);
 int		count_pipeline_commands(t_ent *node);
 void	collect_pipeline_commands(t_ent *node, t_ent **commands, int cmd_count);
 int		setup_pipeline_pipes(int **pipes, int cmd_count);
 void	setup_input_redirection(int **pipes, t_ent *command, int i);
 void	setup_output_redirection(int **pipes, t_ent *command, int i,
 			int cmd_count);
-void	close_all_pipes(int **pipes, int cmd_count);
-void	cleanup_pipeline_resources(t_ent **commands, int **pipes, pid_t *pids,
-			int cmd_count);
+
+// Helpers de ejecución de pipeline (exec_pipeline_run.c)
+int		single_command_from_pipeline(t_ent *node, t_mshell *mshell);
+int		spawn_children(t_pipe_ctx *ctx);
+void	exec_pipeline_child(t_pipe_ctx *ctx, int i);
+
+// Accesores externos usados en varias unidades
+int		exec_subshell(t_ent *node, t_mshell *mshell);
 
 // Utilidades específicas de builtins (exec_builtin_utils.c)
 int		handle_cd_builtin(char **processed_argv, t_envp **envp);

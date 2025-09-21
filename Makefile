@@ -68,6 +68,8 @@ SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/env.c \
 				$(BUILTINS)/envp_helpers.c \
 				$(BUILTINS)/exit.c \
+				$(BUILTINS)/exit_utils.c \
+				$(BUILTINS)/exit_numparse.c \
 				$(BUILTINS)/export.c \
 				$(BUILTINS)/pwd.c \
 				$(BUILTINS)/unset.c
@@ -75,9 +77,16 @@ SRCS		+=	$(BUILTINS)/cd.c \
 SRCS		+=	$(EXEC)/exec.c \
 				$(EXEC)/exec_commands.c \
 				$(EXEC)/exec_utils.c \
-				$(EXEC)/exec_helpers.c \
+				$(EXEC)/exec_path.c \
+				$(EXEC)/exec_env.c \
+				$(EXEC)/exec_quotes.c \
 				$(EXEC)/exec_command_utils.c \
+				$(EXEC)/exec_external.c \
 				$(EXEC)/exec_pipeline_utils.c \
+				$(EXEC)/exec_pipeline_run.c \
+				$(EXEC)/exec_pipeline.c \
+				$(EXEC)/exec_errors.c \
+				$(EXEC)/exec_logic.c \
 				$(EXEC)/exec_builtin_utils.c
 
 SRCS		+=	$(FORKERMAN)/bombs.c \
@@ -87,6 +96,27 @@ SRCS		+=	$(FORKERMAN)/bombs.c \
 				$(FORKERMAN)/render.c
 
 SRCS		+=	$(PARSER)/expansion.c \
+				$(PARSER)/expansion_core.c \
+				$(PARSER)/parser_common.c \
+				$(PARSER)/tokenizer.c \
+				$(PARSER)/tokenizer_ops.c \
+				$(PARSER)/tokenizer_ctx.c \
+				$(PARSER)/tokenizer_read.c \
+				$(PARSER)/parser_tree_helpers.c \
+				$(PARSER)/parser_cmd.c \
+				$(PARSER)/parser_cmd_redirs.c \
+				$(PARSER)/parser_cmd_heredoc.c \
+				$(PARSER)/parser_cmd_words.c \
+				$(PARSER)/parser_cmd_utils.c \
+				$(PARSER)/parser_subshell.c \
+				$(PARSER)/heredoc.c \
+				$(PARSER)/heredoc_utils.c \
+				$(PARSER)/heredoc_flow.c \
+				$(PARSER)/parser_main_helpers.c \
+				$(PARSER)/parser_main_run.c \
+				$(PARSER)/expansion_helpers.c \
+				$(PARSER)/expansion_dquote.c \
+				$(PARSER)/expansion_dollar.c \
 				$(PARSER)/parser_utils.c \
 				$(PARSER)/parser.c \
 				$(PARSER)/parser_tree.c \
@@ -112,7 +142,9 @@ SRCS		+=	$(UTILS)/print_tree.c \
 				$(UTILS)/io_utils.c
 
 SRCS		+=	$(WILDCARDS)/pattern.c \
+				$(WILDCARDS)/pattern_utils.c \
 				$(WILDCARDS)/path.c \
+				$(WILDCARDS)/expand_utils.c \
 				$(WILDCARDS)/expand.c \
 				$(WILDCARDS)/utils.c
 
@@ -132,7 +164,7 @@ all: $(NAME)
 $(NAME): $(OBJS) $(LIBFT_A)
 		$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
-$(BUILDPATH)/%.o: $(SRCPATH)/%.c $(HEADERS) | dirs
+$(BUILDPATH)/%.o: $(SRCPATH)/%.c $(HEADERS) $(LIBFT)/Makefile | dirs
 		@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:

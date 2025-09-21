@@ -6,73 +6,16 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:17 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 04:10:02 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/21 02:32:41 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "utils.h"
 
-static int	is_empty_or_whitespace(const char *str)
-{
-	if (!str)
-		return (1);
-	while (*str)
-	{
-		if (*str != ' ' && *str != '\t' && *str != '\n')
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
 int	parse_command(t_mshell *mshell, char *cmd)
 {
-	char	*exp;
-	t_ent	*root;
-
 	if (!mshell || !cmd)
 		return (1);
-	if (mshell->raw_command)
-		ft_free((void **)&mshell->raw_command);
-	mshell->raw_command = ft_strdup(cmd);
-	if (!mshell->raw_command)
-	{
-print_err2("minishell: allocation error\n", NULL, NULL);
-		mshell->exit_code = 1;
-		return (0);
-	}
-	exp = expand_variables(cmd, mshell->envp, mshell->exit_code);
-	if (!exp)
-	{
-print_err2("minishell: allocation error\n", NULL, NULL);
-		mshell->exit_code = 1;
-		return (0);
-	}
-	if (is_empty_or_whitespace(exp))
-	{
-		ft_free((void **)&exp);
-		mshell->tree = NULL;
-		return (0);
-	}
-	if (mshell->expanded_command)
-		ft_free((void **)&mshell->expanded_command);
-	mshell->expanded_command = ft_strdup(exp);
-	root = parse_command_tree(exp, mshell);
-	if (!root)
-	{
-		/* Si no hay árbol, puede ser error de sintaxis (exit 2) o
-		   un error de redirección ya reportado (exit 1) */
-		if (mshell->exit_code == 0)
-		{
-print_err2("minishell: syntax error\n", NULL, NULL);
-			mshell->exit_code = 2;
-		}
-		ft_free((void **)&exp);
-		mshell->tree = NULL;
-		return (0);
-	}
-	mshell->tree = root;
-	ft_free((void **)&exp);
-	return (0);
+	return (pm_run(mshell, cmd));
 }
