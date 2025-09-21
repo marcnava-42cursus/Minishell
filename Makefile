@@ -96,6 +96,27 @@ SRCS		+=	$(FORKERMAN)/bombs.c \
 				$(FORKERMAN)/render.c
 
 SRCS		+=	$(PARSER)/expansion.c \
+				$(PARSER)/expansion_core.c \
+				$(PARSER)/parser_common.c \
+				$(PARSER)/tokenizer.c \
+				$(PARSER)/tokenizer_ops.c \
+				$(PARSER)/tokenizer_ctx.c \
+				$(PARSER)/tokenizer_read.c \
+				$(PARSER)/parser_tree_helpers.c \
+				$(PARSER)/parser_cmd.c \
+				$(PARSER)/parser_cmd_redirs.c \
+				$(PARSER)/parser_cmd_heredoc.c \
+				$(PARSER)/parser_cmd_words.c \
+				$(PARSER)/parser_cmd_utils.c \
+				$(PARSER)/parser_subshell.c \
+				$(PARSER)/heredoc.c \
+				$(PARSER)/heredoc_utils.c \
+				$(PARSER)/heredoc_flow.c \
+				$(PARSER)/parser_main_helpers.c \
+				$(PARSER)/parser_main_run.c \
+				$(PARSER)/expansion_helpers.c \
+				$(PARSER)/expansion_dquote.c \
+				$(PARSER)/expansion_dollar.c \
 				$(PARSER)/parser_utils.c \
 				$(PARSER)/parser.c \
 				$(PARSER)/parser_tree.c \

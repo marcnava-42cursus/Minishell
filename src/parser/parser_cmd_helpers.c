@@ -1,18 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion.c                                        :+:      :+:    :+:   */
+/*   parser_cmd_helpers.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/05 18:57:47 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:33:18 by marcnava         ###   ########.fr       */
+/*   Created: 2025/09/21 00:22:00 by marcnava          #+#    #+#             */
+/*   Updated: 2025/09/21 00:22:00 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "wildcards.h"
+#include "utils.h"
 
-char	*expand_variables(const char *in, t_envp *envp, int exit_code)
-{
-	return (exp_expand(in, envp, exit_code));
+/* Este archivo queda vacío; helpers se han movido a archivos específicos:
+** - parser_cmd_redirs.c
+** - parser_cmd_heredoc.c
+** - parser_cmd_words.c
+*/
 }

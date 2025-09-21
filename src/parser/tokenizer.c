@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion.c                                        :+:      :+:    :+:   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/05 18:57:47 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:33:18 by marcnava         ###   ########.fr       */
+/*   Created: 2025/09/21 00:20:30 by marcnava          #+#    #+#             */
+/*   Updated: 2025/09/21 00:20:30 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-char	*expand_variables(const char *in, t_envp *envp, int exit_code)
+char	*get_next_token(const char **s)
 {
-	return (exp_expand(in, envp, exit_code));
+	char	*op;
+
+	parser_skip_whitespace(s);
+	if (**s == '\0')
+		return (NULL);
+	op = tkn_return_operator(s);
+	if (op)
+		return (op);
+	return (tkn_read_word(s));
 }

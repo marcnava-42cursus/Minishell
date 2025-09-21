@@ -24,6 +24,39 @@
 # define SUG_BUFFER_SIZE 1024
 # define CMD_INITIAL_CAPACITY 256
 
+/* =========================== Parser helpers ============================== */
+/* Contexto local para construir argv/FDs en parse_cmd */
+typedef struct s_pc_ctx
+{
+	char	**argv;
+	int		argc;
+	int		fd_in;
+	int		fd_out;
+}t_pc_ctx;
+
+/* Contexto interno del tokenizer */
+typedef struct s_tokctx
+{
+	char		*buf;
+	size_t		cap;
+	size_t		out;
+	const char	*p;
+	int			in_squote;
+	int			in_dquote;
+}t_tokctx;
+
+/* Contexto para heredoc */
+typedef struct s_hd_ctx
+{
+	char	*tmp_filename;
+	char	*clean_delimiter;
+	char	*original_delimiter;
+	char	*count_str;
+	int		tmp_fd;
+	int		read_fd;
+	int		is_quoted;
+}t_hd_ctx;
+
 /*
 ** Lista enlazada simple para variables de entorno (KEY=VALUE)
 */
