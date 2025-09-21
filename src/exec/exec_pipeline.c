@@ -17,6 +17,9 @@ static void	close_all_pipes_local(int **pipes, int cmd_count);
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
 {
 	setup_child_signals();
+	/* Si alguna redirección falló en el parseo, no ejecutar el comando */
+	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
+		exit(1);
 	setup_input_redirection(ctx->pipes, ctx->commands[i], i);
 	setup_output_redirection(ctx->pipes, ctx->commands[i], i, ctx->cmd_count);
 	close_all_pipes_local(ctx->pipes, ctx->cmd_count);

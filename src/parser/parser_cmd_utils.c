@@ -29,6 +29,52 @@ static int	is_operator_token(const char *tok)
 		|| !ft_strcmp((char *)tok, "("));
 }
 
+static void	copy_squoted(const char *s, size_t *i, char *out, size_t *j)
+{
+	(*i)++;
+	while (s[*i] && s[*i] != '\'')
+		out[(*j)++] = s[(*i)++];
+	if (s[*i] == '\'')
+		(*i)++;
+}
+
+static void	copy_dquoted(const char *s, size_t *i, char *out, size_t *j)
+{
+	(*i)++;
+	while (s[*i] && s[*i] != '"')
+		out[(*j)++] = s[(*i)++];
+	if (s[*i] == '"')
+		(*i)++;
+}
+
+char	*pc_unquote(const char *str)
+{
+	char	*out;
+	size_t	i;
+	size_t	j;
+	size_t	len;
+
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	out = malloc(len + 1);
+	if (!out)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			copy_squoted(str, &i, out, &j);
+		else if (str[i] == '"')
+			copy_dquoted(str, &i, out, &j);
+		else
+			out[j++] = str[i++];
+	}
+	out[j] = '\0';
+	return (out);
+}
+
 void	pc_close_replace(int *dst_fd, int new_fd)
 {
 	if (*dst_fd != -1 && *dst_fd != -2)

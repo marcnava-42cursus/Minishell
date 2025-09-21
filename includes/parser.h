@@ -81,9 +81,10 @@ int		pc_handle_heredoc(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
 int		pc_handle_redir_in(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
 int		pc_handle_redir_out(const char **s, t_mshell *mshell, t_pc_ctx *ctx, int append);
 int		pc_handle_word_or_glob(char *tok, t_pc_ctx *ctx);
-t_ent	*pc_finish(const t_pc_ctx *ctx);
-void	pc_close_replace(int *dst_fd, int new_fd);
-char	*pc_read_filename_or_error(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
+ t_ent	*pc_finish(const t_pc_ctx *ctx);
+ void	pc_close_replace(int *dst_fd, int new_fd);
+ char	*pc_read_filename_or_error(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
+ char	*pc_unquote(const char *str);
 
 /* Parser main */
 int		pm_run(t_mshell *mshell, const char *cmd);
