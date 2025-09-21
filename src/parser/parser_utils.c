@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:24 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 05:24:51 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/21 00:39:20 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ static char	*get_next_token(const char **s)
 	skip_whitespace(s);
 	if (**s == '\0')
 		return (NULL);
-	/* Single-char and double-char operators at token start (not escaped) */
 	if (**s == '(' || **s == ')')
 		return (ft_substr((*s)++, 0, 1));
 	if (**s == '&' && *(*s + 1) == '&')
@@ -49,8 +48,6 @@ static char	*get_next_token(const char **s)
 		return ((*s)++, ft_strdup(">"));
 	if (**s == '|')
 		return ((*s)++, ft_strdup("|"));
-
-	/* Build a word token honoring quotes and backslash escaping */
 	p = *s;
 	cap = ft_strlen(p) + 1;
 	buf = ft_calloc(cap, sizeof(char));
@@ -61,24 +58,18 @@ static char	*get_next_token(const char **s)
 	in_dquote = 0;
 	while (*p)
 	{
-		/* Token boundary (when not inside quotes) */
-		if (!in_squote && !in_dquote && ( *p == ' ' || *p == '\t'
-			|| *p == '(' || *p == ')' || *p == '&' || *p == '|' || *p == '<' || *p == '>'))
+		if (!in_squote && !in_dquote && (*p == ' ' || *p == '\t'
+				|| *p == '(' || *p == ')' || *p == '&' || *p == '|'
+				|| *p == '<' || *p == '>'))
 			break ;
 		if (*p == '\\')
 		{
 			if (in_squote)
-			{
-				/* Backslash is literal inside single quotes */
 				buf[out++] = *p++;
-			}
 			else if (in_dquote)
 			{
-				/* In double quotes: do not drop the backslash here; let expansion handle it */
 				if (*(p + 1) == '\n')
-				{
-					p += 2; /* line continuation */
-				}
+					p += 2;
 				else
 				{
 					buf[out++] = *p++;
@@ -88,11 +79,8 @@ static char	*get_next_token(const char **s)
 			}
 			else
 			{
-				/* Outside quotes: do not drop the backslash; include next char if any */
 				if (*(p + 1) == '\n')
-				{
-					p += 2; /* swallow line continuation */
-				}
+					p += 2;
 				else
 				{
 					buf[out++] = *p++;
@@ -112,9 +100,7 @@ static char	*get_next_token(const char **s)
 			buf[out++] = *p++;
 		}
 		else
-		{
 			buf[out++] = *p++;
-		}
 	}
 	buf[out] = '\0';
 	*s = p;
@@ -155,7 +141,9 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 			filename = get_next_token(s);
 			if (!filename)
 			{
-print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				print_err2(
+					"minishell: syntax error near unexpected token `newline'\n",
+					NULL, NULL);
 				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
@@ -164,7 +152,6 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 			ft_free((void **)&filename);
 			if (fd == -1)
 			{
-				/* Mark failure but continue building the command list */
 				mshell->exit_code = 1;
 				fd_in = -2;
 			}
@@ -182,7 +169,9 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 			filename = get_next_token(s);
 			if (!filename)
 			{
-print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				print_err2(
+					"minishell: syntax error near unexpected token `newline'\n",
+					NULL, NULL);
 				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
@@ -190,7 +179,7 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 			fd = open(filename, O_RDONLY);
 			if (fd == -1)
 			{
-print_err2("minishell: ", filename, ": ");
+				print_err2("minishell: ", filename, ": ");
 				print_err2(strerror(errno), "\n", NULL);
 				mshell->exit_code = 1;
 				fd_in = -2;
@@ -210,7 +199,9 @@ print_err2("minishell: ", filename, ": ");
 			filename = get_next_token(s);
 			if (!filename)
 			{
-print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				print_err2(
+					"minishell: syntax error near unexpected token `newline'\n",
+					NULL, NULL);
 				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
@@ -218,7 +209,7 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 			fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd == -1)
 			{
-print_err2("minishell: ", filename, ": ");
+				print_err2("minishell: ", filename, ": ");
 				print_err2(strerror(errno), "\n", NULL);
 				mshell->exit_code = 1;
 				fd_out = -2;
@@ -238,7 +229,9 @@ print_err2("minishell: ", filename, ": ");
 			filename = get_next_token(s);
 			if (!filename)
 			{
-print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+				print_err2(
+					"minishell: syntax error near unexpected token `newline'\n",
+					NULL, NULL);
 				mshell->exit_code = 2;
 				ft_free_matrix((void **)argv);
 				return (NULL);
@@ -246,7 +239,7 @@ print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NU
 			fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (fd == -1)
 			{
-print_err2("minishell: ", filename, ": ");
+				print_err2("minishell: ", filename, ": ");
 				print_err2(strerror(errno), "\n", NULL);
 				mshell->exit_code = 1;
 				fd_out = -2;
@@ -260,7 +253,6 @@ print_err2("minishell: ", filename, ": ");
 			ft_free((void **)&filename);
 			continue ;
 		}
-		/* Normal argument or pattern */
 		if (wc_token_should_expand(tok))
 		{
 			mcount = 0;

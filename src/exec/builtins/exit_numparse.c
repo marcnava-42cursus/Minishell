@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 00:27:54 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:50:10 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/21 00:29:26 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ int	parse_ll_strict(const char *s, long long *out)
 {
 	int		i;
 	int		sign;
-	t_ull		acc;
-	t_ull		limit;
+	t_ull	acc;
+	t_ull	limit;
 
 	if (!s || !*s)
 		return (0);

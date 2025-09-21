@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 00:32:12 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/08 23:52:39 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/21 00:27:08 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 int	main(int argc, char **argv, char **env)
 {
+	int			i;
+	int			j;
+	int			r;
+	int			signal_exit_code;
+	char		ch;
+	char		buffer[4096];
 	char		*line;
 	t_mshell	mshell;
 
@@ -31,10 +37,7 @@ int	main(int argc, char **argv, char **env)
 		return (printf("Error saving envp\n"), 1);
 	mshell.exit_code = 0;
 	mshell.should_exit = 0;
-	
-	// Configurar manejo de señales
 	setup_parent_signals();
-	
 	if (mshell.config->use_suggestions)
 	{
 		mshell.suggestions = suggestion_init(mshell.config->prompt);
@@ -53,14 +56,11 @@ int	main(int argc, char **argv, char **env)
 				line = readline(mshell.config->prompt);
 			else
 			{
-				char buffer[4096];
-				int i = 0;
-				char ch;
-				int r;
+				i = 0;
 				while (i < 4095 && (r = read(STDIN_FILENO, &ch, 1)) > 0)
 				{
 					if (ch == '\n')
-						break;
+						break ;
 					buffer[i++] = ch;
 				}
 				if (r <= 0 && i == 0)
@@ -71,7 +71,7 @@ int	main(int argc, char **argv, char **env)
 					line = malloc(i + 1);
 					if (line)
 					{
-						int j = 0;
+						j = 0;
 						while (j <= i)
 						{
 							line[j] = buffer[j];
@@ -87,11 +87,9 @@ int	main(int argc, char **argv, char **env)
 				printf("exit\n");
 			break ;
 		}
-		// Verificar si se ha recibido una señal
-		int signal_exit_code = check_signal_exit_code();
+		signal_exit_code = check_signal_exit_code();
 		if (signal_exit_code != 0)
 			mshell.exit_code = signal_exit_code;
-		
 		if (*line)
 		{
 			add_history(line);
@@ -101,10 +99,7 @@ int	main(int argc, char **argv, char **env)
 					printf("Error parsing command\n");
 			}
 			else if (mshell.tree)
-			{ 
-//				printf("===================================================\n");
-//				print_tree(mshell.tree, 0);
-//				printf("===================================================\n");
+			{
 				mshell.exit_code = exec_tree(&mshell);
 				if (mshell.exit_code != 0 && isatty(STDIN_FILENO))
 					printf("Command exited with code: %d\n", mshell.exit_code);
@@ -115,9 +110,9 @@ int	main(int argc, char **argv, char **env)
 				ft_free((void **)&mshell.config->prompt);
 			mshell.config->prompt = build_prompt(mshell.config->prompt_raw,
 					mshell.exit_code);
-			/* Update suggestions prompt if enabled */
 			if (mshell.config->use_suggestions && mshell.suggestions)
-				suggestion_update_prompt(mshell.suggestions, mshell.config->prompt);
+				suggestion_update_prompt(mshell.suggestions,
+					mshell.config->prompt);
 		}
 		ft_free((void **)&line);
 	}

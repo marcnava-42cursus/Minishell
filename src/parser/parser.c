@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 18:57:17 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 04:10:02 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/21 00:44:09 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,14 @@ int	parse_command(t_mshell *mshell, char *cmd)
 	mshell->raw_command = ft_strdup(cmd);
 	if (!mshell->raw_command)
 	{
-print_err2("minishell: allocation error\n", NULL, NULL);
+		print_err2("minishell: allocation error\n", NULL, NULL);
 		mshell->exit_code = 1;
 		return (0);
 	}
 	exp = expand_variables(cmd, mshell->envp, mshell->exit_code);
 	if (!exp)
 	{
-print_err2("minishell: allocation error\n", NULL, NULL);
+		print_err2("minishell: allocation error\n", NULL, NULL);
 		mshell->exit_code = 1;
 		return (0);
 	}
@@ -61,11 +61,9 @@ print_err2("minishell: allocation error\n", NULL, NULL);
 	root = parse_command_tree(exp, mshell);
 	if (!root)
 	{
-		/* Si no hay árbol, puede ser error de sintaxis (exit 2) o
-		   un error de redirección ya reportado (exit 1) */
 		if (mshell->exit_code == 0)
 		{
-print_err2("minishell: syntax error\n", NULL, NULL);
+			print_err2("minishell: syntax error\n", NULL, NULL);
 			mshell->exit_code = 2;
 		}
 		ft_free((void **)&exp);
