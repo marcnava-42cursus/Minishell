@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/23 21:04:10 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/23 21:13:37 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,6 +78,7 @@ SRCS		+=	$(EXEC)/exec.c \
 				$(EXEC)/exec_commands.c \
 				$(EXEC)/exec_utils.c \
 				$(EXEC)/exec_path.c \
+				$(EXEC)/exec_pipeline_handler.c \
 				$(EXEC)/exec_env.c \
 				$(EXEC)/exec_quotes.c \
 				$(EXEC)/exec_command_utils.c \

@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 19:42:35 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/28 04:24:13 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:13:15 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,12 @@ void	setup_output_redirection(int **pipes, t_ent *command, int i,
 // Helpers de ejecución de pipeline (exec_pipeline_run.c)
 int		single_command_from_pipeline(t_ent *node, t_mshell *mshell);
 int		spawn_children(t_pipe_ctx *ctx);
+void	wait_children(const t_pipe_ctx *ctx, int *last_status,
+			int *first_sigpipe);
+void	free_pipe_rows(int **pipes, int cmd_count);
+int		should_print_broken_pipe(const t_pipe_ctx *ctx, int first_sigpipe);
+int		status_to_exitcode(int status);
+void	free_ctx_arrays(t_pipe_ctx *ctx);
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i);
 
 // Accesores externos usados en varias unidades

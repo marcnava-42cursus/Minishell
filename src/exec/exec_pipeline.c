@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:48:46 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:11:25 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static void	close_all_pipes_local(int **pipes, int cmd_count);
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
 {
 	reset_signals_to_default();
-	/* Si alguna redirección falló en el parseo, no ejecutar el comando */
 	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
 		exit(1);
 	setup_input_redirection(ctx->pipes, ctx->commands[i], i);
@@ -63,41 +62,17 @@ static int	init_ctx(t_pipe_ctx *ctx, t_ent *node, t_mshell *mshell)
 static int	wait_and_cleanup(t_pipe_ctx *ctx)
 {
 	int	status;
-	int	i;
 	int	first_sigpipe;
-	int	first_is_builtin;
 
 	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
 	g_child_executing = 1;
-	first_sigpipe = 0;
-	i = 0;
-	while (i < ctx->cmd_count)
-	{
-		waitpid(ctx->pids[i], &status, 0);
-		if (i == 0 && WIFSIGNALED(status) && WTERMSIG(status) == SIGPIPE)
-			first_sigpipe = 1;
-		i++;
-	}
+	wait_children(ctx, &status, &first_sigpipe);
 	g_child_executing = 0;
-	i = 0;
-	while (i < ctx->cmd_count - 1)
-	{
-		ft_free((void **)&ctx->pipes[i]);
-		i++;
-	}
-	first_is_builtin = 0;
-	if (ctx->cmd_count > 0 && ctx->commands[0] && ctx->commands[0]->argv)
-		first_is_builtin = is_builtin(ctx->commands[0]->argv[0]);
-	ft_free((void **)&ctx->commands);
-	ft_free((void **)&ctx->pipes);
-	ft_free((void **)&ctx->pids);
-	if (first_sigpipe && !first_is_builtin)
+	free_pipe_rows(ctx->pipes, ctx->cmd_count);
+	if (should_print_broken_pipe(ctx, first_sigpipe))
 		print_err2(" Broken pipe\n", NULL, NULL);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	else if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
-	return (1);
+	free_ctx_arrays(ctx);
+	return (status_to_exitcode(status));
 }
 
 int	exec_pipeline(t_ent *node, t_mshell *mshell)
