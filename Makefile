@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/23 21:13:37 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/23 21:40:33 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -139,6 +139,8 @@ SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
 
 SRCS		+=	$(UTILS)/print_tree.c \
 				$(UTILS)/matrix_utils.c \
+				$(UTILS)/ms_handlers.c \
+				$(UTILS)/ms_readline.c \
 				$(UTILS)/termios_utils.c \
 				$(UTILS)/io_utils.c
 
