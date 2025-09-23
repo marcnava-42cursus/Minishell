@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 00:24:30 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 00:24:30 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:11:30 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ int	pm_store_expanded(t_mshell *mshell, const char *exp)
 
 t_ent	*pm_parse_tree_or_error(const char *exp, t_mshell *mshell)
 {
-	t_ent      *root;
-	const char *p = exp;
-    
+	t_ent		*root;
+	const char	*p = exp;
+
 	root = parse_list(&p, mshell);
 	if (!root)
 	{

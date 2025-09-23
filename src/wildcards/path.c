@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 21:03:30 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:01:11 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:06:10 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	append_if_match(t_dirctx *ctx, const char *name)
 {
 	char	*path;
 
-if (!ft_strcmp((char *)name, ".") || !ft_strcmp((char *)name, ".."))
+	if (!ft_strcmp((char *)name, ".") || !ft_strcmp((char *)name, ".."))
 		return ;
 	if (!wc_match_segment(name, ctx->segment))
 		return ;
@@ -80,9 +80,9 @@ char	**wc_next_paths(char **bases, int basec, const char *segment, int *outc)
 {
 	int		c;
 	int		i;
+	int		j;
 	char	**res;
 	char	**tmp;
-	int		j;
 
 	*outc = 0;
 	res = NULL;

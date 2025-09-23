@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 00:22:30 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 03:28:07 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:40:26 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,48 +35,61 @@ static int	pc_control_or_end(const char **s)
 static void	print_syntax_token(const char *tok)
 {
 	if (!tok || *tok == '\0')
-		print_err2("minishell: syntax error near unexpected token `newline'\n", NULL, NULL);
+		print_err2("minishell: syntax error near unexpected token `newline'\n",
+			NULL, NULL);
 	else
 	{
-		print_err2("minishell: syntax error near unexpected token `", tok, "'\n");
+		print_err2("minishell: syntax error near unexpected token `",
+			tok, "'\n");
 	}
 }
 
-static int	pc_apply_token(const char **s, t_mshell *mshell,
-							t_pc_ctx *ctx, char *tok)
+/* handle heredoc or input redirection */
+static int	pc_token_is_redir_in(const char **s, t_mshell *mshell,
+				t_pc_ctx *ctx, char *tok)
+{
+	if (ft_strcmp(tok, "<<") == 0)
+		return (pc_handle_heredoc(s, mshell, ctx));
+	if (ft_strcmp(tok, "<") == 0)
+		return (pc_handle_redir_in(s, mshell, ctx));
+	return (0);
+}
+
+/* handle output redirection */
+static int	pc_token_is_redir_out(const char **s, t_mshell *mshell,
+				t_pc_ctx *ctx, char *tok)
+{
+	int	append;
+
+	append = (tok[1] == '>');
+	return (pc_handle_redir_out(s, mshell, ctx, append));
+}
+
+/* handle normal word or glob */
+static int	pc_token_is_word(t_pc_ctx *ctx, char *tok)
+{
+	return (pc_handle_word_or_glob(tok, ctx));
+}
+
+int	pc_apply_token(const char **s, t_mshell *mshell,
+			t_pc_ctx *ctx, char *tok)
 {
 	int	ret;
-	int	append;
 	int	should_free;
 
 	ret = 0;
-	append = 0;
 	should_free = 1;
-	if (ft_strcmp(tok, "<<") == 0)
-	{
-		if (pc_handle_heredoc(s, mshell, ctx) < 0)
-			ret = -1;
-	}
-	else if (ft_strcmp(tok, "<") == 0)
-	{
-		if (pc_handle_redir_in(s, mshell, ctx) < 0)
-			ret = -1;
-	}
+	if (ft_strcmp(tok, "<<") == 0 || ft_strcmp(tok, "<") == 0)
+		ret = pc_token_is_redir_in(s, mshell, ctx, tok);
 	else if (ft_strcmp(tok, ">") == 0 || ft_strcmp(tok, ">>") == 0)
-	{
-		append = (tok[1] == '>');
-		if (pc_handle_redir_out(s, mshell, ctx, append) < 0)
-			ret = -1;
-	}
+		ret = pc_token_is_redir_out(s, mshell, ctx, tok);
 	else
 	{
-		/* Ownership of `tok` is consumed inside pc_handle_word_or_glob:
-		   - Either it is added to ctx->argv (to be freed with the AST),
-		   - Or it is freed internally when wildcard expansion occurs.
-		*/
 		should_free = 0;
-		ret = pc_handle_word_or_glob(tok, ctx);
+		ret = pc_token_is_word(ctx, tok);
 	}
+	if (ret < 0)
+		ret = -1;
 	if (should_free)
 		ft_free((void **)&tok);
 	return (ret);
@@ -85,28 +98,23 @@ static int	pc_apply_token(const char **s, t_mshell *mshell,
 static int	pc_process_next(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 {
 	char	*tok;
+	char	t[3];
 
 	parser_skip_whitespace(s);
 	if (pc_control_or_end(s))
 	{
-		/* Si aún no hemos consumido nada, es un error de sintaxis (p. ej. "| cmd"). */
 		if (ctx->argc == 0 && ctx->fd_in == -1 && ctx->fd_out == -1)
 		{
-			/* Determinar el token problemático para el mensaje */
 			if (**s == '|' && *(*s + 1) == '|')
 				print_syntax_token("||");
 			else if (**s == '&' && *(*s + 1) == '&')
 				print_syntax_token("&&");
 			else if (**s == ')' || **s == '|')
-			{
-				char t[3] = { **s, '\0', '\0' };
-				print_syntax_token(t);
-			}
+				(ft_bzero(t, 3), t[0] = **s, print_syntax_token(t));
 			else
 				print_syntax_token(NULL);
 			mshell->exit_code = 2;
-			ft_free_matrix((void **)ctx->argv);
-			return (-1);
+			return (ft_free_matrix((void **)ctx->argv), -1);
 		}
 		return (1);
 	}
@@ -115,7 +123,6 @@ static int	pc_process_next(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 		return (1);
 	return (pc_apply_token(s, mshell, ctx, tok));
 }
-/* Public: definida en parser.h */
 
 t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 {

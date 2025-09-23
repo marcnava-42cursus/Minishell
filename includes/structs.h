@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 19:01:01 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:46:26 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:09:47 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct s_pc_ctx
 	int		argc;
 	int		fd_in;
 	int		fd_out;
-}t_pc_ctx;
+}			t_pc_ctx;
 
 /* Contexto interno del tokenizer */
 typedef struct s_tokctx
@@ -43,7 +43,7 @@ typedef struct s_tokctx
 	const char	*p;
 	int			in_squote;
 	int			in_dquote;
-}t_tokctx;
+}				t_tokctx;
 
 /* Contexto para heredoc */
 typedef struct s_hd_ctx
@@ -55,7 +55,7 @@ typedef struct s_hd_ctx
 	int		tmp_fd;
 	int		read_fd;
 	int		is_quoted;
-}t_hd_ctx;
+}			t_hd_ctx;
 
 /*
 ** Lista enlazada simple para variables de entorno (KEY=VALUE)
