@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:47:47 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:48:46 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ static void	close_all_pipes_local(int **pipes, int cmd_count);
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
 {
 	reset_signals_to_default();
+	/* Si alguna redirección falló en el parseo, no ejecutar el comando */
 	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
 		exit(1);
 	setup_input_redirection(ctx->pipes, ctx->commands[i], i);
