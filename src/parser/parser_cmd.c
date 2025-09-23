@@ -6,23 +6,12 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 00:22:30 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:40:26 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:02:59 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "utils.h"
-
-static int	pc_init_ctx(t_pc_ctx *ctx)
-{
-	ctx->argv = ft_calloc(1, sizeof(char *));
-	if (!ctx->argv)
-		return (-1);
-	ctx->argc = 0;
-	ctx->fd_in = -1;
-	ctx->fd_out = -1;
-	return (0);
-}
 
 static int	pc_control_or_end(const char **s)
 {
@@ -42,57 +31,6 @@ static void	print_syntax_token(const char *tok)
 		print_err2("minishell: syntax error near unexpected token `",
 			tok, "'\n");
 	}
-}
-
-/* handle heredoc or input redirection */
-static int	pc_token_is_redir_in(const char **s, t_mshell *mshell,
-				t_pc_ctx *ctx, char *tok)
-{
-	if (ft_strcmp(tok, "<<") == 0)
-		return (pc_handle_heredoc(s, mshell, ctx));
-	if (ft_strcmp(tok, "<") == 0)
-		return (pc_handle_redir_in(s, mshell, ctx));
-	return (0);
-}
-
-/* handle output redirection */
-static int	pc_token_is_redir_out(const char **s, t_mshell *mshell,
-				t_pc_ctx *ctx, char *tok)
-{
-	int	append;
-
-	append = (tok[1] == '>');
-	return (pc_handle_redir_out(s, mshell, ctx, append));
-}
-
-/* handle normal word or glob */
-static int	pc_token_is_word(t_pc_ctx *ctx, char *tok)
-{
-	return (pc_handle_word_or_glob(tok, ctx));
-}
-
-int	pc_apply_token(const char **s, t_mshell *mshell,
-			t_pc_ctx *ctx, char *tok)
-{
-	int	ret;
-	int	should_free;
-
-	ret = 0;
-	should_free = 1;
-	if (ft_strcmp(tok, "<<") == 0 || ft_strcmp(tok, "<") == 0)
-		ret = pc_token_is_redir_in(s, mshell, ctx, tok);
-	else if (ft_strcmp(tok, ">") == 0 || ft_strcmp(tok, ">>") == 0)
-		ret = pc_token_is_redir_out(s, mshell, ctx, tok);
-	else
-	{
-		should_free = 0;
-		ret = pc_token_is_word(ctx, tok);
-	}
-	if (ret < 0)
-		ret = -1;
-	if (should_free)
-		ft_free((void **)&tok);
-	return (ret);
 }
 
 static int	pc_process_next(const char **s, t_mshell *mshell, t_pc_ctx *ctx)

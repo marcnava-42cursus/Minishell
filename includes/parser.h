@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 17:16:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:21:02 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:05:11 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,21 @@ int			pc_handle_heredoc(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
 int			pc_handle_redir_in(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
 int			pc_handle_redir_out(const char **s, t_mshell *mshell, t_pc_ctx *ctx,
 				int append);
+int			pc_redir_blocked(t_pc_ctx *ctx);
+int			pc_consume_filename(const char **s, t_mshell *mshell,
+				t_pc_ctx *ctx);
+char		*pc_read_path(const char **s, t_mshell *mshell, t_pc_ctx *ctx);
+void		pc_open_error(t_mshell *mshell, int *ctx_fd_target,
+				const char *path);
 int			pc_handle_word_or_glob(char *tok, t_pc_ctx *ctx);
 t_ent		*pc_finish(const t_pc_ctx *ctx);
 void		pc_close_replace(int *dst_fd, int new_fd);
 char		*pc_read_filename_or_error(const char **s, t_mshell *mshell,
 				t_pc_ctx *ctx);
 char		*pc_unquote(const char *str);
+int			pc_init_ctx(t_pc_ctx *ctx);
+int			pc_apply_token(const char **s, t_mshell *mshell,
+				t_pc_ctx *ctx, char *tok);
 void		copy_squoted(const char *s, size_t *i, char *out, size_t *j);
 void		copy_dquoted(const char *s, size_t *i, char *out, size_t *j);
 

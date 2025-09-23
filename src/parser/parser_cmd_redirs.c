@@ -6,84 +6,62 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 01:07:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:21:36 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:55:36 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 #include "utils.h"
 
-int	pc_handle_redir_in(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
+static int	pc_out_flags(int append)
 {
-	char	*filename;
-	char	*path;
-	int		fd;
+	int	flags;
 
-	if (ctx->fd_in == -2 || ctx->fd_out == -2)
-	{
-		filename = pc_read_filename_or_error(s, mshell, ctx);
-		if (filename)
-			ft_free((void **)&filename);
-		return (0);
-	}
-	filename = pc_read_filename_or_error(s, mshell, ctx);
-	if (!filename)
-		return (-1);
-	path = pc_unquote(filename);
-	if (!path)
-		return (ft_free((void **)&filename), -1);
-	fd = open(path, O_RDONLY);
-	if (fd == -1)
-	{
-		print_err2("minishell: ", path, ": ");
-		print_err2(strerror(errno), "\n", NULL);
-		mshell->exit_code = 1;
-		ctx->fd_in = -2;
-	}
-	else
-		pc_close_replace(&ctx->fd_in, fd);
-	ft_free((void **)&filename);
-	ft_free((void **)&path);
-	return (0);
-}
-
-int	pc_handle_redir_out(const char **s, t_mshell *mshell,
-	t_pc_ctx *ctx, int append)
-{
-	char	*filename;
-	char	*path;
-	int		fd;
-	int		flags;
-
-	if (ctx->fd_out == -2 || ctx->fd_in == -2)
-	{
-		filename = pc_read_filename_or_error(s, mshell, ctx);
-		if (filename)
-			ft_free((void **)&filename);
-		return (0);
-	}
-	filename = pc_read_filename_or_error(s, mshell, ctx);
-	if (!filename)
-		return (-1);
-	path = pc_unquote(filename);
-	if (!path)
-		return (ft_free((void **)&filename), -1);
 	flags = O_WRONLY | O_CREAT;
 	if (append)
 		flags |= O_APPEND;
 	else
 		flags |= O_TRUNC;
+	return (flags);
+}
+
+int	pc_handle_redir_in(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
+{
+	char	*path;
+	int		fd;
+
+	if (pc_redir_blocked(ctx))
+		return (pc_consume_filename(s, mshell, ctx));
+	path = pc_read_path(s, mshell, ctx);
+	if (!path)
+		return (-1);
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+		pc_open_error(mshell, &ctx->fd_in, path);
+	else
+		pc_close_replace(&ctx->fd_in, fd);
+	ft_free((void **)&path);
+	return (0);
+}
+
+int	pc_handle_redir_out(const char **s, t_mshell *mshell,
+			t_pc_ctx *ctx, int append)
+{
+	char	*path;
+	int		fd;
+	int		flags;
+
+	if (pc_redir_blocked(ctx))
+		return (pc_consume_filename(s, mshell, ctx));
+	path = pc_read_path(s, mshell, ctx);
+	if (!path)
+		return (-1);
+	flags = pc_out_flags(append);
 	fd = open(path, flags, 0644);
 	if (fd == -1)
-	{
-		print_err2("minishell: ", path, ": ");
-		print_err2(strerror(errno), "\n", NULL);
-		mshell->exit_code = 1;
-		ctx->fd_out = -2;
-	}
+		pc_open_error(mshell, &ctx->fd_out, path);
 	else
 		pc_close_replace(&ctx->fd_out, fd);
-	ft_free((void **)&filename);
 	ft_free((void **)&path);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 03:12:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:19:39 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 21:03:06 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,4 +89,15 @@ char	*pc_read_filename_or_error(const char **s, t_mshell *mshell,
 		return (NULL);
 	}
 	return (filename);
+}
+
+int	pc_init_ctx(t_pc_ctx *ctx)
+{
+	ctx->argv = ft_calloc(1, sizeof(char *));
+	if (!ctx->argv)
+		return (-1);
+	ctx->argc = 0;
+	ctx->fd_in = -1;
+	ctx->fd_out = -1;
+	return (0);
 }
