@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:41:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 02:25:44 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:10:44 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	is_builtin(char *cmd)
  */
 int	apply_redirections(t_ent *node)
 {
-	/* Si alguna redirección falló en el parseo, no intentes dup2 ni imprimas EBADF */
 	if (node->fd_in == -2 || node->fd_out == -2)
 		return (1);
 	if (node->fd_in != -1)

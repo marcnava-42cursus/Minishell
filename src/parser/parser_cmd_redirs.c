@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 01:07:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 01:07:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 20:21:36 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	pc_handle_redir_in(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 	char	*path;
 	int		fd;
 
-	/* Si ya estamos en estado de error en cualquier redirección, solo consumir el token */
 	if (ctx->fd_in == -2 || ctx->fd_out == -2)
 	{
 		filename = pc_read_filename_or_error(s, mshell, ctx);
@@ -56,7 +55,6 @@ int	pc_handle_redir_out(const char **s, t_mshell *mshell,
 	int		fd;
 	int		flags;
 
-	/* Si ya estamos en estado de error en cualquier redirección, solo consumir el token */
 	if (ctx->fd_out == -2 || ctx->fd_in == -2)
 	{
 		filename = pc_read_filename_or_error(s, mshell, ctx);

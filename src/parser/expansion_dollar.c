@@ -6,14 +6,13 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 03:09:30 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 03:09:30 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 19:41:20 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-void	exp_dollar(const char **in, char **out,
-	t_envp *envp, int exit_code)
+void	exp_dollar(const char **in, char **out, t_envp *envp, int exit_code)
 {
 	char	*var;
 	char	*val;

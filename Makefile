@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/18 22:05:17 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/23 20:41:47 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -106,8 +106,9 @@ SRCS		+=	$(PARSER)/expansion_core.c \
 				$(PARSER)/parser_cmd_words.c \
 				$(PARSER)/parser_cmd_utils.c \
 				$(PARSER)/parser_subshell.c \
-				$(PARSER)/heredoc.c \
 				$(PARSER)/heredoc_utils.c \
+				$(PARSER)/heredoc.c \
+				$(PARSER)/parser_cmd_copies.c \
 				$(PARSER)/heredoc_flow.c \
 				$(PARSER)/parser_main_helpers.c \
 				$(PARSER)/parser_main_run.c \
@@ -116,6 +117,7 @@ SRCS		+=	$(PARSER)/expansion_core.c \
 				$(PARSER)/expansion_dollar.c \
 				$(PARSER)/parser.c \
 				$(PARSER)/parser_tree.c \
+				$(PARSER)/parser_tree_helpers.c \
 				$(PARSER)/save_envp.c
 
 SRCS		+=	$(SIGNALS)/signal_handler.c
