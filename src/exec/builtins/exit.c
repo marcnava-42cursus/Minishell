@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 17:49:30 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/18 20:49:41 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 22:00:13 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,15 @@ int	msh_exec_bt_exit(char **argv, int last_exit_code)
 	int			argc;
 
 	argc = count_args(argv);
-	if (argc == 1)
-		exit_with_code_and_prefix(last_exit_code);
-	if (!parse_ll_strict(argv[1], &val))
-		numeric_error_and_exit(argv[1]);
 	if (argc > 2)
 	{
 		print_err2("minishell: exit: too many arguments\n", NULL, NULL);
 		return (1);
 	}
+	if (argc == 1)
+		exit_with_code_and_prefix(last_exit_code);
+	if (!parse_ll_strict(argv[1], &val))
+		numeric_error_and_exit(argv[1]);
 	exit_with_code_and_prefix(norm_exit_code_from_ll(val));
 	return (0);
 }
