@@ -6,18 +6,16 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 00:24:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 03:28:41 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 19:41:26 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-int	exp_process_char(const char **in, char **out,
-	t_envp *envp, int exit_code)
+int	exp_process_char(const char **in, char **out, t_envp *envp, int exit_code)
 {
 	if (**in == '\'')
 	{
-		/* Preservar comillas simples para que el tokenizer no reinterprete operadores */
 		append_char(out, '\'');
 		(*in)++;
 		while (**in && **in != '\'')

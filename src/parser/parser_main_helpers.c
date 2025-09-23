@@ -63,9 +63,10 @@ int	pm_store_expanded(t_mshell *mshell, const char *exp)
 
 t_ent	*pm_parse_tree_or_error(const char *exp, t_mshell *mshell)
 {
-	t_ent	*root;
-
-	root = parse_command_tree(exp, mshell);
+	t_ent      *root;
+	const char *p = exp;
+    
+	root = parse_list(&p, mshell);
 	if (!root)
 	{
 		if (mshell->exit_code == 0)

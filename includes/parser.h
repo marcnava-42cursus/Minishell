@@ -33,7 +33,6 @@ char	*exp_expand(const char *in, t_envp *envp, int exit_code);
 void	append_str(char **dst, const char *src);
 void	append_char(char **dst, char c);
 char	*read_var(const char **p);
-void	expdq_dollar(const char **p, char **out, t_envp *envp, int exit_code);
 void	expand_in_dquotes(const char **p, char **out, t_envp *envp, int exit_code);
 void	exp_dollar(const char **in, char **out, t_envp *envp, int exit_code);
 int		exp_process_char(const char **in, char **out, t_envp *envp, int exit_code);
@@ -65,6 +64,15 @@ t_ent	*parse_list(const char **s, t_mshell *mshell);
 t_ent	*parse_and(const char **s, t_mshell *mshell);
 t_ent	*parse_pipeline(const char **s, t_mshell *mshell);
 t_ent	*parse_primary(const char **s, t_mshell *mshell);
+
+/* Parser tree helper functions */
+void	advance_to_last(t_ent **node);
+void	handle_parse_error(t_ent *node, t_mshell *mshell);
+t_ent	*handle_pipe_parsing(const char **s, t_mshell *mshell,
+						t_ent *head, t_ent *last);
+t_ent	*handle_and_parsing(const char **s, t_mshell *mshell,
+						t_ent *left);
+t_ent	*handle_or_parsing(const char **s, t_mshell *mshell, t_ent *left);
 
 /* Parser utils functions */
 t_ent	*parse_cmd(const char **s, t_mshell *mshell);

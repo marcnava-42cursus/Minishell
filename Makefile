@@ -116,6 +116,7 @@ SRCS		+=	$(PARSER)/expansion_core.c \
 				$(PARSER)/expansion_dollar.c \
 				$(PARSER)/parser.c \
 				$(PARSER)/parser_tree.c \
+				$(PARSER)/parser_tree_helpers.c \
 				$(PARSER)/save_envp.c
 
 SRCS		+=	$(SIGNALS)/signal_handler.c
