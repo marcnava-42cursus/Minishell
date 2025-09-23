@@ -18,51 +18,54 @@ volatile sig_atomic_t	g_signal_received = 0;
 volatile sig_atomic_t	g_child_executing = 0;
 
 /**
- * Manejador para SIGINT (Ctrl+C)
- * En modo interactivo: muestra nueva línea y nuevo prompt
- * En modo no-interactivo: termina el shell
+ * @brief Handle SIGINT signal (Ctrl+C)
+ * 
+ * In interactive mode: displays new line and shows new prompt
+ * In non-interactive mode: terminates the shell
+ * 
+ * @param sig The signal number received
  */
 void	handle_sigint(int sig)
 {
 	(void)sig;
 	g_signal_received = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
-	// Si no hay un proceso hijo ejecutándose, estamos en el prompt
 	if (!g_child_executing)
 	{
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	// Si hay un proceso hijo, solo interrumpimos
 }
 
 /**
- * Manejador para SIGQUIT (Ctrl+\)
- * En modo interactivo: ignora la señal
- * Los procesos hijos sí deben recibirla
+ * @brief Handle SIGQUIT signal (Ctrl+\)
+ * 
+ * In interactive mode: ignores the signal
+ * Child processes should receive it normally
+ * 
+ * @param sig The signal number received
  */
 void	handle_sigquit(int sig)
 {
 	(void)sig;
-	// En modo interactivo, el shell ignora SIGQUIT
-	// Solo los procesos hijos deben recibirla
 }
 
 /**
- * Configura los manejadores de señales para el proceso principal (shell)
+ * @brief Configure signal handlers for the main shell process
+ * 
+ * Sets up custom handlers for SIGINT and SIGQUIT signals to manage
+ * interactive shell behavior properly
  */
 void	setup_parent_signals(void)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
 
-	// Configurar manejador para SIGINT
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
-	sa_int.sa_flags = SA_RESTART; // Reinicia syscalls interrumpidas
+	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
-	// Configurar manejador para SIGQUIT (ignorar)
 	sa_quit.sa_handler = SIG_IGN;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = 0;
@@ -70,28 +73,33 @@ void	setup_parent_signals(void)
 }
 
 /**
- * Restaura el comportamiento por defecto de las señales
- * Se usa antes de hacer exec en procesos hijos
+ * @brief Reset signals to default behavior
+ * 
+ * Restores default signal handling before exec in child processes.
+ * This ensures child processes handle signals as expected by standard programs.
  */
 void	reset_signals_to_default(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTSTP, SIG_DFL);
-	/* Restaurar SIGPIPE por defecto: el escritor muere con SIGPIPE y se reporta "Broken pipe" */
 	signal(SIGPIPE, SIG_DFL);
 }
 
-
 /**
- * Verifica si se ha recibido una señal y actualiza el exit_code
+ * @brief Check if a signal was received and return appropriate exit code
+ * 
+ * Checks the global signal flag and returns the corresponding exit code.
+ * Resets the signal flag after checking.
+ * 
+ * @return Exit code based on received signal (130 for SIGINT, 0 for none)
  */
 int	check_signal_exit_code(void)
 {
 	if (g_signal_received == SIGINT)
 	{
 		g_signal_received = 0;
-		return (130); // Exit code estándar para SIGINT
+		return (130);
 	}
 	return (0);
 }
