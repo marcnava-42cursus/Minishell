@@ -17,7 +17,7 @@ static void	close_all_pipes_local(int **pipes, int cmd_count);
 
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
 {
-	setup_child_signals();
+	reset_signals_to_default();
 	/* Si alguna redirección falló en el parseo, no ejecutar el comando */
 	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
 		exit(1);
@@ -68,7 +68,7 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 	int	first_is_builtin;
 
 	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
-	set_child_executing();
+	g_child_executing = 1;
 	first_sigpipe = 0;
 	i = 0;
 	while (i < ctx->cmd_count)
@@ -78,7 +78,7 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 			first_sigpipe = 1;
 		i++;
 	}
-	unset_child_executing();
+	g_child_executing = 0;
 	i = 0;
 	while (i < ctx->cmd_count - 1)
 	{
@@ -95,6 +95,8 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 		print_err2(" Broken pipe\n", NULL, NULL);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
 	return (1);
 }
 

@@ -27,12 +27,7 @@ void	handle_sigquit(int sig);
 
 // Configuración de señales
 void	setup_parent_signals(void);
-void	setup_child_signals(void);
 void	reset_signals_to_default(void);
-
-// Gestión del estado de ejecución
-void	set_child_executing(void);
-void	unset_child_executing(void);
 
 // Utilidades
 int		check_signal_exit_code(void);
