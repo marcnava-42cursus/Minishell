@@ -82,30 +82,6 @@ void	reset_signals_to_default(void)
 	signal(SIGPIPE, SIG_DFL);
 }
 
-/**
- * Configura las señales para procesos hijos
- * Los hijos deben recibir las señales normalmente
- */
-void	setup_child_signals(void)
-{
-	reset_signals_to_default();
-}
-
-/**
- * Marca que se va a ejecutar un proceso hijo
- */
-void	set_child_executing(void)
-{
-	g_child_executing = 1;
-}
-
-/**
- * Marca que se termino de ejecutar un proceso hijo
- */
-void	unset_child_executing(void)
-{
-	g_child_executing = 0;
-}
 
 /**
  * Verifica si se ha recibido una señal y actualiza el exit_code

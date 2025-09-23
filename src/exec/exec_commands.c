@@ -89,18 +89,20 @@ int	exec_subshell(t_ent *node, t_mshell *mshell)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		setup_child_signals();
+		reset_signals_to_default();
 		if (apply_redirections(node))
 			exit(1);
 		child_shell = *mshell;
 		child_shell.tree = node->child;
 		exit(exec_tree(&child_shell));
 	}
-	set_child_executing();
+	g_child_executing = 1;
 	waitpid(pid, &status, 0);
-	unset_child_executing();
+	g_child_executing = 0;
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
 	return (1);
 }
 
