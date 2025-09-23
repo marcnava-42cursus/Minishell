@@ -30,7 +30,7 @@ char	*pm_expand_cmd(const char *cmd, t_mshell *mshell)
 {
 	char	*exp;
 
-	exp = expand_variables(cmd, mshell->envp, mshell->exit_code);
+	exp = exp_expand(cmd, mshell->envp, mshell->exit_code);
 	if (!exp)
 	{
 		print_err2("minishell: allocation error\n", NULL, NULL);

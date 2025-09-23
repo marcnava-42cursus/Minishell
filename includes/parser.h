@@ -27,14 +27,12 @@ int		parse_command(t_mshell *mshell, char *command);
 
 /* Expansion */
 t_ent	*parse_command_tree(const char *cmd, t_mshell *mshell);
-char	*expand_variables(const char *in, t_envp *envp, int exit_code);
 char	*exp_expand(const char *in, t_envp *envp, int exit_code);
 
 /* Expansion helpers (split across files) */
 void	append_str(char **dst, const char *src);
 void	append_char(char **dst, char c);
 char	*read_var(const char **p);
-void	expdq_flush(const char **start, const char *end, char **out);
 void	expdq_dollar(const char **p, char **out, t_envp *envp, int exit_code);
 void	expand_in_dquotes(const char **p, char **out, t_envp *envp, int exit_code);
 void	exp_dollar(const char **in, char **out, t_envp *envp, int exit_code);
@@ -68,11 +66,6 @@ t_ent	*parse_and(const char **s, t_mshell *mshell);
 t_ent	*parse_pipeline(const char **s, t_mshell *mshell);
 t_ent	*parse_primary(const char **s, t_mshell *mshell);
 
-/* Parser tree attach helpers */
-void	pt_attach_pipe(const char **s, t_mshell *mshell, t_ent **last);
-void	pt_attach_and(const char **s, t_mshell *mshell, t_ent **last);
-void	pt_attach_or(const char **s, t_mshell *mshell, t_ent **last);
-
 /* Parser utils functions */
 t_ent	*parse_cmd(const char **s, t_mshell *mshell);
 
@@ -98,7 +91,6 @@ char		*hd_extract_delim(const char *pos);
 char		*hd_clean_delimiter(const char *delimiter, int *is_quoted);
 int			hd_loop_write(int tmp_fd, const char *clean_delim, t_mshell *mshell, int is_quoted);
 int			hd_prepare_ctx(t_hd_ctx *c, t_mshell *mshell);
-char		*preprocess_heredocs(const char *cmd, t_mshell *mshell);
 
 /* Environment functions */
 t_envp	*save_envp(char **env);

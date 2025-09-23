@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/18 20:51:07 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/23 18:22:57 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,3 @@ void	setup_output_redirection(int **pipes, t_ent *command,
 	if (i < cmd_count - 1 && dup2(pipes[i][1], STDOUT_FILENO) == -1)
 		perror("dup2");
 }
-/* end */

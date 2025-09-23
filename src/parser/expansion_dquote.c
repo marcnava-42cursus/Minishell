@@ -12,33 +12,10 @@
 
 #include "parser.h"
 
-void	expdq_flush(const char **start, const char *end, char **out)
-{
-	while (*start < end)
-		append_char(out, *(*start)++);
-}
-
 void	expdq_dollar(const char **p, char **out, t_envp *envp, int exit_code)
 {
-	char	*inner;
-	char	*num;
-	char	*val;
-
-	if (*((*p) + 1) == '?')
-	{
-		num = ft_itoa(exit_code);
-		append_str(out, num);
-		ft_free((void **)&num);
-		*p += 2;
-		return ;
-	}
-	inner = read_var(p);
-	val = get_env_value(envp, inner);
-	if (!val)
-		val = "";
-	append_str(out, val);
-	if (inner)
-		ft_free((void **)&inner);
+	/* Use the common dollar expansion logic */
+	exp_dollar(p, out, envp, exit_code);
 }
 
 void	expand_in_dquotes(const char **p, char **out,

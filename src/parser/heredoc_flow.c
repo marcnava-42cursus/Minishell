@@ -19,7 +19,7 @@ static int	hd_write_line(int tmp_fd, char *line, t_mshell *mshell,
 
 	if (is_quoted)
 		return (write(tmp_fd, line, ft_strlen(line)), 0);
-	expanded_line = expand_variables(line, mshell->envp, mshell->exit_code);
+	expanded_line = exp_expand(line, mshell->envp, mshell->exit_code);
 	if (expanded_line)
 	{
 		write(tmp_fd, expanded_line, ft_strlen(expanded_line));
