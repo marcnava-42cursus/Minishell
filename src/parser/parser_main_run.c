@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 03:06:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 03:06:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/24 22:19:41 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	pm_is_escaped(const char *str, size_t pos)
 	if (pos == 0)
 		return (0);
 	count = 0;
-	while (pos-- > 0 && str[pos] == \\)
+	while (pos-- > 0 && str[pos] == '\\')
 		count++;
 	return (count % 2 == 1);
 }
@@ -35,7 +35,7 @@ static int	pm_has_unclosed_quotes(const char *cmd)
 	in_dquote = 0;
 	while (cmd[i])
 	{
-		if (!in_squote && cmd[i] == \\)
+		if (!in_squote && cmd[i] == '\\')
 		{
 			if (cmd[i + 1])
 				i += 2;
