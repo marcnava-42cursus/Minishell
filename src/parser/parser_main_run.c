@@ -12,12 +12,67 @@
 
 #include "parser.h"
 
+static int	pm_is_escaped(const char *str, size_t pos)
+{
+	size_t	count;
+
+	if (pos == 0)
+		return (0);
+	count = 0;
+	while (pos-- > 0 && str[pos] == \\)
+		count++;
+	return (count % 2 == 1);
+}
+
+static int	pm_has_unclosed_quotes(const char *cmd)
+{
+	size_t	i;
+	int		in_squote;
+	int		in_dquote;
+
+	i = 0;
+	in_squote = 0;
+	in_dquote = 0;
+	while (cmd[i])
+	{
+		if (!in_squote && cmd[i] == \\)
+		{
+			if (cmd[i + 1])
+				i += 2;
+			else
+				i++;
+			continue ;
+		}
+		if (!in_dquote && cmd[i] == '\'' && !pm_is_escaped(cmd, i))
+			in_squote = !in_squote;
+		else if (!in_squote && cmd[i] == '"' && !pm_is_escaped(cmd, i))
+			in_dquote = !in_dquote;
+		i++;
+	}
+	return (in_squote || in_dquote);
+}
+
+static int	pm_validate_quotes(const char *cmd, t_mshell *mshell)
+{
+	if (!cmd)
+		return (1);
+	if (!pm_has_unclosed_quotes(cmd))
+		return (1);
+	print_err2("minishell: syntax error: unexpected end of file\n", NULL, NULL);
+	if (mshell->exit_code == 0)
+		mshell->exit_code = 2;
+	mshell->tree = NULL;
+	return (0);
+}
+
 int	pm_prepare(t_mshell *mshell, const char *cmd, char **out_exp)
 {
 	char	*exp;
 
 	if (!pm_store_raw_command(mshell, cmd))
 		return (-1);
+	if (!pm_validate_quotes(cmd, mshell))
+		return (0);
 	exp = pm_expand_cmd(cmd, mshell);
 	if (!exp)
 		return (-1);
