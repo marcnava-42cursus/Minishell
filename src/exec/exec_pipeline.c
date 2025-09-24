@@ -6,28 +6,12 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 21:11:25 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/24 20:36:34 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "utils.h"
-
-static void	close_all_pipes_local(int **pipes, int cmd_count);
-
-void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
-{
-	reset_signals_to_default();
-	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
-		exit(1);
-	setup_input_redirection(ctx->pipes, ctx->commands[i], i);
-	setup_output_redirection(ctx->pipes, ctx->commands[i], i, ctx->cmd_count);
-	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
-	if (is_builtin(ctx->commands[i]->argv[0]))
-		exit(exec_builtin(ctx->commands[i], ctx->mshell));
-	handle_child_process(ctx->commands[i], ctx->mshell,
-		envp_to_array(ctx->mshell->envp));
-}
 
 static void	close_all_pipes_local(int **pipes, int cmd_count)
 {
@@ -73,6 +57,20 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 		print_err2(" Broken pipe\n", NULL, NULL);
 	free_ctx_arrays(ctx);
 	return (status_to_exitcode(status));
+}
+
+void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
+{
+	reset_signals_to_default();
+	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
+		exit(1);
+	setup_input_redirection(ctx->pipes, ctx->commands[i], i);
+	setup_output_redirection(ctx->pipes, ctx->commands[i], i, ctx->cmd_count);
+	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
+	if (is_builtin(ctx->commands[i]->argv[0]))
+		exit(exec_builtin(ctx->commands[i], ctx->mshell));
+	handle_child_process(ctx->commands[i], ctx->mshell,
+		envp_to_array(ctx->mshell->envp));
 }
 
 int	exec_pipeline(t_ent *node, t_mshell *mshell)

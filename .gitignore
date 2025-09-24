@@ -12,7 +12,7 @@ echo
 grep
 
 build/
-libs/
+# libs/
 tmp/
 .vscode/
 *tester*
