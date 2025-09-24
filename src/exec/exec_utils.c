@@ -6,11 +6,47 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:41:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:10:44 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/24 21:31:19 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+static int	match_builtin_name(const char *name)
+{
+	if (!name)
+		return (0);
+	if (ft_strcmp(name, "cd") == 0)
+		return (1);
+	if (ft_strcmp(name, "echo") == 0)
+		return (1);
+	if (ft_strcmp(name, "env") == 0)
+		return (1);
+	if (ft_strcmp(name, "exit") == 0)
+		return (1);
+	if (ft_strcmp(name, "export") == 0)
+		return (1);
+	if (ft_strcmp(name, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(name, "unset") == 0)
+		return (1);
+	return (0);
+}
+
+static void	free_string_array(char **arr)
+{
+	int		index;
+
+	if (!arr)
+		return ;
+	index = 0;
+	while (arr[index])
+	{
+		free(arr[index]);
+		index++;
+	}
+	free(arr);
+}
 
 /**
  * @brief Check if a command is a builtin
@@ -22,8 +58,7 @@ int	is_builtin(char *cmd)
 {
 	char	*argv[2];
 	char	**unquoted;
-	int		is_bt;
-	int		i;
+	int		result;
 
 	if (!cmd)
 		return (0);
@@ -32,29 +67,9 @@ int	is_builtin(char *cmd)
 	unquoted = process_argv_quotes(argv);
 	if (!unquoted)
 		return (0);
-	is_bt = 0;
-	if (unquoted[0])
-	{
-		if (ft_strcmp(unquoted[0], "cd") == 0)
-			is_bt = 1;
-		else if (ft_strcmp(unquoted[0], "echo") == 0)
-			is_bt = 1;
-		else if (ft_strcmp(unquoted[0], "env") == 0)
-			is_bt = 1;
-		else if (ft_strcmp(unquoted[0], "exit") == 0)
-			is_bt = 1;
-		else if (ft_strcmp(unquoted[0], "export") == 0)
-			is_bt = 1;
-		else if (ft_strcmp(unquoted[0], "pwd") == 0)
-			is_bt = 1;
-		else if (ft_strcmp(unquoted[0], "unset") == 0)
-			is_bt = 1;
-	}
-	i = 0;
-	while (unquoted[i])
-		free(unquoted[i++]);
-	free(unquoted);
-	return (is_bt);
+	result = match_builtin_name(unquoted[0]);
+	free_string_array(unquoted);
+	return (result);
 }
 
 /**
