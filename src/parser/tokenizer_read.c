@@ -27,32 +27,6 @@ void	tkn_push(t_tokctx *c, char ch)
 	c->buf[c->out++] = ch;
 }
 
-void	tkn_handle_backslash(t_tokctx *c)
-{
-	if (c->in_squote)
-		return (tkn_push(c, *c->p++));
-	if (c->in_dquote)
-	{
-		if (*(c->p + 1) == '\n')
-			c->p += 2;
-		else
-		{
-			tkn_push(c, *c->p++);
-			if (*c->p)
-				tkn_push(c, *c->p++);
-		}
-		return ;
-	}
-	if (*(c->p + 1) == '\n')
-		c->p += 2;
-	else
-	{
-		tkn_push(c, *c->p++);
-		if (*c->p)
-			tkn_push(c, *c->p++);
-	}
-}
-
 void	tkn_loop(t_tokctx *c)
 {
 	while (*c->p)
@@ -61,9 +35,7 @@ void	tkn_loop(t_tokctx *c)
 				|| *c->p == '(' || *c->p == ')' || *c->p == '&' || *c->p == '|'
 				|| *c->p == '<' || *c->p == '>'))
 			break ;
-		if (*c->p == '\\')
-			tkn_handle_backslash(c);
-		else if (*c->p == '\'' && !c->in_dquote)
+		if (*c->p == '\'' && !c->in_dquote)
 		{
 			c->in_squote = !c->in_squote;
 			tkn_push(c, *c->p++);

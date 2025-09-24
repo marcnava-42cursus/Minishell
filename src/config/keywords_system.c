@@ -31,12 +31,27 @@ char	*get_whoami(void)
 	return ("unknown");
 }
 
-char	*get_pwd(void)
+static char	*lookup_pwd_env(t_envp *env)
+{
+	while (env)
+	{
+		if (env->key && ft_strcmp(env->key, "PWD") == 0)
+			return (env->value);
+		env = env->next;
+	}
+	return (NULL);
+}
+
+char	*get_pwd(t_envp *env)
 {
 	static char	cwd[1024];
+	char		*logical;
 
 	if (getcwd(cwd, sizeof(cwd)))
 		return (cwd);
+	logical = lookup_pwd_env(env);
+	if (logical)
+		return (logical);
 	return ("unknown");
 }
 

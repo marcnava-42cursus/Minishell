@@ -11,11 +11,17 @@
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
+#include "utils.h"
 
-int	msh_exec_bt_env(t_envp *envp)
+int	msh_exec_bt_env(char **argv, t_envp *envp)
 {
 	t_envp	*curr;
 
+	if (argv && argv[1])
+	{
+		print_err2("minishell: env: ", argv[1], ": No such file or directory\n");
+		return (127);
+	}
 	curr = envp;
 	while (curr)
 	{

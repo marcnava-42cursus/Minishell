@@ -12,18 +12,6 @@
 
 #include "parser.h"
 
-static int	pm_is_escaped(const char *str, size_t pos)
-{
-	size_t	count;
-
-	if (pos == 0)
-		return (0);
-	count = 0;
-	while (pos-- > 0 && str[pos] == '\\')
-		count++;
-	return (count % 2 == 1);
-}
-
 static int	pm_has_unclosed_quotes(const char *cmd)
 {
 	size_t	i;
@@ -35,17 +23,9 @@ static int	pm_has_unclosed_quotes(const char *cmd)
 	in_dquote = 0;
 	while (cmd[i])
 	{
-		if (!in_squote && cmd[i] == '\\')
-		{
-			if (cmd[i + 1])
-				i += 2;
-			else
-				i++;
-			continue ;
-		}
-		if (!in_dquote && cmd[i] == '\'' && !pm_is_escaped(cmd, i))
+		if (!in_dquote && cmd[i] == '\'')
 			in_squote = !in_squote;
-		else if (!in_squote && cmd[i] == '"' && !pm_is_escaped(cmd, i))
+		else if (!in_squote && cmd[i] == '"')
 			in_dquote = !in_dquote;
 		i++;
 	}

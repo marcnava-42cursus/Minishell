@@ -51,11 +51,11 @@ int	append_single_char(char **res, const char *raw, int *i)
 }
 
 int	build_keyword_output(char **res, const char *kw,
-	int exit_code, const char *col)
+	int exit_code, const char *col, t_envp *env)
 {
 	if (!safe_append_str(res, get_color_code(col)))
 		return (0);
-	if (!safe_append_str(res, replace_keyword((char *)kw, exit_code)))
+	if (!safe_append_str(res, replace_keyword((char *)kw, exit_code, env)))
 		return (0);
 	if (!safe_append_str(res, reset_color()))
 		return (0);

@@ -6,11 +6,46 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:49:05 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 01:26:20 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/24 23:29:12 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec_builtins.h"
+#include "utils.h"
+#include <errno.h>
+#include <string.h>
+
+static char	*build_logical_pwd(const char *old_pwd, const char *target_path)
+{
+	char	*tmp;
+	char	*out;
+
+	if (!target_path)
+		return (NULL);
+	if (target_path[0] == '/' || !old_pwd)
+		return (ft_strdup(target_path));
+	if (target_path[0] == '\0')
+		return (ft_strdup(old_pwd));
+	if (ft_strcmp((char *)target_path, ".") == 0)
+		return (ft_strdup(old_pwd));
+	if (old_pwd[0] == '\0')
+		return (ft_strdup(target_path));
+	if (old_pwd[ft_strlen(old_pwd) - 1] == '/')
+		return (ft_strjoin(old_pwd, target_path));
+	tmp = ft_strjoin(old_pwd, "/");
+	if (!tmp)
+		return (NULL);
+	out = ft_strjoin(tmp, target_path);
+	ft_free((void **)&tmp);
+	return (out);
+}
+
+static void	print_getcwd_error(int err)
+{
+	print_err2("minishell: cd: error retrieving current directory: ",
+		"getcwd: cannot access parent directories: ", strerror(err));
+	print_err2("\n", NULL, NULL);
+}
 
 static char	*get_oldpwd(t_envp *env)
 {
@@ -53,6 +88,7 @@ static int	chdir_and_update_env(t_envp **envp, const char *target_path,
 	char *old_pwd)
 {
 	char	*new_pwd;
+	char	*logical_pwd;
 
 	if (chdir(target_path) != 0)
 	{
@@ -63,8 +99,22 @@ static int	chdir_and_update_env(t_envp **envp, const char *target_path,
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
 	{
+		int	err;
+
+		err = errno;
+		logical_pwd = build_logical_pwd(old_pwd, target_path);
+		if (!logical_pwd)
+		{
+			print_err2("minishell: cd: allocation error\n", NULL, NULL);
+			ft_free((void **)&old_pwd);
+			return (1);
+		}
+		print_getcwd_error(err);
+		envp_set_value(envp, "OLDPWD", old_pwd);
+		envp_set_value(envp, "PWD", logical_pwd);
+		ft_free((void **)&logical_pwd);
 		ft_free((void **)&old_pwd);
-		return (1);
+		return (0);
 	}
 	envp_set_value(envp, "OLDPWD", old_pwd);
 	envp_set_value(envp, "PWD", new_pwd);

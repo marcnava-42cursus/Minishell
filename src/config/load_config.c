@@ -57,7 +57,7 @@ int	load_config(t_config *config, char **envp)
 	if (!prompt_line)
 		return (1);
 	config->prompt_raw = prompt_line;
-	config->prompt = build_prompt(config->prompt_raw, 0);
+	config->prompt = build_prompt(config->prompt_raw, 0, NULL);
 	if (suggestions_line && ft_strncmp(suggestions_line, "enabled", 7) == 0)
 		config->use_suggestions = 1;
 	else

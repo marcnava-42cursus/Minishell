@@ -24,6 +24,12 @@ int	ms_init(t_mshell *ms, char **env)
 	if (!ms->envp)
 		return (printf("Error saving envp\n"), 1);
 	ms->exit_code = 0;
+	if (ms->config->prompt)
+	{
+		ft_free((void **)&ms->config->prompt);
+		ms->config->prompt = build_prompt(ms->config->prompt_raw,
+				ms->exit_code, ms->envp);
+	}
 	ms->should_exit = 0;
 	setup_parent_signals();
 	return (0);

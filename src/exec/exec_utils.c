@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:41:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/24 21:31:19 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/24 22:48:56 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,19 @@ static int	match_builtin_name(const char *name)
 {
 	if (!name)
 		return (0);
-	if (ft_strcmp(name, "cd") == 0)
+	if (ft_strcmp((char *)name, "cd") == 0)
 		return (1);
-	if (ft_strcmp(name, "echo") == 0)
+	if (ft_strcmp((char *)name, "echo") == 0)
 		return (1);
-	if (ft_strcmp(name, "env") == 0)
+	if (ft_strcmp((char *)name, "env") == 0)
 		return (1);
-	if (ft_strcmp(name, "exit") == 0)
+	if (ft_strcmp((char *)name, "exit") == 0)
 		return (1);
-	if (ft_strcmp(name, "export") == 0)
+	if (ft_strcmp((char *)name, "export") == 0)
 		return (1);
-	if (ft_strcmp(name, "pwd") == 0)
+	if (ft_strcmp((char *)name, "pwd") == 0)
 		return (1);
-	if (ft_strcmp(name, "unset") == 0)
+	if (ft_strcmp((char *)name, "unset") == 0)
 		return (1);
 	return (0);
 }

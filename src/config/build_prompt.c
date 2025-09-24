@@ -12,7 +12,7 @@
 
 #include "config.h"
 
-char	*replace_keyword(char *key, int exit_code)
+char	*replace_keyword(char *key, int exit_code, t_envp *env)
 {
 	(void)exit_code;
 	if (!ft_strcmp(key, "HOSTNAME"))
@@ -20,7 +20,7 @@ char	*replace_keyword(char *key, int exit_code)
 	if (!ft_strcmp(key, "WHOAMI"))
 		return (get_whoami());
 	if (!ft_strcmp(key, "PWD"))
-		return (get_pwd());
+		return (get_pwd(env));
 	if (!ft_strcmp(key, "GITBRANCH"))
 		return (get_gitbranch());
 	if (!ft_strcmp(key, "JOBS"))
@@ -30,7 +30,7 @@ char	*replace_keyword(char *key, int exit_code)
 	return ("");
 }
 
-char	*build_prompt(char *raw, int exit_code)
+char	*build_prompt(char *raw, int exit_code, t_envp *env)
 {
 	char	*result;
 	char	keyword[PROMPT_BUF];
@@ -47,7 +47,7 @@ char	*build_prompt(char *raw, int exit_code)
 		{
 			i++;
 			if (!parse_keyword_block(raw, &i, keyword, color)
-				|| !build_keyword_output(&result, keyword, exit_code, color))
+				|| !build_keyword_output(&result, keyword, exit_code, color, env))
 				return (result);
 		}
 		else if (!append_single_char(&result, raw, &i))

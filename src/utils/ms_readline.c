@@ -67,7 +67,7 @@ void	refresh_prompt_and_sugg(t_mshell *ms)
 	if (ms->config->prompt)
 		ft_free((void **)&ms->config->prompt);
 	ms->config->prompt = build_prompt(ms->config->prompt_raw,
-			ms->exit_code);
+			ms->exit_code, ms->envp);
 	if (ms->config->use_suggestions && ms->suggestions)
 		suggestion_update_prompt(ms->suggestions, ms->config->prompt);
 }

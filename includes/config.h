@@ -33,13 +33,13 @@ void	free_config(t_config *config);
 int		create_default_config(void);
 
 // Build prompt
-char	*build_prompt(char *raw, int exit_code);
-char	*replace_keyword(char *key, int exit_code);
+char	*build_prompt(char *raw, int exit_code, t_envp *env);
+char	*replace_keyword(char *key, int exit_code, t_envp *env);
 
 // Keywords
 char	*get_hostname(void);
 char	*get_whoami(void);
-char	*get_pwd(void);
+char	*get_pwd(t_envp *env);
 char	*get_gitbranch(void);
 char	*get_jobs(void);
 char	*get_battery(void);
@@ -63,6 +63,6 @@ int		process_config_line(char *line, char **prompt_line,
 int		parse_keyword_block(const char *raw, int *i, char *kw, char *col);
 int		append_single_char(char **res, const char *raw, int *i);
 int		build_keyword_output(char **res, const char *kw, int exit_code,
-			const char *col);
+			const char *col, t_envp *env);
 
 #endif

@@ -66,7 +66,7 @@ static int	builtin_dispatch(const char *cmd, t_ent *node,
 	else if (ft_strcmp((char *)cmd, "echo") == 0)
 		return (handle_echo_builtin(node, argv));
 	else if (ft_strcmp((char *)cmd, "env") == 0)
-		return (msh_exec_bt_env(mshell->envp));
+		return (msh_exec_bt_env(argv, mshell->envp));
 	else if (ft_strcmp((char *)cmd, "exit") == 0)
 		return (handle_exit_builtin(argv, mshell->exit_code));
 	else if (ft_strcmp((char *)cmd, "export") == 0)

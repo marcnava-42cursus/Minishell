@@ -58,7 +58,6 @@ char		*get_next_token(const char **s);
 char		*tkn_return_operator(const char **s);
 void		tkn_init_ctx(t_tokctx *c, const char *s);
 void		tkn_push(t_tokctx *c, char ch);
-void		tkn_handle_backslash(t_tokctx *c);
 void		tkn_loop(t_tokctx *c);
 char		*tkn_read_word(const char **s);
 
