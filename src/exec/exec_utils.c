@@ -20,23 +20,41 @@
  */
 int	is_builtin(char *cmd)
 {
+	char	*argv[2];
+	char	**unquoted;
+	int		is_bt;
+	int		i;
+
 	if (!cmd)
 		return (0);
-	if (ft_strcmp(cmd, "cd") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "echo") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "env") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "exit") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "export") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "pwd") == 0)
-		return (1);
-	if (ft_strcmp(cmd, "unset") == 0)
-		return (1);
-	return (0);
+	argv[0] = cmd;
+	argv[1] = NULL;
+	unquoted = process_argv_quotes(argv);
+	if (!unquoted)
+		return (0);
+	is_bt = 0;
+	if (unquoted[0])
+	{
+		if (ft_strcmp(unquoted[0], "cd") == 0)
+			is_bt = 1;
+		else if (ft_strcmp(unquoted[0], "echo") == 0)
+			is_bt = 1;
+		else if (ft_strcmp(unquoted[0], "env") == 0)
+			is_bt = 1;
+		else if (ft_strcmp(unquoted[0], "exit") == 0)
+			is_bt = 1;
+		else if (ft_strcmp(unquoted[0], "export") == 0)
+			is_bt = 1;
+		else if (ft_strcmp(unquoted[0], "pwd") == 0)
+			is_bt = 1;
+		else if (ft_strcmp(unquoted[0], "unset") == 0)
+			is_bt = 1;
+	}
+	i = 0;
+	while (unquoted[i])
+		free(unquoted[i++]);
+	free(unquoted);
+	return (is_bt);
 }
 
 /**
