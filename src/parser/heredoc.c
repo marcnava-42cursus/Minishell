@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "parser.h"
+#include "signals.h"
+#include <sys/wait.h>
+#include <stdlib.h>
 
 static int	hd_make_tmpfile(t_hd_ctx *c)
 {
@@ -30,13 +33,35 @@ static int	hd_make_tmpfile(t_hd_ctx *c)
 	return (0);
 }
 
-static int	hd_open_and_write(t_hd_ctx *c, t_mshell *mshell)
+static int	hd_fork_and_write(t_hd_ctx *c, t_mshell *mshell)
 {
-	if (hd_make_tmpfile(c) < 0)
-		return (-1);
-	hd_loop_write(c->tmp_fd, c->clean_delimiter, mshell, c->is_quoted);
-	close(c->tmp_fd);
-	return (0);
+    pid_t	pid;
+    int		status;
+
+    if (hd_make_tmpfile(c) < 0)
+        return (-1);
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("heredoc: fork");
+        close(c->tmp_fd);
+        unlink(c->tmp_filename);
+        return (-1);
+    }
+    if (pid == 0)
+    {
+        set_heredoc_signal();
+        hd_loop_write(c->tmp_fd, c->clean_delimiter, mshell, c->is_quoted);
+        close(c->tmp_fd);
+        exit(0);
+    }
+    block_parent_signals(mshell);
+    close(c->tmp_fd);
+    waitpid(pid, &status, 0);
+    restore_parent_signals(mshell);
+    if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+        return (130);
+    return (0);
 }
 
 static int	hd_reopen_for_read(t_hd_ctx *c)
@@ -61,8 +86,21 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	c.read_fd = heredoc_count++;
 	if (hd_prepare_ctx(&c, mshell) < 0)
 		return (-1);
-	if (hd_open_and_write(&c, mshell) < 0)
-		return (ft_free((void **)&c.clean_delimiter), -1);
+	{
+		int	w;
+
+		w = hd_fork_and_write(&c, mshell);
+		if (w < 0)
+			return (ft_free((void **)&c.clean_delimiter), -1);
+		if (w == 130)
+		{
+			unlink(c.tmp_filename);
+			ft_free((void **)&c.tmp_filename);
+			ft_free((void **)&c.clean_delimiter);
+			mshell->exit_code = 130;
+			return (-1);
+		}
+	}
 	if (hd_reopen_for_read(&c) < 0)
 	{
 		ft_free((void **)&c.tmp_filename);

@@ -23,6 +23,7 @@ extern volatile sig_atomic_t	g_signal_received;
 // Configuración y helpers de señales
 void	set_prompt_signal(void);
 void	set_child_signal(void);
+void	set_heredoc_signal(void);
 void	block_parent_signals(t_mshell *ms);
 void	restore_parent_signals(t_mshell *ms);
 

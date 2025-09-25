@@ -16,6 +16,15 @@
 // Variable global para almacenar el exit_code cuando se recibe una señal
 volatile sig_atomic_t	g_signal_received = 0;
 
+static void	heredoc_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		exit(130);
+	}
+}
+
 /**
  * @brief Handle SIGINT signal (Ctrl+C)
  * 
@@ -81,6 +90,18 @@ void	set_child_signal(void)
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
 	sigaction(SIGPIPE, &sa, NULL);
+}
+
+void	set_heredoc_signal(void)
+{
+	struct sigaction	sa;
+
+	ft_memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = heredoc_handler;
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
 }
 
 /**
