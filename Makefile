@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/26 00:46:37 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/26 00:55:43 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 NAME		:=	minishell
 
 CC			:=	cc
-CFLAGS		:=	-Wall -Wextra
+CFLAGS		:=	-Wall -Wextra -Werror
 DFLAGS		:=	-g3 # -fsanitize=address
 LDFLAGS		:=	-lreadline -lncurses
 
@@ -171,10 +171,10 @@ check:
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT_A)
-		$(CC) $(CFLAGS) $(DFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
+		$(CC) $(CFLAGS) $(OBJS) $(LIBFT_A) $(LDFLAGS) -o $(NAME)
 
 $(BUILDPATH)/%.o: $(SRCPATH)/%.c $(HEADERS) $(LIBFT)/Makefile | dirs
-		@$(CC) $(CFLAGS) $(DFLAGS) $(INCLUDES) -c $< -o $@
+		@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
 		$(RM) $(BUILDPATH)
