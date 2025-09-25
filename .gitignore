@@ -5,6 +5,7 @@
 minishell
 *.log
 *.py
+*.md
 
 tmp*
 
