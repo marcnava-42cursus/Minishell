@@ -49,3 +49,20 @@ int	wait_for_child_and_cleanup(pid_t pid, t_mshell *mshell, char **env_arr)
 	}
 	return (1);
 }
+
+void	check_handler_process(pid_t pid, char **env_arr, t_ent *node,
+	t_mshell *mshell)
+{
+	if (pid == 0)
+		handle_child_process(node, mshell, env_arr);
+	if (node->fd_in != -1 && node->fd_in != -2)
+	{
+		close(node->fd_in);
+		node->fd_in = -1;
+	}
+	if (node->fd_out != -1 && node->fd_out != -2)
+	{
+		close(node->fd_out);
+		node->fd_out = -1;
+	}
+}

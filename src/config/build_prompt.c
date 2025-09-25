@@ -26,7 +26,7 @@ char	*replace_keyword(char *key, int exit_code, t_envp *env)
 	return ("");
 }
 
-char	*build_prompt(char *raw, int exit_code, t_envp *env)
+char	*build_prompt(t_mshell *ms)
 {
 	char	*result;
 	char	keyword[PROMPT_BUF];
@@ -34,20 +34,20 @@ char	*build_prompt(char *raw, int exit_code, t_envp *env)
 	int		i;
 
 	result = ft_strdup("");
-	if (!result || !raw)
+	if (!result || !ms->config->prompt_raw)
 		return (result);
 	i = 0;
-	while (raw[i])
+	while (ms->config->prompt_raw[i])
 	{
-		if (raw[i] == '{')
+		if (ms->config->prompt_raw[i] == '{')
 		{
 			i++;
-			if (!parse_keyword_block(raw, &i, keyword, color)
-				|| !build_keyword_output(&result, keyword, exit_code,
-					color, env))
+			if (!parse_keyword_block(ms->config->prompt_raw, &i, keyword, color)
+				|| !build_keyword_output(&result, keyword, ms,
+					color))
 				return (result);
 		}
-		else if (!append_single_char(&result, raw, &i))
+		else if (!append_single_char(&result, ms->config->prompt_raw, &i))
 			return (result);
 	}
 	return (result);

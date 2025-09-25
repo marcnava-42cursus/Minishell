@@ -33,7 +33,7 @@ void	free_config(t_config *config);
 int		create_default_config(void);
 
 // Build prompt
-char	*build_prompt(char *raw, int exit_code, t_envp *env);
+char	*build_prompt(t_mshell *ms);
 char	*replace_keyword(char *key, int exit_code, t_envp *env);
 
 // Keywords
@@ -60,7 +60,7 @@ int		process_config_line(char *line, char **prompt_line,
 // Prompt utilities
 int		parse_keyword_block(const char *raw, int *i, char *kw, char *col);
 int		append_single_char(char **res, const char *raw, int *i);
-int		build_keyword_output(char **res, const char *kw, int exit_code,
-			const char *col, t_envp *env);
+int		build_keyword_output(char **res, const char *kw, t_mshell *ms,
+			const char *col);
 
 #endif
