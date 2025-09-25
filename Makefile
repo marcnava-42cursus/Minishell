@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
+#    By: jmarcell <jmarcell@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/26 00:28:53 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/26 00:38:12 by jmarcell         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -71,6 +71,7 @@ SRCS		+=	$(BUILTINS)/cd.c \
 				$(BUILTINS)/exit_utils.c \
 				$(BUILTINS)/exit_numparse.c \
 				$(BUILTINS)/export.c \
+				$(BUILTINS)/export_utils.c \
 				$(BUILTINS)/pwd.c \
 				$(BUILTINS)/unset.c
 
