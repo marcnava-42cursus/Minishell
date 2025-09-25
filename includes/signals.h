@@ -19,15 +19,12 @@
 
 // Variables globales para tracking de señales
 extern volatile sig_atomic_t	g_signal_received;
-extern volatile sig_atomic_t	g_child_executing;
 
 // Manejadores de señales
 void	handle_sigint(int sig);
-void	handle_sigquit(int sig);
-
-// Configuración de señales
 void	setup_parent_signals(void);
 void	reset_signals_to_default(void);
+void	set_child_signal(void);
 
 // Utilidades
 int		check_signal_exit_code(void);

@@ -107,9 +107,9 @@ int	exec_subshell(t_ent *node, t_mshell *mshell)
 		child_shell.tree = node->child;
 		exit(exec_tree(&child_shell));
 	}
-	g_child_executing = 1;
-	waitpid(pid, &status, 0);
-	g_child_executing = 0;
+    set_child_signal();
+    waitpid(pid, &status, 0);
+    setup_parent_signals();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))

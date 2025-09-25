@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/18 23:11:01 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 04:57:52 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ int	wait_for_child_and_cleanup(pid_t pid, char **env_arr)
 {
 	int	status;
 
-	g_child_executing = 1;
+	set_child_signal();
 	waitpid(pid, &status, 0);
-	g_child_executing = 0;
+	setup_parent_signals();
 	ft_free_matrix((void **)env_arr);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));

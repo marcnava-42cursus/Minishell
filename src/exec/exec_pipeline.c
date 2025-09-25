@@ -45,18 +45,18 @@ static int	init_ctx(t_pipe_ctx *ctx, t_ent *node, t_mshell *mshell)
 
 static int	wait_and_cleanup(t_pipe_ctx *ctx)
 {
-	int	status;
-	int	first_sigpipe;
+    int	status;
+    int	first_sigpipe;
 
-	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
-	g_child_executing = 1;
-	wait_children(ctx, &status, &first_sigpipe);
-	g_child_executing = 0;
-	free_pipe_rows(ctx->pipes, ctx->cmd_count);
-	if (should_print_broken_pipe(ctx, first_sigpipe))
-		print_err2(" Broken pipe\n", NULL, NULL);
-	free_ctx_arrays(ctx);
-	return (status_to_exitcode(status));
+    close_all_pipes_local(ctx->pipes, ctx->cmd_count);
+    set_child_signal();
+    wait_children(ctx, &status, &first_sigpipe);
+    setup_parent_signals();
+    free_pipe_rows(ctx->pipes, ctx->cmd_count);
+    if (should_print_broken_pipe(ctx, first_sigpipe))
+        print_err2(" Broken pipe\n", NULL, NULL);
+    free_ctx_arrays(ctx);
+    return (status_to_exitcode(status));
 }
 
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)

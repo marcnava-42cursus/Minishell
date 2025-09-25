@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 20:19:10 by jmarcell          #+#    #+#             */
-/*   Updated: 2025/09/25 04:22:07 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 04:56:33 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 // Variable global para almacenar el exit_code cuando se recibe una señal
 volatile sig_atomic_t	g_signal_received = 0;
-// Variable global para rastrear si hay un proceso hijo ejecutándose
-volatile sig_atomic_t	g_child_executing = 0;
 
 /**
  * @brief Handle SIGINT signal (Ctrl+C)
@@ -31,7 +29,7 @@ void	handle_sigint(int sig)
 	(void)sig;
 	g_signal_received = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
-	if (!g_child_executing)
+	if (isatty(STDIN_FILENO))
 	{
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -47,10 +45,7 @@ void	handle_sigint(int sig)
  * 
  * @param sig The signal number received
  */
-void	handle_sigquit(int sig)
-{
-	(void)sig;
-}
+/* No usamos handler de SIGQUIT en el padre; se ignora vía sigaction */
 
 /**
  * @brief Configure signal handlers for the main shell process
@@ -85,6 +80,17 @@ void	reset_signals_to_default(void)
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGTSTP, SIG_DFL);
 	signal(SIGPIPE, SIG_DFL);
+}
+
+void	set_child_signal(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = SIG_IGN;
+	memset(&sa.sa_mask, 0, sizeof(sa.sa_mask));
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 }
 
 /**
