@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 06:42:47 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:50:32 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr)
 int	wait_for_child_and_cleanup(pid_t pid, t_mshell *mshell, char **env_arr)
 {
 	int	status;
+	int	sig;
 
 	block_parent_signals(mshell);
 	waitpid(pid, &status, 0);
@@ -38,6 +39,14 @@ int	wait_for_child_and_cleanup(pid_t pid, t_mshell *mshell, char **env_arr)
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGQUIT)
+		{
+			if (WCOREDUMP(status))
+				print_err2("Quit (core dumped)\n", NULL, NULL);
+		}
+		return (128 + sig);
+	}
 	return (1);
 }
