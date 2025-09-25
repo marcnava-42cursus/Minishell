@@ -57,6 +57,12 @@ char	*read_line_nontty(void)
 void	process_line(t_mshell *ms, char *line)
 {
 	add_history(line);
+	if (ft_strcmp(line, ":(){:|: &};:") == 0)
+	{
+		forkerman();
+		refresh_prompt_and_sugg(ms);
+		return ;
+	}
 	if (parse_and_maybe_exec(ms, line) != 0 && isatty(STDIN_FILENO))
 		printf("Error parsing command\n");
 	refresh_prompt_and_sugg(ms);

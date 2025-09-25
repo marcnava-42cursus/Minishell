@@ -12,24 +12,89 @@
 
 #include "exec_builtins.h"
 
-int	msh_exec_bt_export_print(t_envp *envp)
+static int	count_visible(t_envp *envp)
 {
-	t_envp	*cur;
+	int	count;
 
-	cur = envp;
-	while (cur)
+	count = 0;
+	while (envp)
+	{
+		if (ft_strcmp(envp->key, "_") != 0)
+			count++;
+		envp = envp->next;
+	}
+	return (count);
+}
+
+static void	fill_ptrs(t_envp *envp, t_envp **arr)
+{
+	int	i;
+
+	i = 0;
+	while (envp)
+	{
+		if (ft_strcmp(envp->key, "_") != 0)
+			arr[i++] = envp;
+		envp = envp->next;
+	}
+}
+
+static void	sort_by_key(t_envp **arr, int n)
+{
+	int		i;
+	int		j;
+	t_envp	*tmp;
+
+	i = 1;
+	while (i < n)
+	{
+		j = i;
+		while (j > 0 && ft_strcmp(arr[j - 1]->key, arr[j]->key) > 0)
+		{
+			tmp = arr[j];
+			arr[j] = arr[j - 1];
+			arr[j - 1] = tmp;
+			j--;
+		}
+		i++;
+	}
+}
+
+static void	print_sorted_entries(t_envp **arr, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
 	{
 		ft_putstr_fd("declare -x ", 1);
-		ft_putstr_fd(cur->key, 1);
-		if (cur->value && cur->value[0] != '\0')
+		ft_putstr_fd(arr[i]->key, 1);
+		if (arr[i]->value && arr[i]->value[0] != '\0')
 		{
 			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(cur->value, 1);
+			ft_putstr_fd(arr[i]->value, 1);
 			ft_putstr_fd("\"", 1);
 		}
 		ft_putstr_fd("\n", 1);
-		cur = cur->next;
+		i++;
 	}
+}
+
+int	msh_exec_bt_export_print(t_envp *envp)
+{
+	int		count;
+	t_envp	**arr;
+
+	count = count_visible(envp);
+	if (count <= 0)
+		return (0);
+	arr = malloc(sizeof(t_envp *) * count);
+	if (!arr)
+		return (1);
+	fill_ptrs(envp, arr);
+	sort_by_key(arr, count);
+	print_sorted_entries(arr, count);
+	free(arr);
 	return (0);
 }
 

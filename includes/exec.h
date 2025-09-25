@@ -39,6 +39,8 @@ int		exec_builtin(t_ent *node, t_mshell *mshell);
 // Utilidades básicas (exec_utils.c)
 int		is_builtin(char *cmd);
 int		apply_redirections(t_ent *node);
+void	ms_update_underscore(t_mshell *mshell, char **argv);
+void	ms_update_underscore_after_exec(t_mshell *mshell);
 
 // Funciones auxiliares (exec_helpers.c)
 char	*find_command_path(char *cmd, t_envp *envp);
