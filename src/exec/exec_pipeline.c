@@ -51,12 +51,10 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
 	block_parent_signals(ctx->mshell);
 	wait_children(ctx, &status, &first_sigpipe);
-	restore_parent_signals(ctx->mshell);
-	free_pipe_rows(ctx->pipes, ctx->cmd_count);
-	if (should_print_broken_pipe(ctx, first_sigpipe))
-		print_err2(" Broken pipe\n", NULL, NULL);
-	free_ctx_arrays(ctx);
-	return (status_to_exitcode(status));
+    restore_parent_signals(ctx->mshell);
+    free_pipe_rows(ctx->pipes, ctx->cmd_count);
+    free_ctx_arrays(ctx);
+    return (status_to_exitcode(status));
 }
 
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
