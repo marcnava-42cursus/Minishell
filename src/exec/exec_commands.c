@@ -53,18 +53,7 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), ft_free_matrix((void **)env_arr), 1);
-	if (pid == 0)
-		handle_child_process(node, mshell, env_arr);
-	if (node->fd_in != -1 && node->fd_in != -2)
-	{
-		close(node->fd_in);
-		node->fd_in = -1;
-	}
-	if (node->fd_out != -1 && node->fd_out != -2)
-	{
-		close(node->fd_out);
-		node->fd_out = -1;
-	}
+	check_handler_process(pid, env_arr, node, mshell);
 	return (wait_for_child_and_cleanup(pid, mshell, env_arr));
 }
 

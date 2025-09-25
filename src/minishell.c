@@ -40,7 +40,6 @@ int	parse_and_maybe_exec(t_mshell *ms, char *line)
 	if (ms->tree)
 	{
 		ms->exit_code = exec_tree(ms);
-		/* Update '_' after execution to mimic bash */
 		ms_update_underscore_after_exec(ms);
 		if (ms->exit_code != 0 && isatty(STDIN_FILENO))
 			printf("Command exited with code: %d\n", ms->exit_code);

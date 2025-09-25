@@ -56,8 +56,7 @@ int	ms_init(t_mshell *ms, char **env)
 	if (ms->config->prompt)
 	{
 		ft_free((void **)&ms->config->prompt);
-		ms->config->prompt = build_prompt(ms->config->prompt_raw,
-				ms->exit_code, ms->envp);
+		ms->config->prompt = build_prompt(ms);
 	}
 	ms->should_exit = 0;
 	set_prompt_signal();
