@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/25 06:27:41 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/25 21:42:28 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -130,13 +130,14 @@ SRCS		+=	$(STRUCTS)/envp_manager.c \
 				$(STRUCTS)/envp_utils.c \
 				$(STRUCTS)/tree_manager.c
 
-SRCS		+=	$(SUGGESTIONS)/sug_string_utils.c \
-				$(SUGGESTIONS)/cmd_list.c \
+SRCS		+=	$(SUGGESTIONS)/cmd_list.c \
 				$(SUGGESTIONS)/path_loader.c \
-				$(SUGGESTIONS)/terminal.c \
+				$(SUGGESTIONS)/sug_string_utils.c \
+				$(SUGGESTIONS)/suggestion_handler.c \
 				$(SUGGESTIONS)/suggestion_main.c \
-				$(SUGGESTIONS)/suggestion_utils.c \
 				$(SUGGESTIONS)/suggestion_prompt.c
+				$(SUGGESTIONS)/suggestion_utils.c \
+				$(SUGGESTIONS)/terminal.c \
 
 SRCS		+=	$(UTILS)/print_tree.c \
 				$(UTILS)/matrix_utils.c \

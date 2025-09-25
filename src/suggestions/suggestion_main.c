@@ -6,9 +6,10 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:42:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/17 19:09:10 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 21:38:47 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "suggestions.h"
 #include "signals.h"
 #include <errno.h>
@@ -50,23 +51,6 @@ static void	redraw_line(t_suggestion_ctx *ctx, const char *buffer,
 	display_suggestion(suggestion, buffer_len);
 }
 
-static char	*handle_enter(t_suggestion_ctx *ctx, char *buffer,
-				size_t buffer_len, struct termios *original_termios)
-{
-	char	*result;
-
-	disable_raw(original_termios);
-	write(STDOUT_FILENO, "\r", 1);
-	if (ctx->terminal->clear_to_eol)
-		tputs(ctx->terminal->clear_to_eol, 1, terminal_putchar);
-	write(STDOUT_FILENO, ctx->prompt, ctx->prompt_len);
-	write(STDOUT_FILENO, buffer, buffer_len);
-	write(STDOUT_FILENO, "\n", 1);
-	buffer[buffer_len] = '\0';
-	result = sug_strdup(buffer);
-	return (result);
-}
-
 /*
 ** process_char returns:
 **  0 -> keep reading
@@ -76,45 +60,64 @@ static char	*handle_enter(t_suggestion_ctx *ctx, char *buffer,
 */
 static int	process_char(char c, t_readline_state *state)
 {
-    if (c == 3)
-    {
-        /* Ctrl+C received as a literal (e.g., if ISIG were disabled).
-        ** Print ^C and cancel the current line. */
-        write(STDOUT_FILENO, "^C\n", 3);
-        *state->buffer_len = 0;
-        state->buffer[0] = '\0';
-        g_signal_received = SIGINT;
-        return (2);
-    }
-    else if (c == 127 && *state->buffer_len > 0)
-    {
-        (*state->buffer_len)--;
-        state->buffer[*state->buffer_len] = '\0';
-    }
-    else if (c == 4)
-    {
-        /* Ctrl+D (EOT). In raw mode it's a literal byte. If line is empty,
-        ** signal EOF so caller can exit; otherwise ignore (like readline). */
-        if (*state->buffer_len == 0)
-            return (3);
-    }
-    else if (c == '\r' || c == '\n')
-        return (1);
-    else if (c >= 32 && c <= 126 && *state->buffer_len + 1 < SUG_BUFFER_SIZE)
-    {
-        state->buffer[(*state->buffer_len)++] = c;
-        state->buffer[*state->buffer_len] = '\0';
-    }
-    return (0);
+	if (c == 3)
+	{
+		write(STDOUT_FILENO, "^C\n", 3);
+		*state->buffer_len = 0;
+		state->buffer[0] = '\0';
+		return (g_signal_received = SIGINT, 2);
+	}
+	else if (c == 127 && *state->buffer_len > 0)
+	{
+		(*state->buffer_len)--;
+		state->buffer[*state->buffer_len] = '\0';
+	}
+	else if (c == 4)
+	{
+		if (*state->buffer_len == 0)
+			return (3);
+	}
+	else if (c == '\r' || c == '\n')
+		return (1);
+	else if (c >= 32 && c <= 126 && *state->buffer_len + 1 < SUG_BUFFER_SIZE)
+	{
+		state->buffer[(*state->buffer_len)++] = c;
+		state->buffer[*state->buffer_len] = '\0';
+	}
+	return (0);
+}
+
+static char	*read_input_loop(t_suggestion_ctx *ctx, t_readline_state *state)
+{
+	ssize_t	r;
+	char	c;
+	int		action;
+	char	*out;
+
+	while (1)
+	{
+		r = read(STDIN_FILENO, &c, 1);
+		if (r == 1)
+		{
+			action = process_char(c, state);
+			if (handle_action_code(ctx, state, action, &out))
+				return (out);
+		}
+		else if (r < 0)
+			return (handle_read_error(state));
+		else
+			break ;
+	}
+	return (NULL);
 }
 
 char	*suggestion_readline(t_suggestion_ctx *ctx)
 {
 	char				buffer[SUG_BUFFER_SIZE];
 	size_t				buffer_len;
-	char				c;
 	struct termios		original_termios;
 	t_readline_state	state;
+	char				*result;
 
 	if (!ctx)
 		return (NULL);
@@ -126,52 +129,8 @@ char	*suggestion_readline(t_suggestion_ctx *ctx)
 	g_in_suggestions = 1;
 	enable_raw(&original_termios);
 	write(STDOUT_FILENO, ctx->prompt, ctx->prompt_len);
-	while (1)
-	{
-		ssize_t r = read(STDIN_FILENO, &c, 1);
-		if (r == 1)
-		{
-			int action = process_char(c, &state);
-			if (action == 1)
-			{
-				char *out = handle_enter(ctx, buffer, buffer_len, &original_termios);
-				g_in_suggestions = 0;
-				return (out);
-			}
-			else if (action == 2)
-			{
-				/* Cancel line (Ctrl+C): restore tty and return empty line. */
-				disable_raw(&original_termios);
-				g_in_suggestions = 0;
-				return (sug_strdup(""));
-			}
-			else if (action == 3)
-			{
-				/* EOF (Ctrl+D on empty line): restore tty and return NULL. */
-				write(STDOUT_FILENO, "\n", 1);
-				disable_raw(&original_termios);
-				g_in_suggestions = 0;
-				return (NULL);
-			}
-			redraw_line(ctx, buffer, buffer_len);
-		}
-		else if (r < 0)
-		{
-			if (errno == EINTR)
-			{
-				/* Interrupted by signal (e.g., SIGINT): cancel current line.
-				** Signal handler already wrote a newline; just restore tty. */
-				disable_raw(&original_termios);
-				g_in_suggestions = 0;
-				return (sug_strdup(""));
-			}
-			/* Other read errors: treat like EOF to avoid busy loop. */
-			break ;
-		}
-		else /* r == 0 -> EOF (Ctrl+D) */
-			break ;
-	}
-	disable_raw(&original_termios);
+	result = read_input_loop(ctx, &state);
 	g_in_suggestions = 0;
-	return (NULL);
+	disable_raw(&original_termios);
+	return (result);
 }
