@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 20:19:10 by jmarcell          #+#    #+#             */
-/*   Updated: 2025/09/25 06:26:46 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 16:55:51 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 	g_signal_received = SIGINT;
+	if (g_in_suggestions)
+	{
+		write(STDOUT_FILENO, "^C\n", 3);
+		return ;
+	}
 	write(STDOUT_FILENO, "\n", 1);
 	if (isatty(STDIN_FILENO))
 	{

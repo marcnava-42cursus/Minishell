@@ -17,8 +17,9 @@
 # include <unistd.h>
 # include <readline/readline.h>
 
-// Variables globales para tracking de señales
+// Variables globales para tracking de señales y modo de entrada
 extern volatile sig_atomic_t	g_signal_received;
+extern volatile sig_atomic_t	g_in_suggestions;
 
 // Configuración y helpers de señales
 void	set_prompt_signal(void);

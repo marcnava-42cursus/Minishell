@@ -23,7 +23,12 @@ void	enable_raw(struct termios *terminal_attrs)
 
 	tcgetattr(STDIN_FILENO, terminal_attrs);
 	raw = *terminal_attrs;
+	/* Keep ISIG to allow Ctrl+C to generate SIGINT, but avoid echoing control
+	** characters like ^C; also disable canonical mode and standard echo. */
 	raw.c_lflag &= ~(ICANON | ECHO);
+#ifdef ECHOCTL
+	raw.c_lflag &= ~ECHOCTL;
+#endif
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
 
