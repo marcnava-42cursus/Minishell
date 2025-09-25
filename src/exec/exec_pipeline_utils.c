@@ -68,7 +68,10 @@ void	setup_input_redirection(int **pipes, t_ent *command, int i)
 		if (dup2(command->fd_in, STDIN_FILENO) == -1)
 			perror("dup2");
 		else
+		{
 			close(command->fd_in);
+			command->fd_in = -1;
+		}
 		return ;
 	}
 	if (i > 0 && dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
@@ -83,7 +86,10 @@ void	setup_output_redirection(int **pipes, t_ent *command,
 		if (dup2(command->fd_out, STDOUT_FILENO) == -1)
 			perror("dup2");
 		else
+		{
 			close(command->fd_out);
+			command->fd_out = -1;
+		}
 		return ;
 	}
 	if (i < cmd_count - 1 && dup2(pipes[i][1], STDOUT_FILENO) == -1)

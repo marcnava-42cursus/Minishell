@@ -81,9 +81,8 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	t_hd_ctx	c;
 	int			w;
 
-	(void)delimiter;
 	c.read_fd = heredoc_count++;
-	if (hd_prepare_ctx(&c, mshell) < 0)
+	if (hd_prepare_ctx(&c, delimiter) < 0)
 		return (-1);
 	{
 		w = hd_fork_and_write(&c, mshell);

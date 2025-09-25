@@ -34,10 +34,12 @@ int	hd_loop_write(int tmp_fd, const char *clean_delim, t_mshell *mshell,
 	int is_quoted)
 {
 	char	*line;
+	const char	*prompt;
 
 	while (1)
 	{
-		line = readline("> ");
+		prompt = isatty(STDIN_FILENO) ? "> " : "";
+		line = readline(prompt);
 		if (!line)
 			break ;
 		if (ft_strcmp(line, (char *)clean_delim) == 0)
@@ -52,23 +54,17 @@ int	hd_loop_write(int tmp_fd, const char *clean_delim, t_mshell *mshell,
 	return (0);
 }
 
-int	hd_prepare_ctx(t_hd_ctx *c, t_mshell *mshell)
+int	hd_prepare_ctx(t_hd_ctx *c, const char *delimiter)
 {
-	const char	*pos;
-
-	if (!mshell || !mshell->raw_command)
+	if (!delimiter)
 		return (-1);
-	pos = hd_after_arrow(mshell->raw_command);
-	c->original_delimiter = hd_extract_delim(pos);
+	/* Guardar el delimitador tal cual llega del tokenizer */
+	c->original_delimiter = ft_strdup(delimiter);
 	if (!c->original_delimiter)
 		return (-1);
-	c->is_quoted = check_heredoc_quotes(mshell->raw_command, NULL);
-	if (c->is_quoted < 0)
-		c->is_quoted = 0;
-	else if (c->is_quoted > 0)
-		c->is_quoted = 1;
-	c->clean_delimiter = hd_clean_delimiter(c->original_delimiter,
-			&c->is_quoted);
+	/* Limpiar comillas y marcar si estaba entrecomillado */
+	c->is_quoted = 0;
+	c->clean_delimiter = hd_clean_delimiter(c->original_delimiter, &c->is_quoted);
 	ft_free((void **)&c->original_delimiter);
 	if (!c->clean_delimiter)
 		return (-1);

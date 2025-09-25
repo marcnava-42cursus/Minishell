@@ -114,7 +114,7 @@ char		*hd_extract_delim(const char *pos);
 char		*hd_clean_delimiter(const char *delimiter, int *is_quoted);
 int			hd_loop_write(int tmp_fd, const char *clean_delim,
 				t_mshell *mshell, int is_quoted);
-int			hd_prepare_ctx(t_hd_ctx *c, t_mshell *mshell);
+int			hd_prepare_ctx(t_hd_ctx *c, const char *delimiter);
 
 /* Environment functions */
 t_envp		*save_envp(char **env);

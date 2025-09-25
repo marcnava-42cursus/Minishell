@@ -289,4 +289,6 @@ re: fclean all
 
 # Testers
 
+ivmirand (Ivan Miranda)
+ibenaven (Iria Benavente)
 alvamart (Alvaro Martin)
