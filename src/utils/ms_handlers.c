@@ -13,6 +13,34 @@
 #include "minishell.h"
 #include "libft.h"
 
+static void	init_shlvl(t_envp **envp)
+{
+	const char	*value;
+	int		level;
+	char		*new_value;
+
+	if (!envp)
+		return ;
+	value = envp_get_value(*envp, "SHLVL");
+	if (!value)
+	{
+		envp_set_value(envp, "SHLVL", "1");
+		return ;
+	}
+	level = ft_atoi(value);
+	if (level < 0)
+		level = 0;
+	new_value = ft_itoa(level + 1);
+	if (!new_value)
+		return ;
+	if (envp_set_value(envp, "SHLVL", new_value) != 0)
+	{
+		ft_free((void **)&new_value);
+		return ;
+	}
+	ft_free((void **)&new_value);
+}
+
 int	ms_init(t_mshell *ms, char **env)
 {
 	ft_memset(ms, 0, sizeof(t_mshell));
@@ -23,6 +51,7 @@ int	ms_init(t_mshell *ms, char **env)
 	ms->envp = save_envp(env);
 	if (!ms->envp)
 		return (printf("Error saving envp\n"), 1);
+	init_shlvl(&ms->envp);
 	ms->exit_code = 0;
 	if (ms->config->prompt)
 	{

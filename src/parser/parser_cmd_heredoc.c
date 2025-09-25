@@ -27,14 +27,14 @@ int	pc_handle_heredoc(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 		ft_free_matrix((void **)ctx->argv);
 		return (-1);
 	}
-	fd = handle_heredoc(filename, mshell);
-	ft_free((void **)&filename);
-	if (fd == -1)
-	{
-		mshell->exit_code = 1;
-		ctx->fd_in = -2;
-		return (0);
-	}
+    fd = handle_heredoc(filename, mshell);
+    ft_free((void **)&filename);
+    if (fd == -1)
+    {
+        mshell->exit_code = 1;
+        ctx->fd_in = -2;
+        return (0);
+    }
 	ctx->fd_in = fd;
 	return (0);
 }

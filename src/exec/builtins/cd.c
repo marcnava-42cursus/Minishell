@@ -92,7 +92,11 @@ static int	chdir_and_update_env(t_envp **envp, const char *target_path,
 
 	if (chdir(target_path) != 0)
 	{
-		perror("msh: cd");
+		int	err;
+
+		err = errno;
+		print_err2("msh: cd: ", target_path, ": ");
+		print_err2(strerror(err), "\n", NULL);
 		ft_free((void **)&old_pwd);
 		return (1);
 	}

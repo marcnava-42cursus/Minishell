@@ -35,10 +35,11 @@ int	hd_loop_write(int tmp_fd, const char *clean_delim, t_mshell *mshell,
 {
 	char	*line;
 
-	printf("> ");
-	line = readline("");
-	while (line != NULL)
+	while (1)
 	{
+		line = readline("> ");
+		if (!line)
+			break ;
 		if (ft_strcmp(line, (char *)clean_delim) == 0)
 		{
 			ft_free((void **)&line);
@@ -47,8 +48,6 @@ int	hd_loop_write(int tmp_fd, const char *clean_delim, t_mshell *mshell,
 		hd_write_line(tmp_fd, line, mshell, is_quoted);
 		write(tmp_fd, "\n", 1);
 		ft_free((void **)&line);
-		printf("> ");
-		line = readline("");
 	}
 	return (0);
 }
