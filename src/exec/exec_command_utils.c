@@ -13,7 +13,6 @@
 #include "exec.h"
 #include "utils.h"
 
-void	perror_exit(char *msg, int exit_code);
 void	exit_with_errno_message(const char *cmd);
 void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr);
 

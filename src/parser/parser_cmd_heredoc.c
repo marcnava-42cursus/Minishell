@@ -31,8 +31,9 @@ int	pc_handle_heredoc(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 	ft_free((void **)&filename);
 	if (fd == -1)
 	{
-		if (mshell->exit_code != 130)
-			mshell->exit_code = 1;
+		if (mshell->exit_code == 130)
+			return (-1);
+		mshell->exit_code = 1;
 		ctx->fd_in = -2;
 		return (0);
 	}

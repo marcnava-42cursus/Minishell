@@ -73,7 +73,11 @@ t_ent	*parse_cmd(const char **s, t_mshell *mshell)
 	while (st == 0)
 		st = pc_process_next(s, mshell, &ctx);
 	if (st < 0)
+	{
+		/* Free accumulated argv on parse abort (e.g., heredoc cancelled) */
+		ft_free_matrix((void **)ctx.argv);
 		return (NULL);
+	}
 	ctx.argv = ft_realloc_matrix(ctx.argv, ctx.argc, NULL);
 	if (!ctx.argv)
 		return (NULL);

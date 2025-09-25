@@ -84,25 +84,20 @@ int	handle_heredoc(const char *delimiter, t_mshell *mshell)
 	c.read_fd = heredoc_count++;
 	if (hd_prepare_ctx(&c, delimiter) < 0)
 		return (-1);
+	w = hd_fork_and_write(&c, mshell);
+	if (w < 0)
+		return (ft_free((void **)&c.clean_delimiter), -1);
+	if (w == 130)
 	{
-		w = hd_fork_and_write(&c, mshell);
-		if (w < 0)
-			return (ft_free((void **)&c.clean_delimiter), -1);
-		if (w == 130)
-		{
-			unlink(c.tmp_filename);
-			ft_free((void **)&c.tmp_filename);
-			ft_free((void **)&c.clean_delimiter);
-			mshell->exit_code = 130;
-			return (-1);
-		}
-	}
-	if (hd_reopen_for_read(&c) < 0)
-	{
+		unlink(c.tmp_filename);
 		ft_free((void **)&c.tmp_filename);
 		ft_free((void **)&c.clean_delimiter);
+		mshell->exit_code = 130;
 		return (-1);
 	}
+	if (hd_reopen_for_read(&c) < 0)
+		return (ft_free((void **)&c.tmp_filename),
+			ft_free((void **)&c.clean_delimiter), -1);
 	ft_free((void **)&c.tmp_filename);
 	ft_free((void **)&c.clean_delimiter);
 	return (c.read_fd);
