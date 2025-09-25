@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:33:33 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/26 00:43:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:45:50 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ typedef unsigned long long	t_ull;
 // Helper functions for environment management
 char	*envp_get_value(t_envp *envp, const char *key);
 int		envp_set_value(t_envp **envp, const char *key, const char *value);
+
+// Export utility functions
+int		count_visible(t_envp *envp);
+void	fill_ptrs(t_envp *envp, t_envp **arr);
 
 // Minishell execution builtins functions
 int		msh_exec_bt_cd(t_envp **envp, const char *path);
