@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 03:12:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 21:03:06 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 01:41:29 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ char	*pc_read_filename_or_error(const char **s, t_mshell *mshell,
 	char	*filename;
 
 	(void)ctx;
-
 	filename = get_next_token(s);
 	if (!filename)
 	{
