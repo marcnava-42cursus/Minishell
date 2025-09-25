@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:41:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/24 22:48:56 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 20:38:59 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ static char	*dup_last_export_assign(char **argv)
 static char	*dup_from_pipeline_commands(t_ent **cmds, int n)
 {
 	int		i;
-	char		*assign;
-	char		*fallback;
+	char	*assign;
+	char	*fallback;
 
 	assign = NULL;
 	i = 0;
@@ -79,7 +79,6 @@ static char	*dup_from_pipeline_commands(t_ent **cmds, int n)
 			return (assign);
 		i++;
 	}
-	/* fallback to last arg of last command */
 	fallback = dup_last_arg(cmds[n - 1]->argv);
 	return (fallback);
 }
@@ -87,8 +86,8 @@ static char	*dup_from_pipeline_commands(t_ent **cmds, int n)
 static char	*compute_underscore_value(t_ent *root)
 {
 	int		count;
-	t_ent		**cmds;
-	char		*val;
+	t_ent	**cmds;
+	char	*val;
 
 	if (!root)
 		return (NULL);
@@ -211,20 +210,20 @@ int	apply_redirections(t_ent *node)
 
 void	ms_update_underscore(t_mshell *mshell, char **argv)
 {
-    char	**unquoted;
-    int		count;
+	char	**unquoted;
+	int		count;
 
-    if (!mshell || !argv)
-        return ;
-    count = 0;
-    while (argv[count])
-        count++;
-    if (count == 0)
-        return ;
-    unquoted = process_argv_quotes(argv);
-    if (!unquoted)
-        return ;
-    if (unquoted[count - 1])
-        envp_set_value(&(mshell->envp), "_", unquoted[count - 1]);
-    ft_free_matrix((void **)unquoted);
+	if (!mshell || !argv)
+		return ;
+	count = 0;
+	while (argv[count])
+		count++;
+	if (count == 0)
+		return ;
+	unquoted = process_argv_quotes(argv);
+	if (!unquoted)
+		return ;
+	if (unquoted[count - 1])
+		envp_set_value(&(mshell->envp), "_", unquoted[count - 1]);
+	ft_free_matrix((void **)unquoted);
 }

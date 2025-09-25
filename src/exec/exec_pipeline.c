@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 06:15:51 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 20:41:41 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,11 @@ int	exec_pipeline(t_ent *node, t_mshell *mshell)
 {
 	t_pipe_ctx	ctx;
 
-    if (count_pipeline_commands(node) == 1)
-        return (single_command_from_pipeline(node, mshell));
-    if (init_ctx(&ctx, node, mshell))
-        return (1);
-    /* '_' is updated after execution to match bash semantics */
-    if (spawn_children(&ctx))
-        return (1);
-    return (wait_and_cleanup(&ctx));
+	if (count_pipeline_commands(node) == 1)
+		return (single_command_from_pipeline(node, mshell));
+	if (init_ctx(&ctx, node, mshell))
+		return (1);
+	if (spawn_children(&ctx))
+		return (1);
+	return (wait_and_cleanup(&ctx));
 }
