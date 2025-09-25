@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:05:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 05:36:44 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:21:07 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ int	exec_builtin(t_ent *node, t_mshell *mshell)
 	processed_argv = process_argv_quotes(node->argv);
 	if (!processed_argv)
 		return (1);
+	ms_update_underscore(mshell, node->argv);
 	result = builtin_dispatch(processed_argv[0], node, processed_argv, mshell);
 	ft_free_matrix((void **)processed_argv);
 	return (result);

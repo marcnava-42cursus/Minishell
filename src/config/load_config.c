@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 17:50:41 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/17 18:26:02 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:20:45 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	load_config(t_config *config, char **envp)
 	if (!prompt_line)
 		return (1);
 	config->prompt_raw = prompt_line;
-	config->prompt = build_prompt(config->prompt_raw, 0, NULL);
+	config->prompt = NULL;
 	if (suggestions_line && ft_strncmp(suggestions_line, "enabled", 7) == 0)
 		config->use_suggestions = 1;
 	else

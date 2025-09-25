@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 03:33:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/21 03:33:00 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:33:22 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,15 @@ static int	hd_write_line(int tmp_fd, char *line, t_mshell *mshell,
 int	hd_loop_write(int tmp_fd, const char *clean_delim, t_mshell *mshell,
 	int is_quoted)
 {
-	char	*line;
+	char		*line;
 	const char	*prompt;
 
 	while (1)
 	{
-		prompt = isatty(STDIN_FILENO) ? "> " : "";
+		if (isatty(STDIN_FILENO))
+			prompt = "> ";
+		else
+			prompt = "";
 		line = readline(prompt);
 		if (!line)
 			break ;
@@ -58,13 +61,12 @@ int	hd_prepare_ctx(t_hd_ctx *c, const char *delimiter)
 {
 	if (!delimiter)
 		return (-1);
-	/* Guardar el delimitador tal cual llega del tokenizer */
 	c->original_delimiter = ft_strdup(delimiter);
 	if (!c->original_delimiter)
 		return (-1);
-	/* Limpiar comillas y marcar si estaba entrecomillado */
 	c->is_quoted = 0;
-	c->clean_delimiter = hd_clean_delimiter(c->original_delimiter, &c->is_quoted);
+	c->clean_delimiter = hd_clean_delimiter(c->original_delimiter,
+			&c->is_quoted);
 	ft_free((void **)&c->original_delimiter);
 	if (!c->clean_delimiter)
 		return (-1);

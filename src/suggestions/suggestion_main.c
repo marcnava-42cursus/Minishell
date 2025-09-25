@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:42:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 21:38:47 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:18:43 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ static void	display_suggestion(const char *suggestion, size_t buffer_len)
 	}
 }
 
-static void	redraw_line(t_suggestion_ctx *ctx, const char *buffer,
-				size_t buffer_len)
+void	redraw_line(t_suggestion_ctx *ctx, const char *buffer,
+			size_t buffer_len)
 {
 	const char	*suggestion;
 

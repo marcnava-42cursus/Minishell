@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/03 12:47:04 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 13:27:27 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:16:49 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,7 @@ void	enable_raw(struct termios *terminal_attrs)
 
 	tcgetattr(STDIN_FILENO, terminal_attrs);
 	raw = *terminal_attrs;
-	/* Keep ISIG to allow Ctrl+C to generate SIGINT, but avoid echoing control
-	** characters like ^C; also disable canonical mode and standard echo. */
-	raw.c_lflag &= ~(ICANON | ECHO);
-#ifdef ECHOCTL
-	raw.c_lflag &= ~ECHOCTL;
-#endif
+	raw.c_lflag &= ~(ICANON | ECHO | ECHOCTL);
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 }
 

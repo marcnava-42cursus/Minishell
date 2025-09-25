@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 19:42:35 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 21:13:15 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:26:25 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ int		is_builtin(char *cmd);
 int		apply_redirections(t_ent *node);
 void	ms_update_underscore(t_mshell *mshell, char **argv);
 void	ms_update_underscore_after_exec(t_mshell *mshell);
+char	*compute_underscore_value(t_ent *root);
+char	*dup_last_arg(char **argv);
+char	*dup_last_export_assign(char **argv);
+char	*dup_from_pipeline_commands(t_ent **cmds, int n);
 
 // Funciones auxiliares (exec_helpers.c)
 char	*find_command_path(char *cmd, t_envp *envp);

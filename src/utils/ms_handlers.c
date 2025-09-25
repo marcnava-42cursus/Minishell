@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 21:33:50 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 06:21:02 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:18:08 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,8 @@ int	ms_init(t_mshell *ms, char **env)
 	init_shlvl(&ms->envp);
 	ms->exit_code = 0;
 	if (ms->config->prompt)
-	{
 		ft_free((void **)&ms->config->prompt);
-		ms->config->prompt = build_prompt(ms);
-	}
+	ms->config->prompt = build_prompt(ms);
 	ms->should_exit = 0;
 	set_prompt_signal();
 	return (0);

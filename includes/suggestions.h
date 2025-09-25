@@ -54,4 +54,8 @@ int					handle_action_code(t_suggestion_ctx *ctx,
 						t_readline_state *state, int action, char **out);
 char				*handle_read_error(t_readline_state *state);
 
+/* Redraw helper */
+void				redraw_line(t_suggestion_ctx *ctx, const char *buffer,
+						size_t buffer_len);
+
 #endif

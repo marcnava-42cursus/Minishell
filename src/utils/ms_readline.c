@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 21:36:48 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 21:43:54 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:17:05 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,7 @@ void	refresh_prompt_and_sugg(t_mshell *ms)
 {
 	if (ms->config->prompt)
 		ft_free((void **)&ms->config->prompt);
-	ms->config->prompt = build_prompt(ms->config->prompt_raw,
-			ms->exit_code, ms->envp);
+	ms->config->prompt = build_prompt(ms);
 	if (ms->config->use_suggestions && ms->suggestions)
 		suggestion_update_prompt(ms->suggestions, ms->config->prompt);
 }

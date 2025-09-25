@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/25 21:42:28 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/26 00:28:53 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,7 +88,9 @@ SRCS		+=	$(EXEC)/exec.c \
 				$(EXEC)/exec_pipeline.c \
 				$(EXEC)/exec_errors.c \
 				$(EXEC)/exec_logic.c \
-				$(EXEC)/exec_builtin_utils.c
+				$(EXEC)/exec_builtins.c \
+				$(EXEC)/exec_builtins_utils.c \
+				$(EXEC)/exec_underscore.c
 
 SRCS		+=	$(FORKERMAN)/bombs.c \
 				$(FORKERMAN)/game.c \
@@ -133,9 +135,9 @@ SRCS		+=	$(STRUCTS)/envp_manager.c \
 SRCS		+=	$(SUGGESTIONS)/cmd_list.c \
 				$(SUGGESTIONS)/path_loader.c \
 				$(SUGGESTIONS)/sug_string_utils.c \
-				$(SUGGESTIONS)/suggestion_handler.c \
+				$(SUGGESTIONS)/suggestion_handlers.c \
 				$(SUGGESTIONS)/suggestion_main.c \
-				$(SUGGESTIONS)/suggestion_prompt.c
+				$(SUGGESTIONS)/suggestion_prompt.c \
 				$(SUGGESTIONS)/suggestion_utils.c \
 				$(SUGGESTIONS)/terminal.c \
 
