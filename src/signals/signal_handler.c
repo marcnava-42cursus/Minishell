@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 20:19:10 by jmarcell          #+#    #+#             */
-/*   Updated: 2025/09/25 04:56:33 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 05:32:23 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,24 +48,18 @@ void	handle_sigint(int sig)
 /* No usamos handler de SIGQUIT en el padre; se ignora vía sigaction */
 
 /**
- * @brief Configure signal handlers for the main shell process
- * 
- * Sets up custom handlers for SIGINT and SIGQUIT signals to manage
- * interactive shell behavior properly
+ * @brief Configura señales para el prompt interactivo del padre
  */
-void	setup_parent_signals(void)
+void	set_prompt_signal(void)
 {
-	struct sigaction	sa_int;
-	struct sigaction	sa_quit;
+	struct sigaction	sa;
 
-    sa_int.sa_handler = handle_sigint;
-    memset(&sa_int.sa_mask, 0, sizeof(sa_int.sa_mask));
-    sa_int.sa_flags = SA_RESTART;
-    sigaction(SIGINT, &sa_int, NULL);
-    sa_quit.sa_handler = SIG_IGN;
-    memset(&sa_quit.sa_mask, 0, sizeof(sa_quit.sa_mask));
-    sa_quit.sa_flags = 0;
-    sigaction(SIGQUIT, &sa_quit, NULL);
+	ft_memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = handle_sigint;
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGQUIT, &sa, NULL);
 }
 
 /**
@@ -74,23 +68,42 @@ void	setup_parent_signals(void)
  * Restores default signal handling before exec in child processes.
  * This ensures child processes handle signals as expected by standard programs.
  */
-void	reset_signals_to_default(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	signal(SIGTSTP, SIG_DFL);
-	signal(SIGPIPE, SIG_DFL);
-}
-
+/**
+ * @brief Señales por defecto en el proceso hijo antes de exec
+ */
 void	set_child_signal(void)
 {
 	struct sigaction	sa;
 
-	sa.sa_handler = SIG_IGN;
-	memset(&sa.sa_mask, 0, sizeof(sa.sa_mask));
+	ft_memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = SIG_DFL;
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
+	sigaction(SIGPIPE, &sa, NULL);
+}
+
+/**
+ * @brief Bloquea señales en el padre (ignorando SIGINT/SIGQUIT) guardando handlers previos
+ */
+void	block_parent_signals(struct sigaction *old_int, struct sigaction *old_quit)
+{
+	struct sigaction	sa;
+
+	ft_memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = SIG_IGN;
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, old_int);
+	sigaction(SIGQUIT, &sa, old_quit);
+}
+
+/**
+ * @brief Restaura handlers previos en el padre tras esperar al hijo
+ */
+void	restore_parent_signals(struct sigaction *old_int, struct sigaction *old_quit)
+{
+	sigaction(SIGINT, old_int, NULL);
+	sigaction(SIGQUIT, old_quit, NULL);
 }
 
 /**

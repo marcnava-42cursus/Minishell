@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:45:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 04:57:52 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 05:37:52 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr);
 
 void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr)
 {
-	reset_signals_to_default();
+    set_child_signal();
 	if (apply_redirections(node))
 		exit(1);
 	if (is_builtin(node->argv[0]))
@@ -30,10 +30,12 @@ void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr)
 int	wait_for_child_and_cleanup(pid_t pid, char **env_arr)
 {
 	int	status;
+	struct sigaction old_int;
+	struct sigaction old_quit;
 
-	set_child_signal();
+	block_parent_signals(&old_int, &old_quit);
 	waitpid(pid, &status, 0);
-	setup_parent_signals();
+	restore_parent_signals(&old_int, &old_quit);
 	ft_free_matrix((void **)env_arr);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));

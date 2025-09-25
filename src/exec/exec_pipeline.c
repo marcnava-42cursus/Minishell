@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/24 20:36:34 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 05:37:25 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,13 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 {
     int	status;
     int	first_sigpipe;
+	struct sigaction old_int;
+    struct sigaction old_quit;
 
     close_all_pipes_local(ctx->pipes, ctx->cmd_count);
-    set_child_signal();
-    wait_children(ctx, &status, &first_sigpipe);
-    setup_parent_signals();
+	block_parent_signals(&old_int, &old_quit);
+	wait_children(ctx, &status, &first_sigpipe);
+	restore_parent_signals(&old_int, &old_quit);
     free_pipe_rows(ctx->pipes, ctx->cmd_count);
     if (should_print_broken_pipe(ctx, first_sigpipe))
         print_err2(" Broken pipe\n", NULL, NULL);
@@ -61,7 +63,7 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)
 {
-	reset_signals_to_default();
+	set_child_signal();
 	if (ctx->commands[i]->fd_in == -2 || ctx->commands[i]->fd_out == -2)
 		exit(1);
 	setup_input_redirection(ctx->pipes, ctx->commands[i], i);

@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 20:19:10 by jmarcell          #+#    #+#             */
-/*   Updated: 2025/09/20 20:48:36 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 05:38:07 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 // Variables globales para tracking de señales
 extern volatile sig_atomic_t	g_signal_received;
 
-// Manejadores de señales
-void	handle_sigint(int sig);
-void	setup_parent_signals(void);
-void	reset_signals_to_default(void);
+// Configuración y helpers de señales
+void	set_prompt_signal(void);
 void	set_child_signal(void);
+void	block_parent_signals(struct sigaction *old_int, struct sigaction *old_quit);
+void	restore_parent_signals(struct sigaction *old_int, struct sigaction *old_quit);
 
 // Utilidades
 int		check_signal_exit_code(void);

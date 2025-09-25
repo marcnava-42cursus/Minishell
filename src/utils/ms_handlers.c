@@ -60,8 +60,8 @@ int	ms_init(t_mshell *ms, char **env)
 				ms->exit_code, ms->envp);
 	}
 	ms->should_exit = 0;
-	setup_parent_signals();
-	return (0);
+    set_prompt_signal();
+    return (0);
 }
 
 void	ms_cleanup(t_mshell *ms)

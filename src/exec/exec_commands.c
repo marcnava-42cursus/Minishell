@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 02:05:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/18 23:13:39 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 05:36:44 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 		return (perror("fork"), ft_free_matrix((void **)env_arr), 1);
 	if (pid == 0)
 		handle_child_process(node, mshell, env_arr);
-	/* Parent: close redirection FDs (e.g., heredoc) */
 	if (node->fd_in != -1 && node->fd_in != -2)
 	{
 		close(node->fd_in);
@@ -91,25 +90,27 @@ static int	builtin_dispatch(const char *cmd, t_ent *node,
 
 int	exec_subshell(t_ent *node, t_mshell *mshell)
 {
-	pid_t		pid;
-	int			status;
-	t_mshell	child_shell;
+	pid_t				pid;
+	int					status;
+	t_mshell			child_shell;
+	struct sigaction	old_int;
+	struct sigaction	old_quit;
 
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		reset_signals_to_default();
+		set_child_signal();
 		if (apply_redirections(node))
 			exit(1);
 		child_shell = *mshell;
 		child_shell.tree = node->child;
 		exit(exec_tree(&child_shell));
 	}
-    set_child_signal();
-    waitpid(pid, &status, 0);
-    setup_parent_signals();
+	block_parent_signals(&old_int, &old_quit);
+	waitpid(pid, &status, 0);
+	restore_parent_signals(&old_int, &old_quit);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))
