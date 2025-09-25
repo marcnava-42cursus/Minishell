@@ -47,7 +47,7 @@ char	**envp_to_array(t_envp *envp);
 
 // Utilidades específicas de comandos (exec_command_utils.c)
 void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr);
-int		wait_for_child_and_cleanup(pid_t pid, char **env_arr);
+int		wait_for_child_and_cleanup(pid_t pid, t_mshell *mshell, char **env_arr);
 
 // Utilidades específicas de pipelines (exec_pipeline_utils.c)
 int		count_pipeline_commands(t_ent *node);

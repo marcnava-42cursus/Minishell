@@ -17,6 +17,7 @@
 # include <stdio.h>
 # include <sys/types.h>
 # include <termios.h>
+# include <signal.h>
 # include "libft.h"
 
 /* ============================= Generales ================================= */
@@ -222,6 +223,8 @@ typedef struct s_mshell
 	t_suggestion_ctx	*suggestions;
 	int					exit_code;
 	int					should_exit;
+    struct sigaction    old_sigint;
+    struct sigaction    old_sigquit;
 }						t_mshell;
 
 /* ============================== Ejecución ================================ */

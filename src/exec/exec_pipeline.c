@@ -47,13 +47,11 @@ static int	wait_and_cleanup(t_pipe_ctx *ctx)
 {
     int	status;
     int	first_sigpipe;
-	struct sigaction old_int;
-    struct sigaction old_quit;
 
     close_all_pipes_local(ctx->pipes, ctx->cmd_count);
-	block_parent_signals(&old_int, &old_quit);
-	wait_children(ctx, &status, &first_sigpipe);
-	restore_parent_signals(&old_int, &old_quit);
+    block_parent_signals(ctx->mshell);
+    wait_children(ctx, &status, &first_sigpipe);
+    restore_parent_signals(ctx->mshell);
     free_pipe_rows(ctx->pipes, ctx->cmd_count);
     if (should_print_broken_pipe(ctx, first_sigpipe))
         print_err2(" Broken pipe\n", NULL, NULL);

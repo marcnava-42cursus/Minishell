@@ -19,7 +19,7 @@ void	execute_external_command(t_ent *node, t_envp **envp, char **env_arr);
 
 void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr)
 {
-    set_child_signal();
+	set_child_signal();
 	if (apply_redirections(node))
 		exit(1);
 	if (is_builtin(node->argv[0]))
@@ -27,15 +27,13 @@ void	handle_child_process(t_ent *node, t_mshell *mshell, char **env_arr)
 	execute_external_command(node, &(mshell->envp), env_arr);
 }
 
-int	wait_for_child_and_cleanup(pid_t pid, char **env_arr)
+int	wait_for_child_and_cleanup(pid_t pid, t_mshell *mshell, char **env_arr)
 {
 	int	status;
-	struct sigaction old_int;
-	struct sigaction old_quit;
 
-	block_parent_signals(&old_int, &old_quit);
+	block_parent_signals(mshell);
 	waitpid(pid, &status, 0);
-	restore_parent_signals(&old_int, &old_quit);
+	restore_parent_signals(mshell);
 	ft_free_matrix((void **)env_arr);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));

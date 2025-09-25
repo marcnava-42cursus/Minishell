@@ -65,7 +65,7 @@ int	exec_command(t_ent *node, t_mshell *mshell)
 		close(node->fd_out);
 		node->fd_out = -1;
 	}
-	return (wait_for_child_and_cleanup(pid, env_arr));
+	return (wait_for_child_and_cleanup(pid, mshell, env_arr));
 }
 
 static int	builtin_dispatch(const char *cmd, t_ent *node,
@@ -93,8 +93,6 @@ int	exec_subshell(t_ent *node, t_mshell *mshell)
 	pid_t				pid;
 	int					status;
 	t_mshell			child_shell;
-	struct sigaction	old_int;
-	struct sigaction	old_quit;
 
 	pid = fork();
 	if (pid == -1)
@@ -108,9 +106,9 @@ int	exec_subshell(t_ent *node, t_mshell *mshell)
 		child_shell.tree = node->child;
 		exit(exec_tree(&child_shell));
 	}
-	block_parent_signals(&old_int, &old_quit);
+	block_parent_signals(mshell);
 	waitpid(pid, &status, 0);
-	restore_parent_signals(&old_int, &old_quit);
+	restore_parent_signals(mshell);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	else if (WIFSIGNALED(status))

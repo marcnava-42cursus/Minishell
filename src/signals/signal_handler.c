@@ -86,24 +86,24 @@ void	set_child_signal(void)
 /**
  * @brief Bloquea señales en el padre (ignorando SIGINT/SIGQUIT) guardando handlers previos
  */
-void	block_parent_signals(struct sigaction *old_int, struct sigaction *old_quit)
+void	block_parent_signals(t_mshell *ms)
 {
 	struct sigaction	sa;
 
 	ft_memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = SIG_IGN;
 	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, old_int);
-	sigaction(SIGQUIT, &sa, old_quit);
+	sigaction(SIGINT, &sa, &ms->old_sigint);
+	sigaction(SIGQUIT, &sa, &ms->old_sigquit);
 }
 
 /**
  * @brief Restaura handlers previos en el padre tras esperar al hijo
  */
-void	restore_parent_signals(struct sigaction *old_int, struct sigaction *old_quit)
+void	restore_parent_signals(t_mshell *ms)
 {
-	sigaction(SIGINT, old_int, NULL);
-	sigaction(SIGQUIT, old_quit, NULL);
+	sigaction(SIGINT, &ms->old_sigint, NULL);
+	sigaction(SIGQUIT, &ms->old_sigquit, NULL);
 }
 
 /**
