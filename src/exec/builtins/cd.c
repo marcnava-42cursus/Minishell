@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:49:05 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/26 00:42:08 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 01:06:27 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static int	resolve_target_path(t_envp *env, const char *path,
 	{
 		val = envp_get_value(env, "HOME");
 		if (!val)
-			return (ft_putstr_fd("msh: cd: HOME not set\n", 2), 1);
+			return (ft_putstr_fd("minishell: cd: HOME not set\n", 2), 1);
 		*out_target = val;
 		return (0);
 	}
@@ -74,7 +74,7 @@ static int	resolve_target_path(t_envp *env, const char *path,
 	{
 		val = envp_get_value(env, "OLDPWD");
 		if (!val)
-			return (ft_putstr_fd("msh: cd: OLDPWD not set\n", 2), 1);
+			return (ft_putstr_fd("minishell: cd: OLDPWD not set\n", 2), 1);
 		ft_putstr_fd(val, 1);
 		ft_putstr_fd("\n", 1);
 		*out_target = val;

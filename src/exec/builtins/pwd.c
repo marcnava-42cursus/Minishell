@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:37:47 by marcnava          #+#    #+#             */
-/*   Updated: 2025/08/27 01:22:46 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 01:06:27 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	msh_exec_bt_pwd(t_envp *envp)
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
 	{
-		perror("msh: pwd");
+		perror("minishell: pwd");
 		return (1);
 	}
 	printf("%s\n", cwd);

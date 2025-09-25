@@ -69,6 +69,8 @@ char	*pc_read_filename_or_error(const char **s, t_mshell *mshell,
 {
 	char	*filename;
 
+	(void)ctx;
+
 	filename = get_next_token(s);
 	if (!filename)
 	{
@@ -76,7 +78,6 @@ char	*pc_read_filename_or_error(const char **s, t_mshell *mshell,
 			"minishell: syntax error near unexpected token `newline'\n",
 			NULL, NULL);
 		mshell->exit_code = 2;
-		ft_free_matrix((void **)ctx->argv);
 		return (NULL);
 	}
 	if (is_operator_token(filename))
@@ -85,7 +86,6 @@ char	*pc_read_filename_or_error(const char **s, t_mshell *mshell,
 			filename, "'\n");
 		mshell->exit_code = 2;
 		ft_free((void **)&filename);
-		ft_free_matrix((void **)ctx->argv);
 		return (NULL);
 	}
 	return (filename);

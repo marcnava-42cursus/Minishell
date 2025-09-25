@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmarcell <jmarcell@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 17:44:36 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/26 00:38:41 by jmarcell         ###   ########.fr       */
+/*   Updated: 2025/09/26 01:06:27 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	msh_exec_bt_export_print(t_envp *envp)
  */
 static int	print_id_error_export(char *key)
 {
-	ft_putstr_fd("msh: export: `", 2);
+	ft_putstr_fd("minishell: export: `", 2);
 	ft_putstr_fd(key, 2);
 	ft_putstr_fd("': not a valid identifier\n", 2);
 	return (1);

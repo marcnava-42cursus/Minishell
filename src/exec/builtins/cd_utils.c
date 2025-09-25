@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 00:42:15 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/26 00:42:38 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 01:06:27 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	chdir_and_update_env(t_envp **envp, const char *target_path, char *old_pwd)
 	if (chdir(target_path) != 0)
 	{
 		err = errno;
-		print_err2("msh: cd: ", target_path, ": ");
+		print_err2("minishell: cd: ", target_path, ": ");
 		print_err2(strerror(err), "\n", NULL);
 		ft_free((void **)&old_pwd);
 		return (1);

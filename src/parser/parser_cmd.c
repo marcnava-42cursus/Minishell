@@ -52,7 +52,7 @@ static int	pc_process_next(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 			else
 				print_syntax_token(NULL);
 			mshell->exit_code = 2;
-			return (ft_free_matrix((void **)ctx->argv), -1);
+			return (-1);
 		}
 		return (1);
 	}

@@ -24,7 +24,6 @@ int	pc_handle_heredoc(const char **s, t_mshell *mshell, t_pc_ctx *ctx)
 		print_err2("minishell: syntax error near unexpected token `newline'\n",
 			NULL, NULL);
 		mshell->exit_code = 2;
-		ft_free_matrix((void **)ctx->argv);
 		return (-1);
 	}
 	fd = handle_heredoc(filename, mshell);
