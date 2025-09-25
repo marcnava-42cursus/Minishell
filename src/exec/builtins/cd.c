@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:49:05 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 06:14:32 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:42:08 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <errno.h>
 #include <string.h>
 
-static char	*build_logical_pwd(const char *old_pwd, const char *target_path)
+char	*build_logical_pwd(const char *old_pwd, const char *target_path)
 {
 	char	*tmp;
 	char	*out;
@@ -40,7 +40,7 @@ static char	*build_logical_pwd(const char *old_pwd, const char *target_path)
 	return (out);
 }
 
-static void	print_getcwd_error(int err)
+void	print_getcwd_error(int err)
 {
 	print_err2("minishell: cd: error retrieving current directory: ",
 		"getcwd: cannot access parent directories: ", strerror(err));
@@ -81,46 +81,6 @@ static int	resolve_target_path(t_envp *env, const char *path,
 		return (0);
 	}
 	*out_target = (char *)path;
-	return (0);
-}
-
-static int	chdir_and_update_env(t_envp **envp, const char *target_path,
-	char *old_pwd)
-{
-	char	*new_pwd;
-	char	*logical_pwd;
-	int		err;
-
-	if (chdir(target_path) != 0)
-	{
-		err = errno;
-		print_err2("msh: cd: ", target_path, ": ");
-		print_err2(strerror(err), "\n", NULL);
-		ft_free((void **)&old_pwd);
-		return (1);
-	}
-	new_pwd = getcwd(NULL, 0);
-	if (!new_pwd)
-	{
-		err = errno;
-		logical_pwd = build_logical_pwd(old_pwd, target_path);
-		if (!logical_pwd)
-		{
-			print_err2("minishell: cd: allocation error\n", NULL, NULL);
-			ft_free((void **)&old_pwd);
-			return (1);
-		}
-		print_getcwd_error(err);
-		envp_set_value(envp, "OLDPWD", old_pwd);
-		envp_set_value(envp, "PWD", logical_pwd);
-		ft_free((void **)&logical_pwd);
-		ft_free((void **)&old_pwd);
-		return (0);
-	}
-	envp_set_value(envp, "OLDPWD", old_pwd);
-	envp_set_value(envp, "PWD", new_pwd);
-	ft_free((void **)&old_pwd);
-	ft_free((void **)&new_pwd);
 	return (0);
 }
 

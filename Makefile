@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/26 00:28:53 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/26 00:43:35 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,6 +64,7 @@ SRCS		+=	$(CONFIG)/build_prompt.c \
 				$(CONFIG)/prompt_utils.c
 
 SRCS		+=	$(BUILTINS)/cd.c \
+				$(BUILTINS)/cd_utils.c \
 				$(BUILTINS)/echo.c \
 				$(BUILTINS)/env.c \
 				$(BUILTINS)/envp_helpers.c \

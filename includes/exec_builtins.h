@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:33:33 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:50:19 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/26 00:43:00 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,11 @@ int		msh_exec_bt_export(t_envp **envp, char *key, char *value);
 int		msh_exec_bt_export_print(t_envp *envp);
 int		msh_exec_bt_pwd(t_envp *envp);
 int		msh_exec_bt_unset(t_envp **envp, char *key);
+
+// Utils
+int		chdir_and_update_env(t_envp **envp, const char *target_path,
+			char *old_pwd);
+char		*build_logical_pwd(const char *old_pwd, const char *target_path);
+void		print_getcwd_error(int err);
 
 #endif
