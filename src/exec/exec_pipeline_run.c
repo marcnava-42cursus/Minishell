@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/19 00:10:09 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/19 00:10:09 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:15:58 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ int	spawn_children(t_pipe_ctx *ctx)
 			return (perror("fork"), 1);
 		if (ctx->pids[i] == 0)
 			exec_pipeline_child(ctx, i);
-		/* Parent: close per-command redirection FDs (e.g., heredoc) */
 		if (ctx->commands[i]->fd_in != -1 && ctx->commands[i]->fd_in != -2)
 		{
 			close(ctx->commands[i]->fd_in);

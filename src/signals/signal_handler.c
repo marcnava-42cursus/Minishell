@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 20:19:10 by jmarcell          #+#    #+#             */
-/*   Updated: 2025/09/25 05:32:23 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:26:46 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,6 @@
 
 // Variable global para almacenar el exit_code cuando se recibe una señal
 volatile sig_atomic_t	g_signal_received = 0;
-
-static void	heredoc_handler(int sig)
-{
-	if (sig == SIGINT)
-	{
-		write(STDOUT_FILENO, "\n", 1);
-		exit(130);
-	}
-}
 
 /**
  * @brief Handle SIGINT signal (Ctrl+C)
@@ -45,16 +36,6 @@ void	handle_sigint(int sig)
 		rl_redisplay();
 	}
 }
-
-/**
- * @brief Handle SIGQUIT signal (Ctrl+\)
- * 
- * In interactive mode: ignores the signal
- * Child processes should receive it normally
- * 
- * @param sig The signal number received
- */
-/* No usamos handler de SIGQUIT en el padre; se ignora vía sigaction */
 
 /**
  * @brief Configura señales para el prompt interactivo del padre
@@ -92,20 +73,9 @@ void	set_child_signal(void)
 	sigaction(SIGPIPE, &sa, NULL);
 }
 
-void	set_heredoc_signal(void)
-{
-	struct sigaction	sa;
-
-	ft_memset(&sa, 0, sizeof(sa));
-	sa.sa_handler = heredoc_handler;
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
-	sa.sa_handler = SIG_IGN;
-	sigaction(SIGQUIT, &sa, NULL);
-}
-
 /**
- * @brief Bloquea señales en el padre (ignorando SIGINT/SIGQUIT) guardando handlers previos
+ * @brief Bloquea señales en el padre (ignorando SIGINT/SIGQUIT) guardando
+ *        handlers previos
  */
 void	block_parent_signals(t_mshell *ms)
 {
@@ -116,15 +86,6 @@ void	block_parent_signals(t_mshell *ms)
 	sa.sa_flags = 0;
 	sigaction(SIGINT, &sa, &ms->old_sigint);
 	sigaction(SIGQUIT, &sa, &ms->old_sigquit);
-}
-
-/**
- * @brief Restaura handlers previos en el padre tras esperar al hijo
- */
-void	restore_parent_signals(t_mshell *ms)
-{
-	sigaction(SIGINT, &ms->old_sigint, NULL);
-	sigaction(SIGQUIT, &ms->old_sigquit, NULL);
 }
 
 /**

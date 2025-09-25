@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/18 23:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/25 05:37:25 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:15:51 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,18 +45,18 @@ static int	init_ctx(t_pipe_ctx *ctx, t_ent *node, t_mshell *mshell)
 
 static int	wait_and_cleanup(t_pipe_ctx *ctx)
 {
-    int	status;
-    int	first_sigpipe;
+	int	status;
+	int	first_sigpipe;
 
-    close_all_pipes_local(ctx->pipes, ctx->cmd_count);
-    block_parent_signals(ctx->mshell);
-    wait_children(ctx, &status, &first_sigpipe);
-    restore_parent_signals(ctx->mshell);
-    free_pipe_rows(ctx->pipes, ctx->cmd_count);
-    if (should_print_broken_pipe(ctx, first_sigpipe))
-        print_err2(" Broken pipe\n", NULL, NULL);
-    free_ctx_arrays(ctx);
-    return (status_to_exitcode(status));
+	close_all_pipes_local(ctx->pipes, ctx->cmd_count);
+	block_parent_signals(ctx->mshell);
+	wait_children(ctx, &status, &first_sigpipe);
+	restore_parent_signals(ctx->mshell);
+	free_pipe_rows(ctx->pipes, ctx->cmd_count);
+	if (should_print_broken_pipe(ctx, first_sigpipe))
+		print_err2(" Broken pipe\n", NULL, NULL);
+	free_ctx_arrays(ctx);
+	return (status_to_exitcode(status));
 }
 
 void	exec_pipeline_child(t_pipe_ctx *ctx, int i)

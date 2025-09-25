@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 18:30:00 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/17 18:26:45 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:12:32 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,4 @@ char	*get_pwd(t_envp *env)
 	if (logical)
 		return (logical);
 	return ("unknown");
-}
-
-char	*get_jobs(void)
-{
-	return ("0");
-}
-
-char	*get_battery(void)
-{
-	return ("100%");
 }

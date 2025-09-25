@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 19:01:01 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 20:09:47 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:11:32 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,8 @@ typedef struct s_mshell
 	t_suggestion_ctx	*suggestions;
 	int					exit_code;
 	int					should_exit;
-    struct sigaction    old_sigint;
-    struct sigaction    old_sigquit;
+	struct sigaction	old_sigint;
+	struct sigaction	old_sigquit;
 }						t_mshell;
 
 /* ============================== Ejecución ================================ */

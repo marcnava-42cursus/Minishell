@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 21:08:38 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/17 18:11:18 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:28:19 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,6 @@ char	*replace_keyword(char *key, int exit_code, t_envp *env)
 		return (get_pwd(env));
 	if (!ft_strcmp(key, "GITBRANCH"))
 		return (get_gitbranch());
-	if (!ft_strcmp(key, "JOBS"))
-		return (get_jobs());
-	if (!ft_strcmp(key, "BATTERY"))
-		return (get_battery());
 	return ("");
 }
 
@@ -47,7 +43,8 @@ char	*build_prompt(char *raw, int exit_code, t_envp *env)
 		{
 			i++;
 			if (!parse_keyword_block(raw, &i, keyword, color)
-				|| !build_keyword_output(&result, keyword, exit_code, color, env))
+				|| !build_keyword_output(&result, keyword, exit_code,
+					color, env))
 				return (result);
 		}
 		else if (!append_single_char(&result, raw, &i))

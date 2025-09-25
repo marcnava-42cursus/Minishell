@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/23 21:33:50 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/23 21:44:26 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:21:02 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 static void	init_shlvl(t_envp **envp)
 {
 	const char	*value;
-	int		level;
+	int			level;
 	char		*new_value;
 
 	if (!envp)
@@ -60,8 +60,8 @@ int	ms_init(t_mshell *ms, char **env)
 				ms->exit_code, ms->envp);
 	}
 	ms->should_exit = 0;
-    set_prompt_signal();
-    return (0);
+	set_prompt_signal();
+	return (0);
 }
 
 void	ms_cleanup(t_mshell *ms)

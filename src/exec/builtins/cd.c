@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 15:49:05 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/24 23:29:12 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:14:32 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,10 @@ static int	chdir_and_update_env(t_envp **envp, const char *target_path,
 {
 	char	*new_pwd;
 	char	*logical_pwd;
+	int		err;
 
 	if (chdir(target_path) != 0)
 	{
-		int	err;
-
 		err = errno;
 		print_err2("msh: cd: ", target_path, ": ");
 		print_err2(strerror(err), "\n", NULL);
@@ -103,8 +102,6 @@ static int	chdir_and_update_env(t_envp **envp, const char *target_path,
 	new_pwd = getcwd(NULL, 0);
 	if (!new_pwd)
 	{
-		int	err;
-
 		err = errno;
 		logical_pwd = build_logical_pwd(old_pwd, target_path);
 		if (!logical_pwd)

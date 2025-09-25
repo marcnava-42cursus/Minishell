@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 16:23:35 by marcnava          #+#    #+#             */
-/*   Updated: 2025/07/01 20:33:27 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:13:48 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ int	msh_exec_bt_env(char **argv, t_envp *envp)
 
 	if (argv && argv[1])
 	{
-		print_err2("minishell: env: ", argv[1], ": No such file or directory\n");
+		print_err2("minishell: env: ", argv[1],
+			": No such file or directory\n");
 		return (127);
 	}
 	curr = envp;

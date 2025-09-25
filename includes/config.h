@@ -6,7 +6,7 @@
 /*   By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:56:23 by marcnava          #+#    #+#             */
-/*   Updated: 2025/09/20 20:49:05 by marcnava         ###   ########.fr       */
+/*   Updated: 2025/09/25 06:12:42 by marcnava         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ char	*get_hostname(void);
 char	*get_whoami(void);
 char	*get_pwd(t_envp *env);
 char	*get_gitbranch(void);
-char	*get_jobs(void);
-char	*get_battery(void);
 
 // Colors
 char	*get_color_code(const char *color);
