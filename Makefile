@@ -6,7 +6,7 @@
 #    By: marcnava <marcnava@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/24 02:21:54 by marcnava          #+#    #+#              #
-#    Updated: 2025/09/24 20:03:26 by marcnava         ###   ########.fr        #
+#    Updated: 2025/09/25 03:28:07 by marcnava         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NAME		:=	minishell
 
 CC			:=	cc
 CFLAGS		:=	-Wall -Wextra
-DFLAGS		:=	-g3 -fsanitize=address
+DFLAGS		:=	-g3 # -fsanitize=address
 LDFLAGS		:=	-lreadline -lncurses
 
 SRCPATH		:=	src
