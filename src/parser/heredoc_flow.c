@@ -59,7 +59,6 @@ int	hd_prepare_ctx(t_hd_ctx *c, t_mshell *mshell)
 	if (!mshell || !mshell->raw_command)
 		return (-1);
 	pos = hd_after_arrow(mshell->raw_command);
-	c->read_fd = 0;
 	c->original_delimiter = hd_extract_delim(pos);
 	if (!c->original_delimiter)
 		return (-1);
